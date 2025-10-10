@@ -1,6 +1,6 @@
-package com.example.data
+package com.example.data.apiService.auth
 
-import com.example.data.model.LoginKey
+import com.example.data.model.auth.LoginKey
 import retrofit2.http.GET
 
 interface LoginApiService {

@@ -1,11 +1,11 @@
-package com.example.data.model
+package com.example.data.model.auth
 
 data class LoginKey(
     val code: Int,
-    val `data`: Data
+    val `data`: KeyData
 )
 
-data class Data(
+data class KeyData(
     val code: Int,
     val unikey: String
 )
