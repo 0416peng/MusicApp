@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:login"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(libs.hilt.android)
