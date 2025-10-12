@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(libs.hilt.android)
     implementation(project(":feature:login"))
+    implementation(project(":feature:home"))
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("io.coil-kt:coil-compose:2.6.0")//网络图片显示
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(project(":core:data"))
     implementation(project(":core:ui"))

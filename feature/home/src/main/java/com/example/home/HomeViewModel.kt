@@ -21,7 +21,10 @@ class HomeViewModel @Inject constructor(
 
     fun getRecommendAlbum(limit: Int) {
         viewModelScope.launch {
-            homeRepository.getRecommendAlbum(limit)
+           val data= homeRepository.getRecommendAlbum(limit)
+                if (data.code==200){
+                    _recommendAlbum.value=data
+                }
         }
 
     }

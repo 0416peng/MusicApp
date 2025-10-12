@@ -4,10 +4,10 @@ data class RecommendAlbumData(
     val category: Int,
     val code: Int,
     val hasTaste: Boolean,
-    val result: List<Result>
+    val result: List<Album>
 )
 
-data class Result(
+data class Album(
     val alg: String,
     val canDislike: Boolean,
     val copywriter: String,
