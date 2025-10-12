@@ -23,39 +23,60 @@ class AuthRepositoryImpl @Inject constructor(
     @SuppressLint("SuspiciousIndentation")
     override suspend fun getKey(): LoginKey {
       val response = loginApiService.getKey()
-        if (response.isSuccessful){
+        try{
+            if (response.isSuccessful){
             return response.body()!!
         }else{
             throw IOException("API Error: ${response.code()}")
+        }}catch (e: Exception){
+            throw e
         }
+
     }
 
     override suspend fun getPic(key:String): LoginPic {
         val response = loginPicApiService.getPic(key)
-        if (response.isSuccessful){
-            return response.body()!!
-        }else{
-            throw IOException("API Error: ${response.code()}")
+        try {
+            if (response.isSuccessful){
+                return response.body()!!
+            }else{
+                throw IOException("API Error: ${response.code()}")
+            }
+        }catch (e: Exception){
+            throw e
         }
     }
 
     override suspend fun getStatue(key: String): AuthStatue {
         val response = authApiService.getStatue(key)
-        if (response.isSuccessful){
-            return response.body()!!
-        }else{
-            throw IOException("API Error: ${response.code()}")
+        try {
+            if (response.isSuccessful){
+                return response.body()!!
+            }else{
+                throw IOException("API Error: ${response.code()}")
+            }
+        }catch (e: Exception){
+            throw e
         }
     }
+
+
+
 
     override suspend fun VisitorLogin(): VisitorLoginData {
         val response = visitorLoginApiService.visitorLogin()
-        if (response.isSuccessful){
-            return response.body()!!
-            userSessionManager.saveCookie(response.body()!!.cookie)
-        }else{
-            throw IOException("API Error: ${response.code()}")
+        try {
+            if (response.isSuccessful){
+                return response.body()!!
+                userSessionManager.saveCookie(response.body()!!.cookie)
+            }else{
+                throw IOException("API Error: ${response.code()}")
+            }
+        }catch (e: Exception){
+            throw e
         }
     }
 
-}
+
+
+    }
