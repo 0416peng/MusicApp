@@ -2,11 +2,13 @@ package com.example.home
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,6 +24,9 @@ import coil.compose.AsyncImage
 import com.example.data.model.home.Album
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel= hiltViewModel()){
@@ -47,14 +52,26 @@ fun AlbumList(items:List<Album>){
         ){
         items(items){
             item->
-            Card(modifier= Modifier
-                .width(120.dp)
-                .aspectRatio(1f)
-            ) {
-                AsyncImage(model = item.picUrl,
-                    modifier = Modifier.fillMaxSize(),
-                    contentDescription = "album image")
+            Column(modifier = Modifier.width(120.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                Card(modifier= Modifier
+                    .width(120.dp)
+                    .aspectRatio(1f)
+                    .clickable{/*TODO*/}
+                ) {
+                    AsyncImage(model = item.picUrl,
+                        modifier = Modifier.fillMaxSize(),
+                        contentDescription = item.name)
+                }
+                Text(item.name,
+                    fontSize = 12.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(8.dp)
+                    )
             }
+
         }
     }
 }
