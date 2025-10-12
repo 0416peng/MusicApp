@@ -13,6 +13,8 @@ material = "1.13.0"
 retrofit="2.9.0"
 okhttp="4.12.0"
 hilt="2.51.1"
+datastore="1.1.1"
+tracingPerfettoHandshake = "1.0.0"
 
 [libraries]
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -38,6 +40,8 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-tracing-perfetto-handshake = { group = "androidx.tracing", name = "tracing-perfetto-handshake", version.ref = "tracingPerfettoHandshake" }
 
 [plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

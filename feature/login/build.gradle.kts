@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -35,15 +36,16 @@ android {
         jvmTarget = "11"
     }
 
+
 }
 
 dependencies {
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
     // 4. 添加具体的 Compose 依赖
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
