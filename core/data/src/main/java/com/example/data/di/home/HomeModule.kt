@@ -1,6 +1,7 @@
 package com.example.data.di.home
 
 import com.example.data.apiService.auth.LoginApiService
+import com.example.data.apiService.home.NewAlbumApiService
 import com.example.data.apiService.home.RecommendAlbumApiService
 import dagger.Module
 import dagger.Provides
@@ -15,7 +16,12 @@ import javax.inject.Singleton
 object HomeModule {
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): RecommendAlbumApiService {
+    fun provideRecommendAlbumApiService(retrofit: Retrofit): RecommendAlbumApiService {
         return retrofit.create(RecommendAlbumApiService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideNewAlbumApiService(retrofit: Retrofit): NewAlbumApiService {
+        return retrofit.create(NewAlbumApiService::class.java)
     }
 }
