@@ -41,7 +41,7 @@ fun HomeScreen(viewModel: HomeViewModel= hiltViewModel()){
     Log.d("data",recommendAlbumData.toString())
     Column {
         Text("推荐歌单  >",
-            modifier=Modifier.clickable{/*TODO*/}
+            modifier=Modifier.clickable{/*TODO*/},
             )
         if (recommendAlbumData!=null) {
             val recommendItems=recommendAlbumData!!.result.map {
