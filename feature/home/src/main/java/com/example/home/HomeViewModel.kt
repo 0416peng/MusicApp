@@ -3,6 +3,7 @@ package com.example.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.home.BannerData
+import com.example.data.model.home.HotSingerData
 import com.example.data.model.home.NewAlbumData
 import com.example.data.model.home.RecommendAlbumData
 import com.example.data.repository.home.HomeRepository
@@ -19,35 +20,58 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _recommendAlbum = MutableStateFlow<RecommendAlbumData?>(null)
     val recommendAlbum = _recommendAlbum.asStateFlow()
-    private val _newAlbum=MutableStateFlow<NewAlbumData?>(null)
-    val newAlbum=_newAlbum.asStateFlow()
-    private val _banner=MutableStateFlow<BannerData?>(null)
-    val banner=_banner.asStateFlow()
+    private val _newAlbum = MutableStateFlow<NewAlbumData?>(null)
+    val newAlbum = _newAlbum.asStateFlow()
+    private val _banner = MutableStateFlow<BannerData?>(null)
+    val banner = _banner.asStateFlow()
+    private val _hotSinger= MutableStateFlow<HotSingerData?>(null)
+    val hotSinger= _hotSinger.asStateFlow()
+    private val _topList= MutableStateFlow<HotSingerData?>(null)
+    val topList= _topList.asStateFlow()
+
+
 
     fun getRecommendAlbum(limit: Int) {
         viewModelScope.launch {
-           val data= homeRepository.getRecommendAlbum(limit)
-                if (data.code==200){
-                    _recommendAlbum.value=data
-                }
+            val data = homeRepository.getRecommendAlbum(limit)
+            if (data.code == 200) {
+                _recommendAlbum.value = data
+            }
         }
 
     }
-    fun getNewAlbum(){
+
+    fun getNewAlbum() {
         viewModelScope.launch {
-            val data=homeRepository.getNewAlbum()
-            if (data.code==200){
-                _newAlbum.value=data
+            val data = homeRepository.getNewAlbum()
+            if (data.code == 200) {
+                _newAlbum.value = data
             }
         }
     }
 
-    fun getBanner(){
+    fun getBanner() {
         viewModelScope.launch {
-            val data=homeRepository.getBanner()
-            if (data.code==200){
-                _banner.value=data
+            val data = homeRepository.getBanner()
+            if (data.code == 200) {
+                _banner.value = data
             }
         }
     }
+    fun getHotSinger() {
+        viewModelScope.launch {
+            val data = homeRepository.getHotSinger()
+            if (data.code == 200) {
+                _hotSinger.value = data
             }
+        }
+    }
+    fun getTopList() {
+        viewModelScope.launch {
+            val data = homeRepository.getHotSinger()
+            if (data.code == 200) {
+               _topList.value = data
+            }
+        }
+    }
+}
