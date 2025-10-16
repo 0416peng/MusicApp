@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -36,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.6.0")//网络图片显示
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     val composeBom = platform(libs.androidx.compose.bom)

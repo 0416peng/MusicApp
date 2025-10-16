@@ -6,6 +6,7 @@ import com.example.data.model.home.BannerData
 import com.example.data.model.home.HotSingerData
 import com.example.data.model.home.NewAlbumData
 import com.example.data.model.home.RecommendAlbumData
+import com.example.data.model.home.TopListData
 import com.example.data.repository.home.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,7 @@ class HomeViewModel @Inject constructor(
     val banner = _banner.asStateFlow()
     private val _hotSinger= MutableStateFlow<HotSingerData?>(null)
     val hotSinger= _hotSinger.asStateFlow()
-    private val _topList= MutableStateFlow<HotSingerData?>(null)
+    private val _topList= MutableStateFlow<TopListData?>(null)
     val topList= _topList.asStateFlow()
 
 
@@ -68,7 +69,7 @@ class HomeViewModel @Inject constructor(
     }
     fun getTopList() {
         viewModelScope.launch {
-            val data = homeRepository.getHotSinger()
+            val data = homeRepository.getTopList()
             if (data.code == 200) {
                _topList.value = data
             }

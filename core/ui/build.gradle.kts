@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    id("kotlin-kapt")
 }
 
 android {
@@ -34,10 +36,17 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.material3:material3")
+
+    implementation(project(":core:common"))
+    implementation(libs.coil.compose)
+    implementation(project(":core:data"))
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
     // 4. 添加具体的 Compose 依赖
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)

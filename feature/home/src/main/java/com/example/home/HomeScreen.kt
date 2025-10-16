@@ -24,8 +24,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -40,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
@@ -48,6 +51,7 @@ import com.example.data.model.home.Banner
 import com.example.data.model.home.DisplayableAlbumItemData
 import com.example.data.model.home.HotArtistData
 import com.example.data.model.home.HotSingerData
+import com.example.ui.LoadingPlaceholder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.compose
 
@@ -58,12 +62,18 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         viewModel.getNewAlbum()
         viewModel.getBanner()
         viewModel.getHotSinger()
+        viewModel.getTopList()
     }
     val recommendAlbumData by viewModel.recommendAlbum.collectAsState()
     val newAlbumData by viewModel.newAlbum.collectAsState()
     val bannerData by viewModel.banner.collectAsState()
     val hotSingerData by viewModel.hotSinger.collectAsState()
-    Column {
+    val topListData by viewModel.topList.collectAsState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         if (bannerData != null) {
             Banner(bannerData!!.banners)
         } else {
@@ -93,6 +103,20 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         if (newAlbumData != null) {
             val newAlbumItems = newAlbumData!!.albums.map {
                 DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl)
+            }
+            AlbumList(items = newAlbumItems)
+        } else {
+            LoadingPlaceholder()
+        }
+        Text(
+            "排行榜 >",
+            modifier = Modifier
+                .clickable {/*TODO*/ }
+                .padding(12.dp)
+        )
+        if (topListData != null) {
+            val newAlbumItems = topListData!!.list.take(9).map {
+                DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl)
             }
             AlbumList(items = newAlbumItems)
         } else {
@@ -142,7 +166,9 @@ fun AlbumList(items: List<DisplayableAlbumItemData>) {
                     fontSize = 12.sp,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {}
                 )
             }
 
@@ -226,43 +252,35 @@ fun HotSingerList(items: List<HotArtistData>) {
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         rows = GridCells.Fixed(3),
-        modifier =  Modifier.height(240.dp)
+        modifier = Modifier
+            .height(240.dp)
             .fillMaxWidth()
     ) {
         items(items) { item ->
-                Row(modifier = Modifier
+            Row(
+                modifier = Modifier
                     .width(150.dp)
                     .padding(8.dp)
-                ) {
-                    AsyncImage(
-                        model = item.picUrl,
-                        modifier = Modifier
-                            .size(64.dp)
-                        ,
-                        contentDescription = item.name
-                    )
-                    Text(item.name,
-                        fontSize = 12.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(4.dp)
-                        )
-                }
-
-
+            ) {
+                AsyncImage(
+                    model = item.picUrl,
+                    modifier = Modifier
+                        .size(64.dp),
+                    contentDescription = item.name
+                )
+                Text(
+                    item.name,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(4.dp)
+                )
             }
+
+
         }
     }
-
-
-@Composable
-private fun LoadingPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
 }
+
+
+

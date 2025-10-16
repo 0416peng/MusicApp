@@ -1,12 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
-    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.example.data"
+    namespace = "com.example.common"
     compileSdk = 36
 
     defaultConfig {
@@ -35,16 +33,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(libs.androidx.datastore.preferences)
-    implementation(platform(libs.okhttp.bom)) // 使用 OkHttp BOM
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging.interceptor) // 用于打印网络日志，方便调试
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.tracing.perfetto.handshake)
-    kapt(libs.hilt.compiler)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
