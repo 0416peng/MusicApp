@@ -1,5 +1,3 @@
-
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -9,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.login"
+    namespace = "com.example.albumlist"
     compileSdk = 36
 
     defaultConfig {
@@ -35,14 +33,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-
-
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -56,8 +56,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     // 这个依赖用于调试 Compose UI
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

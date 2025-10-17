@@ -1,4 +1,4 @@
-package com.example.ui.AlbumList
+package com.example.albumList
 
 
 import android.util.Log
@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.albumList.AlbumListViewModel
 import com.example.common.formatTimestamp
 import com.example.data.model.AlbumListData
 import com.example.data.model.Song
@@ -49,7 +50,7 @@ fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
     val albumListData by viewModel.albumListData.collectAsState()
     Column(modifier = Modifier.fillMaxSize()) {
         if(albumListData!=null){
-            if(albumListData!!.code==200){
+            if(albumListData!!.code ==200){
                 Album(albumListData!!)
             }
         }

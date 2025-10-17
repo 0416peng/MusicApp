@@ -1,4 +1,4 @@
-package com.example.ui.AlbumList
+package com.example.albumList
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class AlbumListViewModel @Inject constructor(

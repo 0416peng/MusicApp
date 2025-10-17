@@ -1,5 +1,3 @@
-
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -9,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.login"
+    namespace = "com.example.playlist"
     compileSdk = 36
 
     defaultConfig {
@@ -35,14 +33,12 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-
-
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
