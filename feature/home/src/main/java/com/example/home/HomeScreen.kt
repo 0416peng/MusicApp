@@ -56,7 +56,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.compose
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->Unit) {
     LaunchedEffect(Unit) {
         viewModel.getRecommendAlbum(5)
         viewModel.getNewAlbum()
@@ -88,9 +88,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         )
         if (recommendAlbumData != null) {
             val recommendItems = recommendAlbumData!!.result.map {
-                DisplayableAlbumItemData(it.name, it.picUrl)
+                DisplayableAlbumItemData(it.name, it.picUrl,it.id)
             }
-            AlbumList(recommendItems)
+            AlbumList(recommendItems,onAlbumClick)
         } else {
             LoadingPlaceholder()
         }
@@ -102,9 +102,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         )
         if (newAlbumData != null) {
             val newAlbumItems = newAlbumData!!.albums.map {
-                DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl)
+                DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl,it.id)
             }
-            AlbumList(items = newAlbumItems)
+            AlbumList(items = newAlbumItems,onAlbumClick)
         } else {
             LoadingPlaceholder()
         }
@@ -116,9 +116,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         )
         if (topListData != null) {
             val newAlbumItems = topListData!!.list.take(9).map {
-                DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl)
+                DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl,it.id)
             }
-            AlbumList(items = newAlbumItems)
+            AlbumList(items = newAlbumItems,onAlbumClick)
         } else {
             LoadingPlaceholder()
         }
@@ -139,7 +139,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 
 
 @Composable
-fun AlbumList(items: List<DisplayableAlbumItemData>) {
+fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -153,7 +153,9 @@ fun AlbumList(items: List<DisplayableAlbumItemData>) {
                     modifier = Modifier
                         .width(120.dp)
                         .aspectRatio(1f)
-                        .clickable {/*TODO*/ }
+                        .clickable {
+                            Log.d("albumId",item.albumId.toString())
+                            onAlbumClick(item.albumId) }
                 ) {
                     AsyncImage(
                         model = item.picUrl,

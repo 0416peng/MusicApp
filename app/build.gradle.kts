@@ -42,14 +42,15 @@ android {
 }
 
 dependencies {
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(project(":feature:login"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
-    implementation(libs.hilt.android)
     implementation(project(":feature:login"))
     implementation(project(":feature:home"))
+    implementation(libs.androidx.navigation.compose)
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

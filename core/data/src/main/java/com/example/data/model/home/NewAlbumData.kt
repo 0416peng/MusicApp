@@ -16,7 +16,7 @@ data class NewAlbum(
     val companyId: Int,
     val copyrightId: Int,
     val description: String,
-    val id: Int,
+    val id: Long,
     val name: String,
     val onSale: Boolean,
     val paid: Boolean,

@@ -7,5 +7,5 @@ import retrofit2.http.Query
 
 interface AlbumListApiService {
     @GET("album")
-    suspend fun getAlbumListData(@Query("id")id:Int): Response<AlbumListData>
+    suspend fun getAlbumListData(@Query("id")id: Long): Response<AlbumListData>
 }
