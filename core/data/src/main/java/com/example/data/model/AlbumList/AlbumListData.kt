@@ -1,4 +1,6 @@
-package com.example.data.model
+package com.example.data.model.AlbumList
+
+
 
 data class AlbumListData(
     val album: Album,

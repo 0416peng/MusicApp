@@ -4,6 +4,7 @@ package com.example.albumList
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
@@ -29,25 +31,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.albumList.AlbumListViewModel
 import com.example.common.formatTimestamp
-import com.example.data.model.AlbumListData
-import com.example.data.model.Song
+import com.example.data.model.AlbumList.AlbumListData
+import com.example.data.model.AlbumList.Song
 import com.example.ui.LoadingPlaceholder
 
 @Composable
 fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
-    Log.d("Screen",id.toString())
     LaunchedEffect(Unit) {
         viewModel.getAlbumList(id)
     }
-
     val albumListData by viewModel.albumListData.collectAsState()
+    val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     Column(modifier = Modifier.fillMaxSize()) {
         if(albumListData!=null){
             if(albumListData!!.code ==200){
@@ -61,7 +64,7 @@ fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
         }
         if (albumListData!=null){
             if(albumListData!!.code==200){
-                AlbumList(albumListData!!.songs,viewModel)
+                AlbumList(albumListData!!.songs,currentlyPlayingSongId, onClick = {id-> viewModel.onPlayPauseClicked(id) })
             }
         }else{
             Box(modifier = Modifier.fillMaxSize()) {
@@ -79,8 +82,8 @@ fun Album(albumListData: AlbumListData?){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
-            .background(color = Color(0xFF0D10EC))
+            .height(240.dp),
+        shape = RectangleShape
     ) {
         Row(
             modifier = Modifier
@@ -101,7 +104,8 @@ fun Album(albumListData: AlbumListData?){
                     modifier = Modifier
                         .size(130.dp)
                         .padding(16.dp)
-                        .clickable {/*TODO：页面跳转*/ },
+                        .clickable {/*TODO：页面跳转*/ }
+                        .clip(RoundedCornerShape(8.dp)),
                     contentDescription = "album Picture"
                 )
                 Column(modifier = Modifier.padding(16.dp)
@@ -137,8 +141,8 @@ fun Album(albumListData: AlbumListData?){
 }
 
 @Composable
-fun AlbumList(songs: List<Song>,viewModel: AlbumListViewModel) {
-    val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
+fun AlbumList(songs: List<Song>,currentlyPlayingSongId: Long?,onClick:(id: Long)-> Unit) {
+
     LazyColumn {
         item {
             Row(
@@ -161,7 +165,7 @@ fun AlbumList(songs: List<Song>,viewModel: AlbumListViewModel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {/*TODO:播放音乐*/viewModel.onPlayPauseClicked(item.id) }
+                    .clickable {/*TODO:播放音乐*/onClick(item.id) }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

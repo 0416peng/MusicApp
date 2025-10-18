@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.data.model.AlbumList.Al
 import com.example.data.model.home.Banner
 import com.example.data.model.home.DisplayableAlbumItemData
 import com.example.data.model.home.HotArtistData
@@ -55,8 +56,15 @@ import com.example.ui.LoadingPlaceholder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.compose
 
+
+object ListType{
+    const val PLAYLIST=0
+    const val ALBUM=1
+}
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->Unit) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->Unit,
+               onPlayListClick:(Long)->Unit
+               ) {
     LaunchedEffect(Unit) {
         viewModel.getRecommendAlbum(5)
         viewModel.getNewAlbum()
@@ -90,7 +98,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
             val recommendItems = recommendAlbumData!!.result.map {
                 DisplayableAlbumItemData(it.name, it.picUrl,it.id)
             }
-            AlbumList(recommendItems,onAlbumClick)
+            AlbumList(recommendItems,onAlbumClick,onPlayListClick,ListType.PLAYLIST)
         } else {
             LoadingPlaceholder()
         }
@@ -104,7 +112,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
             val newAlbumItems = newAlbumData!!.albums.map {
                 DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl,it.id)
             }
-            AlbumList(items = newAlbumItems,onAlbumClick)
+            AlbumList(items = newAlbumItems,onAlbumClick, onPlayListClick,ListType.ALBUM)
         } else {
             LoadingPlaceholder()
         }
@@ -118,7 +126,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
             val newAlbumItems = topListData!!.list.take(9).map {
                 DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl,it.id)
             }
-            AlbumList(items = newAlbumItems,onAlbumClick)
+            AlbumList(items = newAlbumItems,onAlbumClick, onPlayListClick,ListType.PLAYLIST)
         } else {
             LoadingPlaceholder()
         }
@@ -139,7 +147,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
 
 
 @Composable
-fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit) {
+fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit,onPlayListClick: (Long) -> Unit,type:Int) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -154,8 +162,10 @@ fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit) {
                         .width(120.dp)
                         .aspectRatio(1f)
                         .clickable {
-                            Log.d("albumId",item.albumId.toString())
-                            onAlbumClick(item.albumId) }
+                            if (type==0) onPlayListClick(item.albumId)
+                            else onAlbumClick(item.albumId) }
+
+
                 ) {
                     AsyncImage(
                         model = item.picUrl,
@@ -170,7 +180,6 @@ fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit) {
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(8.dp)
-                        .clickable {}
                 )
             }
 

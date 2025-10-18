@@ -3,7 +3,8 @@ package com.example.albumList
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.model.AlbumListData
+import com.example.data.manager.MusicPlayerManager
+import com.example.data.model.AlbumList.AlbumListData
 import com.example.data.repository.AlbumList.AlbumListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +14,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumListViewModel @Inject constructor(
-    private val albumListRepository: AlbumListRepository
+    private val albumListRepository: AlbumListRepository,
+    private val musicPlayerManager: MusicPlayerManager
 ) : ViewModel() {
-    private val _currentlyPlayingSongId= MutableStateFlow<Long?>(null)
-    val currentlyPlayingSongId=_currentlyPlayingSongId.asStateFlow()
+
+    val currentlyPlayingSongId=musicPlayerManager.currentlyPlayingSongId
     private val _albumListData= MutableStateFlow<AlbumListData?>(null)
     val albumListData=_albumListData.asStateFlow()
+
     fun getAlbumList(id: Long){
         Log.d("viewModel",id.toString())
         viewModelScope.launch {
@@ -28,11 +31,7 @@ class AlbumListViewModel @Inject constructor(
             }
         }
     }
-    fun onPlayPauseClicked(songId: Long){
-        if (currentlyPlayingSongId.value==songId){
-            _currentlyPlayingSongId.value=null
-        }else{
-            _currentlyPlayingSongId.value=songId
-        }
+  fun onPlayPauseClicked(songId: Long) {
+        musicPlayerManager.playSong(songId)
     }
-}
+    }

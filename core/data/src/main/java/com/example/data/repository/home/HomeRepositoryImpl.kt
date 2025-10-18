@@ -21,10 +21,11 @@ class HomeRepositoryImpl @Inject constructor(
     private val topListApiService: TopListApiService
 ) : HomeRepository {
     override suspend fun getRecommendAlbum(limit: Int): RecommendAlbumData {
-        val response= recommendAlbumApiService.getRecommendAlbum(limit)
-        try {
+
+      return  try {
+          val response= recommendAlbumApiService.getRecommendAlbum(limit)
             if (response.isSuccessful){
-                return response.body()!!
+                 response.body()!!
             }else{
                 throw IOException("API Error: ${response.code()}")
             }
@@ -34,10 +35,10 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getNewAlbum(): NewAlbumData {
-        val response= newAlbumApiService.getNewAlbum()
-        try {
+       return try {
+            val response= newAlbumApiService.getNewAlbum()
             if (response.isSuccessful){
-                return response.body()!!
+                response.body()!!
             }else{
                 throw IOException("API Error: ${response.code()}")
             }
@@ -47,10 +48,10 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBanner(): BannerData {
-        val response= bannerApiService.getBanner()
-        try {
+       return try {
+            val response= bannerApiService.getBanner()
             if (response.isSuccessful){
-                return response.body()!!
+                 response.body()!!
             }else{
                 throw IOException("API Error: ${response.code()}")
             }
@@ -60,10 +61,11 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getHotSinger(): HotSingerData {
-        val response= hotSingerApiService.getHotSinger()
-        try {
+
+       return try {
+            val response= hotSingerApiService.getHotSinger()
             if (response.isSuccessful){
-                return response.body()!!
+                 response.body()!!
             }else{
                 throw IOException("API Error: ${response.code()}")
             }
@@ -73,10 +75,11 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTopList(): TopListData {
-        val response= topListApiService.getTopList()
-        try {
+
+       return try {
+            val response= topListApiService.getTopList()
             if (response.isSuccessful){
-                return response.body()!!
+                 response.body()!!
             }else{
                 throw IOException("API Error: ${response.code()}")
             }

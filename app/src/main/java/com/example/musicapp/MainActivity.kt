@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.albumList.AlbumListScreen
 import com.example.home.HomeScreen
+import com.example.playlist.PlayListScreen
 
 
 @AndroidEntryPoint
@@ -35,6 +36,8 @@ object AppDestinations{
     const val HOME_ROUTE="home"
     const val ALBUM_LIST_ROUTE="albumList"
     const val ALBUM_ID_ARG = "albumId"
+    const val PLAY_LIST_ROUTE="playList"
+    const val PLAY_LIST_ID_ARG="playListId"
 }
 
 @Composable
@@ -47,7 +50,11 @@ fun MusicNavGraph(
         composable(AppDestinations.HOME_ROUTE){
             HomeScreen(onAlbumClick = { albumId ->
                 navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$albumId")
-            })
+            },
+                onPlayListClick = { playListId ->
+                    navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$playListId")
+                }
+                )
         }
         composable(route = "${AppDestinations.ALBUM_LIST_ROUTE}/{${AppDestinations.ALBUM_ID_ARG}}",
             arguments = listOf(navArgument(AppDestinations.ALBUM_ID_ARG){type= NavType.LongType})
@@ -55,4 +62,11 @@ fun MusicNavGraph(
             val albumId=backStackEntry.arguments?.getLong(AppDestinations.ALBUM_ID_ARG)
             AlbumListScreen(id=albumId!!)
     }
+        composable(route="${AppDestinations.PLAY_LIST_ROUTE}/{${AppDestinations.PLAY_LIST_ID_ARG}}",
+            arguments = listOf(navArgument(AppDestinations.PLAY_LIST_ID_ARG){type= NavType.LongType})
+){
+            backStackEntry->
+            val playListId=backStackEntry.arguments?.getLong(AppDestinations.PLAY_LIST_ID_ARG)
+            PlayListScreen(id=playListId!!)
+        }
 }}
