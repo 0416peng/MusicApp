@@ -1,5 +1,6 @@
 package com.example.data.repository.home
 
+import android.annotation.SuppressLint
 import com.example.data.apiService.home.BannerApiService
 import com.example.data.apiService.home.HotSingerApiService
 import com.example.data.apiService.home.NewAlbumApiService
@@ -20,71 +21,95 @@ class HomeRepositoryImpl @Inject constructor(
     private val hotSingerApiService: HotSingerApiService,
     private val topListApiService: TopListApiService
 ) : HomeRepository {
-    override suspend fun getRecommendAlbum(limit: Int): RecommendAlbumData {
+    @SuppressLint("SuspiciousIndentation")
+    override suspend fun getRecommendAlbum(limit: Int): Result<RecommendAlbumData> {
 
       return  try {
           val response= recommendAlbumApiService.getRecommendAlbum(limit)
             if (response.isSuccessful){
-                 response.body()!!
+                val body= response.body()
+                if(body!=null){
+                    Result.success(body)
+                }else{
+                    Result.failure(IOException("Response body is null"))
+                }
             }else{
-                throw IOException("API Error: ${response.code()}")
+                Result.failure(IOException("API Error: ${response.code()}"))
             }
         }catch (e: Exception){
-            throw e
+          Result.failure(e)
         }
     }
 
-    override suspend fun getNewAlbum(): NewAlbumData {
-       return try {
-            val response= newAlbumApiService.getNewAlbum()
-            if (response.isSuccessful){
-                response.body()!!
-            }else{
-                throw IOException("API Error: ${response.code()}")
+    override suspend fun getNewAlbum(): Result<NewAlbumData> {
+        return try {
+            val response = newAlbumApiService.getNewAlbum()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(IOException("Response body is null"))
+                }
+            } else {
+                Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
-    override suspend fun getBanner(): BannerData {
-       return try {
-            val response= bannerApiService.getBanner()
-            if (response.isSuccessful){
-                 response.body()!!
-            }else{
-                throw IOException("API Error: ${response.code()}")
+    override suspend fun getBanner(): Result<BannerData> {
+        return try {
+            val response = bannerApiService.getBanner()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(IOException("Response body is null"))
+                }
+            } else {
+                Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
-    override suspend fun getHotSinger(): HotSingerData {
-
-       return try {
-            val response= hotSingerApiService.getHotSinger()
-            if (response.isSuccessful){
-                 response.body()!!
-            }else{
-                throw IOException("API Error: ${response.code()}")
+    override suspend fun getHotSinger(): Result<HotSingerData> {
+        return try {
+            val response = hotSingerApiService.getHotSinger()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(IOException("Response body is null"))
+                }
+            } else {
+                Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
-    override suspend fun getTopList(): TopListData {
-
-       return try {
-            val response= topListApiService.getTopList()
-            if (response.isSuccessful){
-                 response.body()!!
-            }else{
-                throw IOException("API Error: ${response.code()}")
+    override suspend fun getTopList(): Result<TopListData> {
+        return try {
+            val response = topListApiService.getTopList()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(IOException("Response body is null"))
+                }
+            } else {
+                Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

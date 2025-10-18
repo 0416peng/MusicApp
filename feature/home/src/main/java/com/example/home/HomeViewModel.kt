@@ -1,5 +1,6 @@
 package com.example.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.model.home.BannerData
@@ -32,47 +33,102 @@ class HomeViewModel @Inject constructor(
 
 
 
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState = _errorState.asStateFlow()
+
+
     fun getRecommendAlbum(limit: Int) {
         viewModelScope.launch {
-            val data = homeRepository.getRecommendAlbum(limit)
-            if (data.code == 200) {
-                _recommendAlbum.value = data
-            }
+            homeRepository.getRecommendAlbum(limit)
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _recommendAlbum.value = data
+                    } else {
+                        _errorState.value = "推荐歌单加载失败，业务码：${data.code}"
+                        Log.w("HomeViewModel", "getRecommendAlbum业务失败, code: ${data.code}")
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "推荐歌单加载失败: ${exception.message}"
+                    Log.e("HomeViewModel", "getRecommendAlbum网络或解析错误", exception)
+                }
         }
-
     }
 
     fun getNewAlbum() {
         viewModelScope.launch {
-            val data = homeRepository.getNewAlbum()
-            if (data.code == 200) {
-                _newAlbum.value = data
-            }
+            homeRepository.getNewAlbum()
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _newAlbum.value = data
+                    } else {
+                        _errorState.value = "新碟上架加载失败，业务码：${data.code}"
+                        Log.w("HomeViewModel", "getNewAlbum业务失败, code: ${data.code}")
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "新碟上架加载失败: ${exception.message}"
+                    Log.e("HomeViewModel", "getNewAlbum网络或解析错误", exception)
+                }
         }
     }
 
     fun getBanner() {
         viewModelScope.launch {
-            val data = homeRepository.getBanner()
-            if (data.code == 200) {
-                _banner.value = data
-            }
+            homeRepository.getBanner()
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _banner.value = data
+                    } else {
+                        _errorState.value = "轮播图加载失败，业务码：${data.code}"
+                        Log.w("HomeViewModel", "getBanner业务失败, code: ${data.code}")
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "轮播图加载失败: ${exception.message}"
+                    Log.e("HomeViewModel", "getBanner网络或解析错误", exception)
+                }
         }
     }
+
     fun getHotSinger() {
         viewModelScope.launch {
-            val data = homeRepository.getHotSinger()
-            if (data.code == 200) {
-                _hotSinger.value = data
-            }
+            homeRepository.getHotSinger()
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _hotSinger.value = data
+                    } else {
+                        _errorState.value = "热门歌手加载失败，业务码：${data.code}"
+                        Log.w("HomeViewModel", "getHotSinger业务失败, code: ${data.code}")
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "热门歌手加载失败: ${exception.message}"
+                    Log.e("HomeViewModel", "getHotSinger网络或解析错误", exception)
+                }
         }
     }
+
     fun getTopList() {
         viewModelScope.launch {
-            val data = homeRepository.getTopList()
-            if (data.code == 200) {
-               _topList.value = data
-            }
+            homeRepository.getTopList()
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _topList.value = data
+                    } else {
+                        _errorState.value = "排行榜加载失败，业务码：${data.code}"
+                        Log.w("HomeViewModel", "getTopList业务失败, code: ${data.code}")
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "排行榜加载失败: ${exception.message}"
+                    Log.e("HomeViewModel", "getTopList网络或解析错误", exception)
+                }
         }
+    }
+
+    // 提供一个方法让 UI 在显示错误后可以重置状态
+    fun errorShown() {
+        _errorState.value = null
     }
 }

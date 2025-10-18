@@ -7,11 +7,11 @@ import com.example.data.model.home.RecommendAlbumData
 import com.example.data.model.home.TopListData
 
 interface HomeRepository {
-    suspend fun getRecommendAlbum(limit: Int): RecommendAlbumData
-    suspend fun getNewAlbum(): NewAlbumData
-    suspend fun getBanner(): BannerData
-    suspend fun getHotSinger(): HotSingerData
-    suspend fun getTopList(): TopListData
+    suspend fun getRecommendAlbum(limit: Int): Result<RecommendAlbumData>
+    suspend fun getNewAlbum(): Result<NewAlbumData>
+    suspend fun getBanner(): Result<BannerData>
+    suspend fun getHotSinger(): Result<HotSingerData>
+    suspend fun getTopList(): Result<TopListData>
 }
 
 

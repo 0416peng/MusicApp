@@ -29,43 +29,80 @@ class PlayListViewModel @Inject constructor(
     private val _isRefreshing= MutableStateFlow(false)
     val isRefreshing=_isRefreshing.asStateFlow()
 
-    fun getPlayListData(id: Long){
-        viewModelScope.launch {
-            val data=playListRepository.getPlayListData(id,0)
-            if(data.code==200){
-                _playListData.value=data
-                _currentOffset.value=50
-            }
-        }
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState = _errorState.asStateFlow()
 
+    fun getPlayListData(id: Long) {
+        viewModelScope.launch {
+            playListRepository.getPlayListData(id, 0)
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _playListData.value = data
+                        _currentOffset.value = 50
+                    } else {
+                        val errorMsg = "获取歌单列表失败, 业务码: ${data.code}"
+                        _errorState.value = errorMsg
+                        Log.w("PlayListViewModel", errorMsg)
+                    }
+                }
+                .onFailure { exception ->
+                    val errorMsg = "网络错误: ${exception.message}"
+                    _errorState.value = errorMsg
+                    Log.e("PlayListViewModel", "getPlayListData 失败", exception)
+                }
+        }
     }
-    fun loadMorePlayListData(id: Long){
+
+    fun loadMorePlayListData(id: Long) {
         viewModelScope.launch {
             if (_isRefreshing.value) return@launch
-            _isRefreshing.value=true
-            try {
-                val newData=playListRepository.getPlayListData(id,_currentOffset.value)
-                val currentData=_playListData.value?.songs?:emptyList()
-                val updatedData=currentData+newData.songs
-                _playListData.value=_playListData.value?.copy(songs = updatedData)
-                _currentOffset.value+=50
+            _isRefreshing.value = true
 
-            }catch (e: Exception){
-                Log.e("PlayListViewModel", "loadMorePlayListData: ${e.message}")
-            }finally {
-                _isRefreshing.value=false
-            }
+            playListRepository.getPlayListData(id, _currentOffset.value)
+                .onSuccess { newData ->
+                    if (newData.code == 200) {
+                        val currentSongs = _playListData.value?.songs ?: emptyList()
+                        val updatedSongs = currentSongs + newData.songs
+                        _playListData.value = _playListData.value?.copy(songs = updatedSongs)
+                        _currentOffset.value += 50
+                    } else {
+                        _errorState.value = "加载更多失败, 业务码: ${newData.code}"
+                    }
+                }
+                .onFailure { exception ->
+                    _errorState.value = "加载更多失败: ${exception.message}"
+                    Log.e("PlayListViewModel", "loadMorePlayListData 失败", exception)
+                }
+
+            _isRefreshing.value = false
         }
     }
-    fun getPlayListDetail(id: Long){
+
+    fun getPlayListDetail(id: Long) {
         viewModelScope.launch {
-            val data=playListRepository.getPlatListDetailData(id)
-            if(data.code==200){
-                _playListDetailData.value=data
-            }
+            playListRepository.getPlatListDetailData(id)
+                .onSuccess { data ->
+                    if (data.code == 200) {
+                        _playListDetailData.value = data
+                    } else {
+                        val errorMsg = "获取歌单详情失败, 业务码: ${data.code}"
+                        _errorState.value = errorMsg
+                        Log.w("PlayListViewModel", errorMsg)
+                    }
+                }
+                .onFailure { exception ->
+                    val errorMsg = "网络错误: ${exception.message}"
+                    _errorState.value = errorMsg
+                    Log.e("PlayListViewModel", "getPlayListDetail 失败", exception)
+                }
         }
     }
-    fun onPlayPauseClicked(songId: Long){
+
+    fun onPlayPauseClicked(songId: Long) {
         musicPlayerManager.playSong(songId)
     }
-}
+
+    // 提供一个方法让 UI 在显示错误后可以重置状态
+    fun errorShown() {
+        _errorState.value = null
+    }}

@@ -9,15 +9,22 @@ import javax.inject.Inject
 class AlbumListRepositoryImpl@Inject constructor(
     private val albumListApiService: AlbumListApiService,
 ):AlbumListRepository  {
-    override suspend fun getAlbumListData(id: Long): AlbumListData {
-       return try{
+    override suspend fun getAlbumListData(id: Long):Result< AlbumListData> {
+        return try {
             val response = albumListApiService.getAlbumListData(id)
-            if (response.isSuccessful){
-                response.body()!!
-            }else{
-                throw IOException("API Error: ${response.code()}")
-            }}catch (e: Exception){
-            throw e
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(IOException("Response body is null"))
+                }
+            } else {
+                Result.failure(IOException("API Error: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Log.e("AlbumListRepoImpl", "Failed to get album list data", e)
+            Result.failure(e)
         }
     }
 }

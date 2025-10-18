@@ -97,7 +97,7 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
                         items = playListData!!.songs,
                     ) { index, item ->
                         SongItem(song = item, currentlyPlayingSongId,
-                            { viewModel.onPlayPauseClicked(item.id) })
+                            {id-> viewModel.onPlayPauseClicked(id) })
                         val totalItemsCount = playListData!!.songs.size
                         if (index >= totalItemsCount - 3 && !isRefreshing) {
                             LaunchedEffect(Unit) {
@@ -172,11 +172,11 @@ fun PlayList(playListDetailData: PlayListDetailData) {
 }
 
 @Composable
-fun SongItem(song: Song, currentlyPlayingSongId: Long?,onClick:()->Unit,) {
+fun SongItem(song: Song, currentlyPlayingSongId: Long?,onClick:(id:Long)->Unit,) {
     val isPlaying = currentlyPlayingSongId == song.id
     val color = if (isPlaying) Color.Red else Color.Black
     Row(modifier = Modifier.fillMaxWidth()
-        .clickable{onClick}) {
+        .clickable{onClick(song.id)}) {
         AsyncImage(
             model = song.al.picUrl,
             modifier = Modifier
