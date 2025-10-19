@@ -28,9 +28,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,14 +65,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.compose
 
 
-object ListType{
-    const val PLAYLIST=0
-    const val ALBUM=1
+object ListType {
+    const val PLAYLIST = 0
+    const val ALBUM = 1
 }
+
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->Unit,
-               onPlayListClick:(Long)->Unit
-               ) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(), onAlbumClick: (Long) -> Unit,
+    onPlayListClick: (Long) -> Unit
+) {
     LaunchedEffect(Unit) {
         viewModel.getRecommendAlbum(5)
         viewModel.getNewAlbum()
@@ -82,228 +89,91 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
     val topListData by viewModel.topList.collectAsState()
     val errorState by viewModel.errorState.collectAsState()
     val context = LocalContext.current
+    val searchText by viewModel.searchText.collectAsState()
     LaunchedEffect(errorState) {
-        if (errorState != null){
-            Toast.makeText(context,errorState, Toast.LENGTH_SHORT).show()
+        if (errorState != null) {
+            Toast.makeText(context, errorState, Toast.LENGTH_SHORT).show()
             viewModel.errorShown()
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-
-        if (bannerData != null) {
-            Banner(bannerData!!.banners)
-        } else {
-            LoadingPlaceholder()
-        }
-
-        Text(
-            "推荐歌单  >",
-            modifier = Modifier
-                .clickable {/*TODO*/ }
-                .padding(12.dp),
+    Column {
+        SearchTextField(
+            value = searchText,
+            onValueChange = { newText -> viewModel.onSearchTextChanged(newText) },
+            onSearch = { text ->/*TODO:搜索逻辑*/ }
         )
-        if (recommendAlbumData != null) {
-            val recommendItems = recommendAlbumData!!.result.map {
-                DisplayableAlbumItemData(it.name, it.picUrl,it.id)
-            }
-            AlbumList(recommendItems,onAlbumClick,onPlayListClick,ListType.PLAYLIST)
-        } else {
-            LoadingPlaceholder()
-        }
-        Text(
-            "最新专辑  >",
+
+        Column(
             modifier = Modifier
-                .clickable {/*TODO*/ }
-                .padding(12.dp)
-        )
-        if (newAlbumData != null) {
-            val newAlbumItems = newAlbumData!!.albums.map {
-                DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl,it.id)
-            }
-            AlbumList(items = newAlbumItems,onAlbumClick, onPlayListClick,ListType.ALBUM)
-        } else {
-            LoadingPlaceholder()
-        }
-        Text(
-            "排行榜 >",
-            modifier = Modifier
-                .clickable {/*TODO*/ }
-                .padding(12.dp)
-        )
-        if (topListData != null) {
-            val newAlbumItems = topListData!!.list.take(9).map {
-                DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl,it.id)
-            }
-            AlbumList(items = newAlbumItems,onAlbumClick, onPlayListClick,ListType.PLAYLIST)
-        } else {
-            LoadingPlaceholder()
-        }
-        Text(
-            "热门歌手",
-            modifier = Modifier
-                .clickable {/*TODO*/ }
-                .padding(12.dp)
-        )
-        if (hotSingerData != null) {
-            HotSingerList(hotSingerData!!.artists)
-        } else {
-            LoadingPlaceholder()
-        }
-
-    }
-}
-
-
-@Composable
-fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit,onPlayListClick: (Long) -> Unit,type:Int) {
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(items) { item ->
-            Column(
-                modifier = Modifier.width(120.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Card(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .aspectRatio(1f)
-                        .clickable {
-                            if (type==0) onPlayListClick(item.albumId)
-                            else onAlbumClick(item.albumId) }
-
-
-                ) {
-                    AsyncImage(
-                        model = item.picUrl,
-                        modifier = Modifier.fillMaxSize(),
-                        contentDescription = item.name
-                    )
-                }
-                Text(
-                    item.name,
-                    fontSize = 12.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(8.dp)
-                )
-            }
-
-        }
-    }
-}
-
-
-//轮播图
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun Banner(items: List<Banner>) {
-    val pagerState = rememberPagerState(
-        initialPage = if (items.isNotEmpty()) items.size * 10 else 0,
-        pageCount = { items.size * 20 }
-    )
-    if (items.isNotEmpty()) {
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(3000)
-                try {
-                    val pageCount = pagerState.pageCount
-                    if (pageCount == 0) continue
-                    val nextPage = (pagerState.currentPage + 1) % pageCount
-                    pagerState.animateScrollToPage(nextPage)
-                } catch (e: Exception) {
-                    Log.d("error", e.message.toString())
-                }//通过try-catch防止用户滑动打断while循环
-            }
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            pageSpacing = 8.dp,
-            modifier = Modifier.fillMaxWidth()
-        ) { page ->
-            val item = items[page % items.size]
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2.5f)
-                    .clickable {/*TODO*/ }
-            ) {
-                AsyncImage(
-                    model = item.pic,
-                    contentDescription = "banner",
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            items.indices.forEach { index ->
-                val color = if ((pagerState.currentPage % items.size) == index) {
-                    Color.Red
-                } else {
-                    Color.Gray
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                )
-            }
-        }
-    }
-}
 
-@Composable
-fun HotSingerList(items: List<HotArtistData>) {
-    LazyHorizontalGrid(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        rows = GridCells.Fixed(3),
-        modifier = Modifier
-            .height(240.dp)
-            .fillMaxWidth()
-    ) {
-        items(items) { item ->
-            Row(
+            if (bannerData != null) {
+                Banner(bannerData!!.banners)
+            } else {
+                LoadingPlaceholder()
+            }
+
+            Text(
+                "推荐歌单  >",
                 modifier = Modifier
-                    .width(150.dp)
-                    .padding(8.dp)
-            ) {
-                AsyncImage(
-                    model = item.picUrl,
-                    modifier = Modifier
-                        .size(64.dp),
-                    contentDescription = item.name
-                )
-                Text(
-                    item.name,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(4.dp)
-                )
+                    .clickable {/*TODO*/ }
+                    .padding(12.dp),
+            )
+            if (recommendAlbumData != null) {
+                val recommendItems = recommendAlbumData!!.result.map {
+                    DisplayableAlbumItemData(it.name, it.picUrl, it.id)
+                }
+                AlbumList(recommendItems, onAlbumClick, onPlayListClick, ListType.PLAYLIST)
+            } else {
+                LoadingPlaceholder()
             }
-
+            Text(
+                "最新专辑  >",
+                modifier = Modifier
+                    .clickable {/*TODO*/ }
+                    .padding(12.dp)
+            )
+            if (newAlbumData != null) {
+                val newAlbumItems = newAlbumData!!.albums.map {
+                    DisplayableAlbumItemData(name = it.name, picUrl = it.picUrl, it.id)
+                }
+                AlbumList(items = newAlbumItems, onAlbumClick, onPlayListClick, ListType.ALBUM)
+            } else {
+                LoadingPlaceholder()
+            }
+            Text(
+                "排行榜 >",
+                modifier = Modifier
+                    .clickable {/*TODO*/ }
+                    .padding(12.dp)
+            )
+            if (topListData != null) {
+                val newAlbumItems = topListData!!.list.take(9).map {
+                    DisplayableAlbumItemData(name = it.name, picUrl = it.coverImgUrl, it.id)
+                }
+                AlbumList(items = newAlbumItems, onAlbumClick, onPlayListClick, ListType.PLAYLIST)
+            } else {
+                LoadingPlaceholder()
+            }
+            Text(
+                "热门歌手",
+                modifier = Modifier
+                    .clickable {/*TODO*/ }
+                    .padding(12.dp)
+            )
+            if (hotSingerData != null) {
+                HotSingerList(hotSingerData!!.artists)
+            } else {
+                LoadingPlaceholder()
+            }
 
         }
     }
 }
+
+
 
 
 

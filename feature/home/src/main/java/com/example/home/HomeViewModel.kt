@@ -30,7 +30,8 @@ class HomeViewModel @Inject constructor(
     val hotSinger= _hotSinger.asStateFlow()
     private val _topList= MutableStateFlow<TopListData?>(null)
     val topList= _topList.asStateFlow()
-
+    private val _searchText=MutableStateFlow("")
+    val searchText=_searchText.asStateFlow()
 
 
     private val _errorState = MutableStateFlow<String?>(null)
@@ -125,6 +126,9 @@ class HomeViewModel @Inject constructor(
                     Log.e("HomeViewModel", "getTopList网络或解析错误", exception)
                 }
         }
+    }
+    fun onSearchTextChanged(text: String) {
+        _searchText.value = text
     }
 
     // 提供一个方法让 UI 在显示错误后可以重置状态
