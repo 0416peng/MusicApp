@@ -1,6 +1,7 @@
 package com.example.playlist
 
 import android.R.attr.contentDescription
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -60,8 +62,13 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val listState = rememberLazyListState()
-    Box(modifier = Modifier.fillMaxSize()) {
-
+    val context= LocalContext.current
+    val errorState by viewModel.errorState.collectAsState()
+    LaunchedEffect(errorState) {
+        if (errorState != null){
+            Toast.makeText(context,errorState, Toast.LENGTH_SHORT).show()
+            viewModel.errorShown()
+        }
     }
     Column(modifier = Modifier.fillMaxSize()) {
         if (playListDetailData != null) {
@@ -120,8 +127,6 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
                     }
                 }
             }
-        } else {
-            LoadingPlaceholder()
         }
     }
 }

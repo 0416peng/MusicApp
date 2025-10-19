@@ -1,6 +1,7 @@
 package com.example.home
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,10 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
@@ -77,11 +80,20 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(),onAlbumClick:(Long)->U
     val bannerData by viewModel.banner.collectAsState()
     val hotSingerData by viewModel.hotSinger.collectAsState()
     val topListData by viewModel.topList.collectAsState()
+    val errorState by viewModel.errorState.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(errorState) {
+        if (errorState != null){
+            Toast.makeText(context,errorState, Toast.LENGTH_SHORT).show()
+            viewModel.errorShown()
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+
         if (bannerData != null) {
             Banner(bannerData!!.banners)
         } else {
