@@ -1,4 +1,4 @@
-package com.example.home
+package com.example.home.ui
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi

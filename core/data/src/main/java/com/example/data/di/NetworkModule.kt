@@ -1,6 +1,7 @@
 package com.example.data.di
 
 import com.example.data.manager.UserSessionManager
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,15 +39,12 @@ object NetworkModule {
     ) : Interceptor {
 
         override fun intercept(chain: Interceptor.Chain): Response {
-            // 使用 runBlocking 是因为 Interceptor 的 intercept 方法是同步的
-            // 而我们需要从 Flow 中获取最新的值
             val cookie = runBlocking { userSessionManager.cookieFlow.first() }
 
             val originalRequest = chain.request()
 
             val requestBuilder = originalRequest.newBuilder()
 
-            // 如果 cookie 存在，就将其添加到请求头中
             if (cookie != null) {
                 requestBuilder.addHeader("Cookie", cookie)
             }
@@ -57,13 +55,16 @@ object NetworkModule {
     }
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient,gson: Gson): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
+            .addConverterFactory(SearchResultConverterFactory(gson))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 
 }

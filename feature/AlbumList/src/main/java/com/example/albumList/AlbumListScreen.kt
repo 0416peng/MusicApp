@@ -1,11 +1,9 @@
 package com.example.albumList
 
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,13 +38,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.albumList.AlbumListViewModel
 import com.example.common.formatTimestamp
-import com.example.data.model.AlbumList.AlbumListData
-import com.example.data.model.AlbumList.Song
+import com.example.data.model.albumList.AlbumListData
+import com.example.data.model.albumList.Song
 import com.example.ui.LoadingPlaceholder
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 @Composable
 fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
@@ -153,7 +148,7 @@ fun Album(albumListData: AlbumListData?){
 }
 
 @Composable
-fun AlbumList(songs: List<Song>,currentlyPlayingSongId: Long?,onClick:(id: Long)-> Unit) {
+fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(id: Long)-> Unit) {
 
     LazyColumn {
         item {

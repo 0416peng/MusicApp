@@ -14,5 +14,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class PlayListRepositoryModule {
     @Binds
-    abstract fun bindHomeRepository(impl: PlayListRepositoryImpl): PlayListRepository
+    abstract fun bindPlayListRepository(impl: PlayListRepositoryImpl): PlayListRepository
 }

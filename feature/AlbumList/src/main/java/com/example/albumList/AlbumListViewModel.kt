@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.manager.MusicPlayerManager
-import com.example.data.model.AlbumList.AlbumListData
-import com.example.data.repository.AlbumList.AlbumListRepository
+import com.example.data.model.albumList.AlbumListData
+import com.example.data.repository.albumList.AlbumListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

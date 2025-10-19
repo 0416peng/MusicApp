@@ -1,8 +1,8 @@
-package com.example.data.repository.AlbumList
+package com.example.data.repository.albumList
 
 import android.util.Log
-import com.example.data.apiService.AlbumList.AlbumListApiService
-import com.example.data.model.AlbumList.AlbumListData
+import com.example.data.apiService.albumList.AlbumListApiService
+import com.example.data.model.albumList.AlbumListData
 import java.io.IOException
 import javax.inject.Inject
 

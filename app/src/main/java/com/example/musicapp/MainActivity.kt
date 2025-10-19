@@ -14,8 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.albumList.AlbumListScreen
-import com.example.home.HomeScreen
+import com.example.home.ui.HomeScreen
 import com.example.playlist.PlayListScreen
+import com.example.search.SearchScreen
 
 
 @AndroidEntryPoint
@@ -38,6 +39,7 @@ object AppDestinations{
     const val ALBUM_ID_ARG = "albumId"
     const val PLAY_LIST_ROUTE="playList"
     const val PLAY_LIST_ID_ARG="playListId"
+    const val SEARCH_ROUTE="search"
 }
 
 @Composable
@@ -53,7 +55,8 @@ fun MusicNavGraph(
             },
                 onPlayListClick = { playListId ->
                     navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$playListId")
-                }
+                },
+                onSearchClick = {navController.navigate(AppDestinations.SEARCH_ROUTE)}
                 )
         }
         composable(route = "${AppDestinations.ALBUM_LIST_ROUTE}/{${AppDestinations.ALBUM_ID_ARG}}",
@@ -69,4 +72,8 @@ fun MusicNavGraph(
             val playListId=backStackEntry.arguments?.getLong(AppDestinations.PLAY_LIST_ID_ARG)
             PlayListScreen(id=playListId!!)
         }
+        composable(route=AppDestinations.SEARCH_ROUTE){
+            SearchScreen()
+        }
+
 }}

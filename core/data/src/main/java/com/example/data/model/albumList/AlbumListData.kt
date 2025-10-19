@@ -1,4 +1,4 @@
-package com.example.data.model.AlbumList
+package com.example.data.model.albumList
 
 
 

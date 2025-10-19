@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:search"))
     implementation(project(":feature:PlayList"))
     implementation(project(":feature:AlbumList"))
     implementation(project(":core:common"))

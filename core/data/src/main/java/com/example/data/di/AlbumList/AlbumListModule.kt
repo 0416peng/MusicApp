@@ -1,6 +1,6 @@
 package com.example.data.di.AlbumList
 
-import com.example.data.apiService.AlbumList.AlbumListApiService
+import com.example.data.apiService.albumList.AlbumListApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
