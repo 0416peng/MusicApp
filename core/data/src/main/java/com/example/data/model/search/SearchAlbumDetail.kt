@@ -1,5 +1,6 @@
 package com.example.data.model.search
 
+
 data class SearchAlbumDetail(
     val code: Int,
     val result: AlbumResult
@@ -14,7 +15,7 @@ data class AlbumResult(
 data class AlbumX(
     val alg: String,
     val alias: List<String>,
-    val artist: Artist,
+    val artist: AlbumArtist,
     val artists: List<ArtistX>,
     val blurPicUrl: String,
     val briefDesc: String,
@@ -41,7 +42,7 @@ data class AlbumX(
     val type: String
 )
 
-data class Artist(
+data class AlbumArtist(
     val albumSize: Int,
     val alia: List<String>,
     val alias: List<String>,

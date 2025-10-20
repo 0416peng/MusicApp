@@ -8,6 +8,7 @@ import com.example.data.model.search.SearchPlayListDetail
 import com.example.data.model.search.SearchResult
 import com.example.data.model.search.SearchSingerDetail
 import com.example.data.model.search.SearchSongsDetail
+import com.example.data.model.search.detail.SearchDetail
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -31,6 +32,10 @@ class SearchResultConverterFactory(private val gson: Gson): Converter.Factory() 
         override fun convert(value: ResponseBody): SearchResult? {
             val responseString = value.string()
             return when {
+                responseString.contains("\"song\"") ->{
+                    val result = gson.fromJson(responseString, SearchDetail::class.java)
+                    SearchResult.Detail(result)
+                }
                 responseString.contains("\"songs\"") -> {
                     val result = gson.fromJson(responseString, SearchSongsDetail::class.java)
                    SearchResult.Songs(result)

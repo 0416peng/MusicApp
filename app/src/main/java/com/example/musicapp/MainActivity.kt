@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.albumList.AlbumListScreen
 import com.example.home.ui.HomeScreen
 import com.example.playlist.PlayListScreen
+import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
 
 
@@ -40,6 +41,8 @@ object AppDestinations{
     const val PLAY_LIST_ROUTE="playList"
     const val PLAY_LIST_ID_ARG="playListId"
     const val SEARCH_ROUTE="search"
+    const val SEARCH_KEYWORD_ARG="keyword"
+    const val SEARCH_DETAIL_ROUTE="searchDetail"
 }
 
 @Composable
@@ -73,7 +76,15 @@ fun MusicNavGraph(
             PlayListScreen(id=playListId!!)
         }
         composable(route=AppDestinations.SEARCH_ROUTE){
-            SearchScreen()
+            SearchScreen(
+                onSearchDetailClick = {keyword -> navController.navigate("${AppDestinations.SEARCH_DETAIL_ROUTE}/$keyword")}
+            )
         }
-
+        composable(route="${AppDestinations.SEARCH_DETAIL_ROUTE}/{${AppDestinations.SEARCH_KEYWORD_ARG}}",
+            arguments = listOf(navArgument(AppDestinations.SEARCH_KEYWORD_ARG){type= NavType.StringType})
+        ) {
+            backStackEntry ->
+            val keyword=backStackEntry.arguments?.getString(AppDestinations.SEARCH_KEYWORD_ARG)
+            SearchDetailScreen(keyword = keyword!!)
+        }
 }}

@@ -28,9 +28,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.memory.MemoryCache
 import com.example.ui.SearchTextField
+import hilt_aggregated_deps._com_example_search_SearchViewModel_HiltModules_KeyModule
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()){
+fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(),
+                 onSearchDetailClick: (keyword:String) -> Unit
+                 ){
     val searchText by viewModel.searchText.collectAsState()
     val hotSearchData by viewModel.hotSearchData.collectAsState()
     val searchSuggestData by viewModel.searchSuggestData.collectAsState()
@@ -44,8 +47,8 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()){
                 onValueChange = {newText->
                     viewModel.onSearchTextChanged(newText)
                 },
-                onSearch = {query->
-                    /*TODO*/
+                onSearch = {keyword->
+                    onSearchDetailClick(keyword)
                 },
                 hint = "搜索"
                 )
@@ -76,7 +79,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()){
                        val color= if(index<=2) Color.Red else Color.Black
                         Row(modifier = Modifier
                             .fillMaxWidth()
-                            .clickable{/*TODO:页面跳转*/},
+                            .clickable{onSearchDetailClick(item.first)},
                             verticalAlignment = Alignment.CenterVertically
                             ) {
                             Text("${index+1}",
@@ -99,7 +102,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()){
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(item.keyword,
                     modifier=Modifier.padding(12.dp)
-                        .clickable{/*TODO:页面跳转*/}
+                        .clickable{onSearchDetailClick(item.keyword)}
                     )
             }
         }

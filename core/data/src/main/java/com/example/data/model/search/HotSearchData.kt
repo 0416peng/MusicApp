@@ -1,11 +1,13 @@
 package com.example.data.model.search
 
+
+
 data class HotSearchData(
     val code: Int,
-    val result: Result
+    val result: HotResult
 )
 
-data class Result(
+data class HotResult(
     val hots: List<Hot>
 )
 

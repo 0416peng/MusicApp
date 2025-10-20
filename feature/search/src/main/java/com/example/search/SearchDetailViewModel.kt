@@ -8,6 +8,7 @@ import com.example.data.model.search.SearchPlayListDetail
 import com.example.data.model.search.SearchResult
 import com.example.data.model.search.SearchSingerDetail
 import com.example.data.model.search.SearchSongsDetail
+import com.example.data.model.search.detail.SearchDetail
 import com.example.data.repository.search.SearchDetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,8 @@ import javax.inject.Inject
 class SearchDetailViewModel @Inject constructor(
     private val searchDetailRepository: SearchDetailRepository
 ): ViewModel(){
+    private val _detailResult= MutableStateFlow<SearchDetail?>(null)
+    val detailResult=_detailResult.asStateFlow()
     private val _songsResult= MutableStateFlow<SearchSongsDetail?>(null)
     val songsResult=_songsResult.asStateFlow()
     private val _albumsResult= MutableStateFlow<SearchAlbumDetail?>(null)
@@ -75,6 +78,14 @@ class SearchDetailViewModel @Inject constructor(
                     is SearchResult.PlayLists->{
                         if (data.result.code==200){
                             _playListsResult.value=data.result
+                        }else{
+                            val errorMsg="获取歌单列表失败, 业务码: ${data.result.code}"
+                            _errorState.value=errorMsg
+                        }
+                    }
+                    is SearchResult.Detail -> {
+                        if (data.result.code==200){
+                            _detailResult.value=data.result
                         }else{
                             val errorMsg="获取歌单列表失败, 业务码: ${data.result.code}"
                             _errorState.value=errorMsg

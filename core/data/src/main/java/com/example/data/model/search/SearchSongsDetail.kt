@@ -1,5 +1,10 @@
 package com.example.data.model.search
 
+import com.example.data.model.search.detail.Album
+import com.example.data.model.search.detail.ArtistX
+import com.example.data.model.search.detail.ArtistXX
+import com.example.data.model.search.detail.Song
+
 data class SearchSongsDetail(
     val code: Int,
     val result: SongsResult
