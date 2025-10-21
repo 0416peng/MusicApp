@@ -1,7 +1,6 @@
 package com.example.data.model.search
 
-import com.example.data.model.search.detail.Artist
-import com.example.data.model.search.detail.Result
+
 
 data class SearchSingerDetail(
     val code: Int,

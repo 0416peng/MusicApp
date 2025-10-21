@@ -2,6 +2,7 @@ package com.example.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.manager.MusicPlayerManager
 import com.example.data.model.search.SearchAlbumDetail
 import com.example.data.model.search.SearchMVDetail
 import com.example.data.model.search.SearchPlayListDetail
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchDetailViewModel @Inject constructor(
-    private val searchDetailRepository: SearchDetailRepository
+    private val searchDetailRepository: SearchDetailRepository,
+    private val musicPlayerManager: MusicPlayerManager
 ): ViewModel(){
     private val _detailResult= MutableStateFlow<SearchDetail?>(null)
     val detailResult=_detailResult.asStateFlow()
@@ -35,6 +37,7 @@ class SearchDetailViewModel @Inject constructor(
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState = _errorState.asStateFlow()
     private val _offset= MutableStateFlow(0)
+    val currentlyPlayingSongId=musicPlayerManager.currentlyPlayingSongId
     fun onSearchTriggered(query:String,type: Int){
         if(query.isBlank()){
             return
@@ -98,5 +101,8 @@ class SearchDetailViewModel @Inject constructor(
                     _errorState.value = errorMsg
                 }
         }
+    }
+    fun onPlayPauseClicked(songId: Long) {
+        musicPlayerManager.playSong(songId)
     }
 }
