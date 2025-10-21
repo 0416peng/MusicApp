@@ -1,5 +1,7 @@
 package com.example.data.model.search.detail
 
+import java.util.function.LongFunction
+
 data class SearchDetail(
     val code: Int,
     val result: Result,
@@ -29,14 +31,14 @@ data class Album(
     val albums: List<AlbumX>,
     val more: Boolean,
     val moreText: String,
-    val resourceIds: List<Int>
+    val resourceIds: List<Long>
 )
 
 data class ArtistXX(
     val artists: List<ArtistXXX>,
     val more: Boolean,
     val moreText: String,
-    val resourceIds: List<Int>
+    val resourceIds: List<Long>
 )
 
 data class NewMlog(
@@ -84,10 +86,10 @@ data class AlbumX(
     val briefDesc: String,
     val commentThreadId: String,
     val company: String,
-    val companyId: Int,
-    val copyrightId: Int,
+    val companyId: Long,
+    val copyrightId: Long,
     val description: String,
-    val id: Int,
+    val id: Long,
     val name: String,
     val onSale: Boolean,
     val paid: Boolean,
@@ -96,60 +98,60 @@ data class AlbumX(
     val picId_str: String,
     val picUrl: String,
     val publishTime: Long,
-    val size: Int,
-    val status: Int,
+    val size: Long,
+    val status: Long,
     val tags: String,
     val transNames: List<String>,
     val type: String
 )
 
 data class Artist(
-    val albumSize: Int,
+    val albumSize: Long,
     val alia: List<String>,
     val alias: List<String>,
     val briefDesc: String,
-    val id: Int,
+    val id: Long,
     val img1v1Id: Long,
     val img1v1Id_str: String,
     val img1v1Url: String,
-    val musicSize: Int,
+    val musicSize: Long,
     val name: String,
     val picId: Long,
     val picId_str: String,
     val picUrl: String,
-    val topicPerson: Int,
+    val topicPerson: Long,
     val trans: String,
     val transNames: List<String>
 )
 
 data class ArtistX(
-    val albumSize: Int,
+    val albumSize: Long,
     val alias: List<Any>,
     val briefDesc: String,
-    val id: Int,
+    val id: Long,
     val img1v1Id: Long,
     val img1v1Id_str: String,
     val img1v1Url: String,
-    val musicSize: Int,
+    val musicSize: Long,
     val name: String,
-    val picId: Int,
+    val picId: Long,
     val picUrl: String,
-    val topicPerson: Int,
+    val topicPerson: Long,
     val trans: String
 )
 
 data class ArtistXXX(
-    val accountId: Int,
-    val albumSize: Int,
+    val accountId: Long,
+    val albumSize: Long,
     val alg: String,
     val alia: List<String>,
     val alias: List<String>,
     val followed: Boolean,
-    val id: Int,
+    val id: Long,
     val identityIconUrl: String,
     val img1v1: Long,
     val img1v1Url: String,
-    val mvSize: Int,
+    val mvSize: Long,
     val name: String,
     val picId: Long,
     val picUrl: String,
@@ -159,7 +161,7 @@ data class ArtistXXX(
 
 data class PlayLists(
     val alg: String,
-    val bookCount: Int,
+    val bookCount: Long,
     val coverImgUrl: String,
     val creator: Creator,
     val description: String,
@@ -167,21 +169,21 @@ data class PlayLists(
     val id: Long,
     val name: String,
     val officialTags: List<String>,
-    val playCount: Int,
+    val playCount: Long,
     val playlistType: String,
-    val specialType: Int,
+    val specialType: Long,
     val subscribed: Boolean,
     val track: Track,
-    val trackCount: Int,
+    val trackCount: Long,
     val userId: Long
 )
 
 data class Creator(
-    val authStatus: Int,
+    val authStatus: Long,
     val avatarUrl: String,
     val nickname: String,
     val userId: Long,
-    val userType: Int
+    val userType: Long
 )
 
 data class Track(
@@ -191,31 +193,31 @@ data class Track(
     val bMusic: BMusic,
     val commentThreadId: String,
     val copyFrom: String,
-    val copyright: Int,
-    val copyrightId: Int,
-    val dayPlays: Int,
+    val copyright: Long,
+    val copyrightId: Long,
+    val dayPlays: Long,
     val disc: String,
-    val duration: Int,
-    val fee: Int,
-    val ftype: Int,
+    val duration: Long,
+    val fee: Long,
+    val ftype: Long,
     val hMusic: HMusic,
-    val hearTime: Int,
+    val hearTime: Long,
     val id: Long,
     val lMusic: LMusic,
     val mMusic: MMusic,
     val mvid: Long,
     val name: String,
-    val no: Int,
-    val playedNum: Int,
-    val popularity: Int,
-    val position: Int,
+    val no: Long,
+    val playedNum: Long,
+    val popularity: Long,
+    val position: Long,
     val ringtone: String,
     val rtUrls: List<Any?>,
-    val rtype: Int,
-    val score: Int,
+    val rtype: Long,
+    val score: Long,
     val starred: Boolean,
-    val starredNum: Int,
-    val status: Int,
+    val starredNum: Long,
+    val status: Long,
     val transNames: List<String>
 )
 
@@ -238,59 +240,59 @@ data class AlbumXX(
     val picId_str: String,
     val picUrl: String,
     val publishTime: Long,
-    val size: Int,
+    val size: Long,
     val songs: List<Any?>,
-    val status: Int,
+    val status: Long,
     val tags: String,
     val type: String
 )
 
 data class ArtistXXXXXX(
-    val albumSize: Int,
+    val albumSize: Long,
     val alias: List<Any>,
     val briefDesc: String,
     val id: Long,
     val img1v1Id: Long,
     val img1v1Url: String,
-    val musicSize: Int,
+    val musicSize: Long,
     val name: String,
-    val picId: Int,
+    val picId: Long,
     val picUrl: String,
-    val topicPerson: Int,
+    val topicPerson: Long,
     val trans: String
 )
 
 data class BMusic(
-    val bitrate: Int,
-    val dfsId: Int,
+    val bitrate: Long,
+    val dfsId: Long,
     val extension: String,
     val id: Long,
-    val playTime: Int,
-    val size: Int,
-    val sr: Int,
-    val volumeDelta: Int
+    val playTime: Long,
+    val size: Long,
+    val sr: Long,
+    val volumeDelta: Long
 )
 
 data class HMusic(
-    val bitrate: Int,
-    val dfsId: Int,
+    val bitrate: Long,
+    val dfsId: Long,
     val extension: String,
     val id: Long,
-    val playTime: Int,
-    val size: Int,
-    val sr: Int,
-    val volumeDelta: Int
+    val playTime: Long,
+    val size: Long,
+    val sr: Long,
+    val volumeDelta: Long
 )
 
 data class LMusic(
-    val bitrate: Int,
-    val dfsId: Int,
+    val bitrate: Long,
+    val dfsId: Long,
     val extension: String,
     val id: Long,
-    val playTime: Int,
-    val size: Int,
-    val sr: Int,
-    val volumeDelta: Int
+    val playTime: Long,
+    val size: Long,
+    val sr: Long,
+    val volumeDelta: Long
 )
 
 data class MMusic(
@@ -420,7 +422,7 @@ data class OriginSongSimpleData(
     val albumMeta: AlbumMeta,
     val artists: List<ArtistXXXXXXX>,
     val name: String,
-    val songId: Int
+    val songId: Long
 )
 
 data class Privilege(
