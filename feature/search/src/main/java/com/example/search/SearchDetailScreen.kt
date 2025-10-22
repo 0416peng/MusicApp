@@ -6,20 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,17 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.data.model.search.data.AlbumData
 import com.example.data.model.search.data.PlayListData
 import com.example.data.model.search.data.SongData
-import com.example.data.model.search.detail.PlayLists
-import com.example.data.model.search.detail.SearchDetail
 import com.example.ui.FakeSearchTextField
 import com.example.ui.LoadingPlaceholder
 
@@ -47,7 +38,8 @@ import com.example.ui.LoadingPlaceholder
 fun SearchDetailScreen(
     viewModel: SearchDetailViewModel = hiltViewModel(),
     keyword: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onPlayListClick: (Long) -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.onSearchTriggered(keyword, 1018)
@@ -56,7 +48,7 @@ fun SearchDetailScreen(
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            FakeSearchTextField(hint = keyword, onClick = {/*TODO:跳转到搜索详情页*/ })
+            FakeSearchTextField(hint = keyword, onClick =onBack)
         }
 
         if (detailData != null) {
@@ -169,7 +161,7 @@ fun SearchDetailScreen(
                 PlayListData(it.name,it.id,it.coverImgUrl)
             }
             items(playListItems) { item ->
-               PlayListItem(item, onPlayListClick = {/*TODO:跳转到歌单详情页*/})
+               PlayListItem(item, onPlayListClick = {onPlayListClick(item.id)})
             }
 
         } else {

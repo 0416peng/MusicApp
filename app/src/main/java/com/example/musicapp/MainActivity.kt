@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import com.example.ui.theme.MusicAppTheme
-import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,6 +16,8 @@ import com.example.home.ui.HomeScreen
 import com.example.playlist.PlayListScreen
 import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
+import com.example.ui.theme.MusicAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
@@ -85,6 +85,6 @@ fun MusicNavGraph(
         ) {
             backStackEntry ->
             val keyword=backStackEntry.arguments?.getString(AppDestinations.SEARCH_KEYWORD_ARG)
-            SearchDetailScreen(keyword = keyword!!, onBack = {navController.popBackStack()})
+            SearchDetailScreen(keyword = keyword!!, onBack = {navController.popBackStack()}, onPlayListClick = {id->navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$id")})
         }
 }}
