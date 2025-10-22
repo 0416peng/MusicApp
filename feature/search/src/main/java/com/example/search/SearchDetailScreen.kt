@@ -1,6 +1,5 @@
 package com.example.search
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,10 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -194,60 +190,6 @@ fun SearchDetailScreen(
                     LoadingPlaceholder()
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-fun SongItem(item: SongData,color: Color,onPlayClick:(id: Long)->Unit){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onPlayClick(item.id) },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(12.dp)
-                .weight(1f)
-        ) {
-            Text(item.name, fontSize = 16.sp, color = color)
-            Text(item.artist, fontSize = 12.sp)
-        }
-        Icon(
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = "更多选项",
-            modifier = Modifier.clickable {/*TODO:歌曲菜单*/ }
-        )
-    }
-}
-@Composable
-fun PlayListItem(item: PlayListData,onPlayListClick:(id: Long)-> Unit){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onPlayListClick(item.id) },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
-        Column(modifier = Modifier.padding(12.dp).weight(1f)) {
-            Text(item.name, fontSize = 16.sp)
-        }
-    }
-}
-@Composable
-fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onAlbumClick(item.id) },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
-        Column(modifier = Modifier.padding(12.dp).weight(1f)) {
-            Text(item.name, fontSize = 16.sp)
-            Text(item.artist, fontSize = 12.sp)
         }
     }
 }
