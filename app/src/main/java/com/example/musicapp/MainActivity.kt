@@ -85,6 +85,10 @@ fun MusicNavGraph(
         ) {
             backStackEntry ->
             val keyword=backStackEntry.arguments?.getString(AppDestinations.SEARCH_KEYWORD_ARG)
-            SearchDetailScreen(keyword = keyword!!, onBack = {navController.popBackStack()}, onPlayListClick = {id->navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$id")})
+            SearchDetailScreen(keyword = keyword!!,
+                onBack = {navController.popBackStack()},
+                onPlayListClick = {id->navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$id")},
+                onAlbumClick = {id->navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$id")}
+                )
         }
 }}

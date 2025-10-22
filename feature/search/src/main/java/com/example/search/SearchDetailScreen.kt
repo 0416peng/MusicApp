@@ -1,6 +1,5 @@
 package com.example.search
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.data.model.search.data.AlbumData
 import com.example.data.model.search.data.PlayListData
 import com.example.data.model.search.data.SongData
 import com.example.ui.FakeSearchTextField
@@ -39,7 +39,8 @@ fun SearchDetailScreen(
     viewModel: SearchDetailViewModel = hiltViewModel(),
     keyword: String,
     onBack: () -> Unit,
-    onPlayListClick: (Long) -> Unit
+    onPlayListClick: (Long) -> Unit,
+    onAlbumClick: (Long) -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.onSearchTriggered(keyword, 1018)
@@ -163,6 +164,29 @@ fun SearchDetailScreen(
             items(playListItems) { item ->
                PlayListItem(item, onPlayListClick = {onPlayListClick(item.id)})
             }
+            item {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 1.dp,
+                    color = Color.Gray.copy(alpha = 0.3f)
+                )
+            }
+            item {
+                Text(
+                    "专辑精选",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    fontSize = 25.sp
+                )
+            }
+            val albumItems = detailData!!.result.album.albums.take(5).map {
+                AlbumData(it.name,it.id,it.picUrl,it.artist.name)
+            }
+            items(albumItems){item->
+                AlbumListItem(item, onAlbumClick = {        onAlbumClick(item.id)})
+            }
+
 
         } else {
             item {
@@ -209,6 +233,21 @@ fun PlayListItem(item: PlayListData,onPlayListClick:(id: Long)-> Unit){
         AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
         Column(modifier = Modifier.padding(12.dp).weight(1f)) {
             Text(item.name, fontSize = 16.sp)
+        }
+    }
+}
+@Composable
+fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onAlbumClick(item.id) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
+        Column(modifier = Modifier.padding(12.dp).weight(1f)) {
+            Text(item.name, fontSize = 16.sp)
+            Text(item.artist, fontSize = 12.sp)
         }
     }
 }
