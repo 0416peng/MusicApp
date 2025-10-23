@@ -1,7 +1,5 @@
 package com.example.data.model.search.detail
 
-import java.util.function.LongFunction
-
 data class SearchDetail(
     val code: Int,
     val result: Result,
@@ -174,7 +172,7 @@ data class PlayLists(
     val specialType: Long,
     val subscribed: Boolean,
     val track: Track,
-    val trackCount: Long,
+    val trackCount: Int,
     val userId: Long
 )
 

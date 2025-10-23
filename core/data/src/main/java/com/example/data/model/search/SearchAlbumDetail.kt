@@ -25,7 +25,7 @@ data class AlbumX(
     val containedSong: String,
     val copyrightId: Int,
     val description: String,
-    val id: Int,
+    val id: Long,
     val mark: Int,
     val name: String,
     val onSale: Boolean,
