@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -33,7 +36,27 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.compose.material:material:1.6.8")
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    // 4. 添加具体的 Compose 依赖
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.material3)
+    // 这个依赖用于在 Android Studio 中预览 Composable
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    // 这个依赖用于 UI 测试
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    // 这个依赖用于调试 Compose UI
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
