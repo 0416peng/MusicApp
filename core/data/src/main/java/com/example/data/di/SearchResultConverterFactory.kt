@@ -1,7 +1,7 @@
 package com.example.data.di
 
 
-import com.example.data.model.search.PlayListResult
+import android.util.Log
 import com.example.data.model.search.SearchAlbumDetail
 import com.example.data.model.search.SearchMVDetail
 import com.example.data.model.search.SearchPlayListDetail
@@ -33,22 +33,28 @@ class SearchResultConverterFactory(private val gson: Gson): Converter.Factory() 
             val responseString = value.string()
             return when {
                 responseString.contains("\"song\"") ->{
+                    Log.d("SearchResultConverter", "song")
                     val result = gson.fromJson(responseString, SearchDetail::class.java)
                     SearchResult.Detail(result)
                 }
-                responseString.contains("\"songs\"") -> {
-                    val result = gson.fromJson(responseString, SearchSongsDetail::class.java)
-                   SearchResult.Songs(result)
-                }
                 responseString.contains("\"albums\"") -> {
+                    Log.d("SearchResultConverter", "albums")
                     val result = gson.fromJson(responseString, SearchAlbumDetail::class.java)
                     SearchResult.Albums(result)
                 }
+                responseString.contains("\"songs\"") -> {
+                    Log.d("SearchResultConverter", "songs")
+                    val result = gson.fromJson(responseString, SearchSongsDetail::class.java)
+                   SearchResult.Songs(result)
+                }
+
                 responseString.contains("\"artists\"") -> {
+                    Log.d("SearchResultConverter", "artists")
                     val result = gson.fromJson(responseString, SearchSingerDetail::class.java)
                     SearchResult.Singers(result)
                 }
                 responseString.contains("\"playlists\"") -> {
+                    Log.d("SearchResultConverter", "playlists")
                     val result = gson.fromJson(responseString, SearchPlayListDetail::class.java)
                     SearchResult.PlayLists(result)
                 }

@@ -1,6 +1,5 @@
 package com.example.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.manager.MusicPlayerManager
@@ -30,7 +29,7 @@ class SearchDetailViewModel @Inject constructor(
         SearchCategory("单曲", 1),
         SearchCategory("歌单", 1000),
         SearchCategory("专辑", 10),
-        SearchCategory("歌手", 100)
+        //SearchCategory("歌手", 100)/*TODO:后续添加*/
     )
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
@@ -77,9 +76,8 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _songsResult.value = data.result
                             }
-                            if (data.result.result.songs.isNotEmpty()){
                                 _offset.value = currentOffset + (data.result.result.songs.size)
-                            }
+
 
                         } else {
                             _errorState.value = "获取歌曲列表失败, 业务码: ${data.result.code}"
@@ -88,7 +86,6 @@ class SearchDetailViewModel @Inject constructor(
 
                     is SearchResult.Albums -> {
                         if (data.result.code == 200) {
-                            Log.d("data", data.result.result.toString())
                             if (isLoadMore) {
                                 _albumsResult.value = _albumsResult.value?.let { currentData ->
                                     currentData.copy(
@@ -100,14 +97,12 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _albumsResult.value = data.result
                             }
-
-                            if (data.result.result.albums != null) {
-                                _offset.value = currentOffset + (data.result.result.albums.size)
-
-                            } else {
+                              _offset.value = currentOffset + (data.result.result.albums.size)
+                        }
+                            else {
                                 _errorState.value = "获取专辑列表失败, 业务码: ${data.result.code}"
                             }
-                        }
+
                     }
                     is SearchResult.Singers -> {
                         if (data.result.code == 200) {
@@ -122,9 +117,9 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _singerResult.value = data.result
                             }
-                            if (data.result.result.artists.isNotEmpty()){
-                                _offset.value = currentOffset + (data.result.result.artists.size)
-                            }
+
+                            _offset.value = currentOffset + (data.result.result.artists.size)
+
                         } else {
                             _errorState.value = "获取歌手列表失败, 业务码: ${data.result.code}"
                         }
@@ -143,9 +138,9 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _mvsResult.value = data.result
                             }
-                            if (data.result.result.mvs.isNotEmpty()){
+
                                 _offset.value = currentOffset + (data.result.result.mvs.size)
-                            }
+
 
                         } else {
                             _errorState.value = "获取MV列表失败, 业务码: ${data.result.code}"
@@ -166,9 +161,9 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _playListsResult.value = data.result
                             }
-                            if (data.result.result.playlists.isNotEmpty()){
+
                                 _offset.value = currentOffset + (data.result.result.playlists.size)
-                            }
+
                         } else {
                             _errorState.value = "获取歌单列表失败, 业务码: ${data.result.code}"
                         }

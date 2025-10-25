@@ -6,14 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,53 +33,58 @@ fun SearchDetailScreen(
         viewModel.onSearchTriggered(keyword)
     }
 
-    val detailData by viewModel.detailResult.collectAsState()
-    val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
-    val pagerState=rememberPagerState(pageCount = {viewModel.categories.size})
-    val scope=rememberCoroutineScope()
-    val selectedTabIndex by viewModel.selectedCategoryIndex.collectAsState()
-
-    LaunchedEffect(pagerState.currentPage) {
-        if(pagerState.currentPage != selectedTabIndex) {
-            viewModel.onTabSelected(pagerState.currentPage)
-        }
-    }
-    LaunchedEffect(selectedTabIndex) {
-        if (selectedTabIndex != pagerState.currentPage) {
-            pagerState.animateScrollToPage(selectedTabIndex)
-        }
-    }//将实际页面与viewModel数据绑定
+    val pagerState = rememberPagerState(initialPage = 0) { 5 }
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         Column {
             FakeSearchTextField(hint = keyword, onClick = onBack)
-            PrimaryTabRow(selectedTabIndex=pagerState.currentPage) {
-                viewModel.categories.forEachIndexed {
-                    index, category ->
-                    Tab(selected = pagerState.currentPage==index,
+            TabRow(selectedTabIndex = pagerState.currentPage) {
+                viewModel.categories.forEachIndexed { index, category ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
                         onClick = {
                             scope.launch {
                                 pagerState.animateScrollToPage(index)
+                                viewModel.onTabSelected(index)
                             }
-                            viewModel.onTabSelected(index)
+
                         },
-                        text = {Text(category.title)}
-                        )
+                        text = { Text(category.title) }
+                    )
                 }
             }
         }
-    }) {
-        paddingValues ->
-        HorizontalPager(state = pagerState,modifier = Modifier.padding(paddingValues),
+    }) { paddingValues ->
+        HorizontalPager(
+            state = pagerState, modifier = Modifier.padding(paddingValues),
             verticalAlignment = Alignment.Top
-            ) {
-            page->
-            when(viewModel.categories[page].type){
-                1018->ComprehensiveResultPage(viewModel,onPlayListClick,onAlbumClick)
-                1->SongResultScreen(viewModel)
-                1000->PlayListResultScreen(viewModel,onPlayListClick)
-                10->AlbumListResultScreen(viewModel,onAlbumClick)
-                100->SingerResultScreen(viewModel, {/*TODO:跳转到歌手页面*/})
+        ) { page ->
+            when (viewModel.categories[page].type) {
+                1018 -> {
+                    ComprehensiveResultPage(viewModel, onPlayListClick, onAlbumClick)
+                    viewModel.onTabSelected(page)
+                }
+
+                1 -> {
+                    SongResultScreen(viewModel)
+                    viewModel.onTabSelected(page)
+                }
+
+                1000 -> {
+                    PlayListResultScreen(viewModel, onPlayListClick)
+                    viewModel.onTabSelected(page)
+                }
+
+                10 -> {
+                    AlbumListResultScreen(viewModel, onAlbumClick)
+                    viewModel.onTabSelected(page)
+                }
+
+                100 -> {
+                    SingerResultScreen(viewModel, {/*TODO:跳转到歌手页面*/ })
+                    viewModel.onTabSelected(page)
                 }
             }
         }
     }
+}

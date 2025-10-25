@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/AlbumList" />
             <option value="$PROJECT_DIR$/feature/PlayList" />
+            <option value="$PROJECT_DIR$/feature/artist" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/login" />
             <option value="$PROJECT_DIR$/feature/search" />

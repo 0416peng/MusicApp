@@ -4,15 +4,15 @@ package com.example.data.model.search
 
 data class SearchSingerDetail(
     val code: Int,
-    val result: Result
+    val result: SingerResult
 )
 
-data class Result(
+data class SingerResult(
     val artistCount: Int,
     val artists: List<Artist>,
     val hasMore: Boolean,
     val hlWords: List<String>,
-    val searchQcReminder: Any
+    val searchQcReminder: Any?
 )
 
 data class Artist(

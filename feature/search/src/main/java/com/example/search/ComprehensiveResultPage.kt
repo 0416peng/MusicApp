@@ -1,5 +1,6 @@
 package com.example.search
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,16 +34,14 @@ fun ComprehensiveResultPage(
     onPlayListClick: (Long) -> Unit,
     onAlbumClick: (Long) -> Unit
 ) {
-    LaunchedEffect(Unit) {
 
-    }
     val detailData by viewModel.detailResult.collectAsState()
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         if (detailData != null) {
             item {
                 Row(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().clickable{/*TODO:跳转到歌手详情页*/},
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
@@ -65,7 +63,7 @@ fun ComprehensiveResultPage(
             }
             item {
                 Row(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().clickable{onAlbumClick(detailData!!.result.album.albums[0].id)},
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
@@ -85,7 +83,7 @@ fun ComprehensiveResultPage(
             }
             item {
                 Row(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().clickable{onPlayListClick(detailData!!.result.playList.playLists[0].id)},
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(

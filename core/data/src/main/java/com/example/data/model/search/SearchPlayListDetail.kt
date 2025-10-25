@@ -12,7 +12,7 @@ data class PlayListResult(
     val hlWords: List<String>,
     val playlistCount: Int,
     val playlists: List<Playlists>,
-    val searchQcReminder: Any
+    val searchQcReminder: Any?
 )
 
 data class Playlists(
