@@ -32,7 +32,8 @@ import com.example.ui.LoadingPlaceholder
 fun ComprehensiveResultPage(
     viewModel: SearchDetailViewModel,
     onPlayListClick: (Long) -> Unit,
-    onAlbumClick: (Long) -> Unit
+    onAlbumClick: (Long) -> Unit,
+    onSingerClick: (Long) -> Unit
 ) {
 
     val detailData by viewModel.detailResult.collectAsState()
@@ -41,7 +42,7 @@ fun ComprehensiveResultPage(
         if (detailData != null) {
             item {
                 Row(
-                    Modifier.fillMaxWidth().clickable{/*TODO:跳转到歌手详情页*/},
+                    Modifier.fillMaxWidth().clickable{onSingerClick(detailData!!.result.artist.artists[0].id)},
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(

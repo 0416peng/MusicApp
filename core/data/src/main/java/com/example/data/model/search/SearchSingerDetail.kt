@@ -23,7 +23,7 @@ data class Artist(
     val alias: List<String>,
     val fansGroup: Any,
     val followed: Boolean,
-    val id: Int,
+    val id: Long,
     val identityIconUrl: String,
     val img1v1: Long,
     val img1v1Url: String,
@@ -31,6 +31,6 @@ data class Artist(
     val name: String,
     val picId: Long,
     val picUrl: String,
-    val trans: String,
+    val trans: String?,
     val transNames: List<String>
 )

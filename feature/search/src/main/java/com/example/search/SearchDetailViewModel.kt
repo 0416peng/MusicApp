@@ -29,7 +29,7 @@ class SearchDetailViewModel @Inject constructor(
         SearchCategory("单曲", 1),
         SearchCategory("歌单", 1000),
         SearchCategory("专辑", 10),
-        //SearchCategory("歌手", 100)/*TODO:后续添加*/
+        SearchCategory("歌手", 100)
     )
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
@@ -138,10 +138,7 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _mvsResult.value = data.result
                             }
-
                                 _offset.value = currentOffset + (data.result.result.mvs.size)
-
-
                         } else {
                             _errorState.value = "获取MV列表失败, 业务码: ${data.result.code}"
                         }

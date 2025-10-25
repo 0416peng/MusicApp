@@ -27,7 +27,8 @@ fun SearchDetailScreen(
     keyword: String,
     onBack: () -> Unit,
     onPlayListClick: (Long) -> Unit,
-    onAlbumClick: (Long) -> Unit
+    onAlbumClick: (Long) -> Unit,
+    onSingerClick: (Long) -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.onSearchTriggered(keyword)
@@ -61,7 +62,7 @@ fun SearchDetailScreen(
         ) { page ->
             when (viewModel.categories[page].type) {
                 1018 -> {
-                    ComprehensiveResultPage(viewModel, onPlayListClick, onAlbumClick)
+                    ComprehensiveResultPage(viewModel, onPlayListClick, onAlbumClick,onSingerClick)
                     viewModel.onTabSelected(page)
                 }
 
@@ -81,7 +82,7 @@ fun SearchDetailScreen(
                 }
 
                 100 -> {
-                    SingerResultScreen(viewModel, {/*TODO:跳转到歌手页面*/ })
+                    SingerResultScreen(viewModel, onSingerClick)
                     viewModel.onTabSelected(page)
                 }
             }

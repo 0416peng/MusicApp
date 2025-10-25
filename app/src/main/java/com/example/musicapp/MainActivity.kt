@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.albumList.AlbumListScreen
+import com.example.artist.ArtistScreen
 import com.example.home.ui.HomeScreen
 import com.example.playlist.PlayListScreen
 import com.example.search.SearchDetailScreen
@@ -43,6 +44,8 @@ object AppDestinations{
     const val SEARCH_ROUTE="search"
     const val SEARCH_KEYWORD_ARG="keyword"
     const val SEARCH_DETAIL_ROUTE="searchDetail"
+    const val ARTIST_ROUTE="artist"
+    const val ARTIST_ID_ARG="artistId"
 }
 
 @Composable
@@ -88,7 +91,16 @@ fun MusicNavGraph(
             SearchDetailScreen(keyword = keyword!!,
                 onBack = {navController.popBackStack()},
                 onPlayListClick = {id->navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$id")},
-                onAlbumClick = {id->navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$id")}
+                onAlbumClick = {id->navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$id")},
+                onSingerClick = {id->navController.navigate("${AppDestinations.ARTIST_ROUTE}/$id")}
                 )
         }
+        composable(route = "${AppDestinations.ARTIST_ROUTE}/{${AppDestinations.ARTIST_ID_ARG}}",
+        arguments = listOf(navArgument(AppDestinations.ARTIST_ID_ARG){type= NavType.LongType})
+        ){
+            backStackEntry->
+            val artistId=backStackEntry.arguments?.getLong(AppDestinations.ARTIST_ID_ARG)
+            ArtistScreen(id=artistId!!)
+        }
+
 }}
