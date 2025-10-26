@@ -98,9 +98,7 @@ fun MusicNavGraph(
         composable(route = "${AppDestinations.ARTIST_ROUTE}/{${AppDestinations.ARTIST_ID_ARG}}",
         arguments = listOf(navArgument(AppDestinations.ARTIST_ID_ARG){type= NavType.LongType})
         ){
-            backStackEntry->
-            val artistId=backStackEntry.arguments?.getLong(AppDestinations.ARTIST_ID_ARG)
-            ArtistScreen(id=artistId!!)
+            ArtistScreen()
         }
 
 }}

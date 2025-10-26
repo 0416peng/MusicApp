@@ -1,12 +1,14 @@
 package com.example.data.repository.artist
 
+import com.example.common.ApiResult
 import com.example.data.apiService.artist.ArtistDetailApiService
 import com.example.data.apiService.artist.ArtistHotSongsApiService
 import com.example.data.apiService.artist.ArtistSongsApiService
 import com.example.data.model.artist.ArtistDetail
 import com.example.data.model.artist.ArtistHotSongs
 import com.example.data.model.artist.ArtistSongs
-import java.io.IOException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ArtistRepositoryImpl @Inject constructor(
@@ -14,57 +16,72 @@ class ArtistRepositoryImpl @Inject constructor(
     private val artistHotSongsApiService: ArtistHotSongsApiService,
     private val artistSongsApiService: ArtistSongsApiService
 ): ArtistRepository {
-    override suspend fun getArtistDetail(id: Long): Result<ArtistDetail> {
-        return  try {
-            val response= artistDetailApiService.getArtistDetail(id)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
-                    Result.success(body)
-                }else{
-                    Result.failure(IOException("Response body is null"))
+    override fun getArtistDetail(id: Long): Flow<ApiResult<ArtistDetail>> = flow {
+        emit(ApiResult.Loading)
+        try {
+            val response = artistDetailApiService.getArtistDetail(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    emit(ApiResult.Success(body))
+                } else {
+                    // 【修复】使用 emit 发射我们自定义的 Error 状态
+                    emit(ApiResult.Error("Response body is null for getArtistDetail"))
                 }
-            }else{
-                Result.failure(IOException("API Error: ${response.code()}"))
+            } else {
+                // 【修复】使用 emit 发射我们自定义的 Error 状态
+                emit(ApiResult.Error("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            Result.failure(e)
+        } catch (e: Exception) {
+            // 【修复】使用 emit 发射我们自定义的 Error 状态
+            emit(ApiResult.Error(e.message ?: "Unknown error occurred"))
         }
     }
 
-    override suspend fun getArtistHotSongs(id: Long): Result<ArtistHotSongs> {
-        return  try {
-            val response= artistHotSongsApiService.getArtistHotSongs(id)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
-                    Result.success(body)
-                }else{
-                    Result.failure(IOException("Response body is null"))
+    // --- 已修复的 getArtistHotSongs ---
+    override fun getArtistHotSongs(id: Long): Flow<ApiResult<ArtistHotSongs>> = flow {
+        emit(ApiResult.Loading)
+        try {
+            val response = artistHotSongsApiService.getArtistHotSongs(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    emit(ApiResult.Success(body))
+                } else {
+                    // 【修复】使用 emit
+                    emit(ApiResult.Error("Response body is null for getArtistHotSongs"))
                 }
-            }else{
-                Result.failure(IOException("API Error: ${response.code()}"))
+            } else {
+                // 【修复】使用 emit
+                emit(ApiResult.Error("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            Result.failure(e)
+        } catch (e: Exception) {
+            // 【修复】使用 emit
+            emit(ApiResult.Error(e.message ?: "Unknown error occurred"))
         }
     }
 
-    override suspend fun getArtistSongs(id: Long,offset: Int): Result<ArtistSongs> {
-        return  try {
-            val response= artistSongsApiService.getArtistSongs(id,offset)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
-                    Result.success(body)
-                }else{
-                    Result.failure(IOException("Response body is null"))
+    // --- 已修复的 getArtistSongs ---
+    override fun getArtistSongs(id: Long, offset: Int): Flow<ApiResult<ArtistSongs>> = flow {
+        emit(ApiResult.Loading)
+        try {
+            val response = artistSongsApiService.getArtistSongs(id, offset)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    emit(ApiResult.Success(body))
+                } else {
+                    // 【修复】使用 emit
+                    emit(ApiResult.Error("Response body is null for getArtistSongs"))
                 }
-            }else{
-                Result.failure(IOException("API Error: ${response.code()}"))
+            } else {
+                // 【修复】使用 emit
+                emit(ApiResult.Error("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-            Result.failure(e)
+        } catch (e: Exception) {
+            // 【修复】使用 emit
+            emit(ApiResult.Error(e.message ?: "Unknown error occurred"))
         }
     }
 }
+
