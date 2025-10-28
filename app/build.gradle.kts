@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:player"))
     implementation(project(":feature:artist"))
     implementation(project(":feature:search"))
     implementation(project(":feature:PlayList"))

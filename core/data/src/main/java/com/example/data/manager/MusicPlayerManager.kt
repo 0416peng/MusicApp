@@ -1,6 +1,7 @@
 package com.example.data.manager
 
-import com.example.data.model.playList.TrackId
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -8,7 +9,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class MusicPlayerManager @Inject constructor(){
+class MusicPlayerManager @Inject constructor( @ApplicationContext private val context: Context){
     private val _currentlyPlayingSongId= MutableStateFlow<Long?>(null)
     val currentlyPlayingSongId=_currentlyPlayingSongId.asStateFlow()
     fun onTrackChanged(songId: Long) {
@@ -21,6 +22,7 @@ class MusicPlayerManager @Inject constructor(){
         if(_currentlyPlayingSongId.value==songId){
             onPlayerPaused()
         }else{
+
             onTrackChanged(songId)
         }
     }
