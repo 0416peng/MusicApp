@@ -2,7 +2,7 @@ package com.example.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.manager.MusicPlayerManager
+import com.example.player.MusicPlayerManager
 import com.example.data.model.search.SearchAlbumDetail
 import com.example.data.model.search.SearchMVDetail
 import com.example.data.model.search.SearchPlayListDetail

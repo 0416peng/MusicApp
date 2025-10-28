@@ -6,7 +6,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.example.data.manager.MusicPlayerManager
+import com.example.player.MusicPlayerManager
 import com.example.data.repository.song.SongRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
+
     @Inject
     lateinit var songRepository: SongRepository
     @Inject
@@ -42,7 +43,7 @@ class MusicService : MediaSessionService() {
                val urlResult=songRepository.getSongUrl(songId)
                urlResult.onSuccess {
                    url->
-                   val mediaItem= MediaItem.fromUri(url.data.url)
+                   val mediaItem= MediaItem.fromUri(url.data[0].url)
                    player.setMediaItem(mediaItem)
                    player.prepare()
                    player.play()
@@ -51,11 +52,14 @@ class MusicService : MediaSessionService() {
                    Log.d("playError",error.toString())
                }
            }
+        }else{
+            player.pause()
         }
         return START_NOT_STICKY
     }
     override fun onDestroy() {
         super.onDestroy()
+
       serviceJob.cancel()
       mediaSession?.run { player.release()
       release()

@@ -3,16 +3,17 @@ package com.example.artist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.manager.MusicPlayerManager
 import com.example.data.model.artist.ArtistDetail
 import com.example.data.model.artist.ArtistHotSongs
 import com.example.data.model.artist.ArtistSongs
 import com.example.data.repository.artist.ArtistRepository
+import com.example.player.MusicPlayerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 
 @HiltViewModel

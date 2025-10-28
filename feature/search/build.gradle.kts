@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.search"
+    namespace = "com.example.playlist"
     compileSdk = 36
 
     defaultConfig {
@@ -36,6 +36,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:player"))
     implementation("androidx.compose.material:material:1.6.8")
     implementation(libs.coil.compose)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -54,9 +58,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    implementation(project(":core:common"))
-    implementation(project(":core:data"))
-    implementation(project(":core:ui"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

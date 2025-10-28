@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
+    implementation(project(":core:player"))
     implementation("androidx.compose.material:material:1.6.8")
     implementation(libs.coil.compose)
     implementation(libs.androidx.hilt.navigation.compose)

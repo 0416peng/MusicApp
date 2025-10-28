@@ -3,10 +3,11 @@ package com.example.playlist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.manager.MusicPlayerManager
+
 import com.example.data.model.playList.PlayListData
 import com.example.data.model.playList.PlayListDetailData
 import com.example.data.repository.playList.PlayListRepository
+import com.example.player.MusicPlayerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

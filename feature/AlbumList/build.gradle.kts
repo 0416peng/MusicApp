@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:player"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
