@@ -39,7 +39,8 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     // MediaSessionService for background playback and system integration
     implementation("androidx.media3:media3-session:1.3.1")
-
+    implementation("androidx.media3:media3-ui:1.3.1")
+    implementation("androidx.media:media:1.7.0")
     // Hilt for dependency injection
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")

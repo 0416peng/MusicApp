@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <application
         android:usesCleartextTraffic="true"
         android:name=".MyApplication"
@@ -28,6 +29,9 @@
             android:name="com.example.player.MusicService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">
+            <property
+                android:name="android.app.PROPERTY_MEDIA_PLAYBACK_FOREGROUND_SERVICE_DELEGATION"
+                android:value="DELEGATION_ENABLED_FOR_SYSTEM_APPS" />
         </service>
     </application>
 

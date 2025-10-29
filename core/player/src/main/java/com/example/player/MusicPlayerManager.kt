@@ -20,6 +20,7 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         _currentlyPlayingSongId.value=null
         val intent= Intent(context, MusicService::class.java).apply {
             putExtra("songId",-1L)
+
         }
         context.startService(intent)
     }
@@ -28,6 +29,7 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
             onPlayerPaused()
         }else{
             val intent= Intent(context,MusicService::class.java).apply {
+                action=ACTION_ADD_TO_QUEUE
                 putExtra("songId",songId)
             }
             context.startService(intent)
