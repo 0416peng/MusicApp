@@ -8,9 +8,10 @@ import javax.inject.Inject
 class SongRepositoryImpl @Inject constructor(
     private val getSongUrlApiService: GetSongUrlApiService
 ) : SongRepository{
-    override suspend fun getSongUrl(id: Long): Result<SongUrlData> {
+    override suspend fun getSongUrl(ids: List<Long>): Result<SongUrlData> {
         return try {
-            val response =getSongUrlApiService.getSongUrl(id)
+            val idsString=ids.joinToString(separator = ".")
+            val response =getSongUrlApiService.getSongUrl(idsString)
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
@@ -25,4 +26,5 @@ class SongRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
 }
