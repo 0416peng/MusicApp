@@ -7,6 +7,7 @@ import retrofit2.http.Query
 
 interface LoginPicApiService {
     @GET("login/qr/create")
-    suspend fun getPic(@Query("key") key:String,
+    suspend fun getPic(
+        @Query("key") key: String,
     ): Response<LoginPic>
 }

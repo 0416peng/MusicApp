@@ -20,7 +20,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val BASE_URL="https://api-enhanced-henna.vercel.app/"
+    private const val BASE_URL = "https://api-enhanced-henna.vercel.app/"
+
     @Provides
     @Singleton
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
@@ -33,6 +34,7 @@ object NetworkModule {
             .addInterceptor(loggingInterceptor)
             .build()
     }
+
     @Singleton
     class AuthInterceptor @Inject constructor(
         private val userSessionManager: UserSessionManager // 注入 SessionManager
@@ -49,15 +51,16 @@ object NetworkModule {
                 requestBuilder.addHeader("Cookie", cookie)
             }
             val originalUrl = originalRequest.url
-            val newUrl = originalUrl.newBuilder().addQueryParameter("randomCNIP","true").build()
+            val newUrl = originalUrl.newBuilder().addQueryParameter("randomCNIP", "true").build()
             requestBuilder.url(newUrl)
             val newRequest = requestBuilder.build()
             return chain.proceed(newRequest)
         }
     }
+
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient,gson: Gson): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
@@ -65,6 +68,7 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
     @Provides
     @Singleton
     fun provideGson(): Gson = Gson()

@@ -1,7 +1,6 @@
 package com.example.data.model.albumList
 
 
-
 data class AlbumListData(
     val album: Album,
     val code: Int,

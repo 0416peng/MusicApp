@@ -15,7 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
-    val uriHandler= LocalUriHandler.current
+    val uriHandler = LocalUriHandler.current
     val url by viewModel.url.collectAsState()
     LaunchedEffect(url) {
         val currentUrl = url
@@ -23,14 +23,15 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             uriHandler.openUri(currentUrl)
         }
     }
-    Column(modifier=Modifier.fillMaxSize(),
+    Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-        ) {
-        Button(onClick = {viewModel.login()}) {
+    ) {
+        Button(onClick = { viewModel.login() }) {
             Text("二维码登录")
         }//暂时无法使用
-        Button(onClick = {viewModel.visitorLogin()}) {
+        Button(onClick = { viewModel.visitorLogin() }) {
             Text("游客登录")
         }
     }

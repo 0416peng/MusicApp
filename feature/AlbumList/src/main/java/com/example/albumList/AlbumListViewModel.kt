@@ -42,15 +42,18 @@ class AlbumListViewModel @Inject constructor(
                     _errorState.value = "歌单列表加载失败: ${exception.message}"
                     Log.e("HomeViewModel", "getAlbumList网络或解析错误", exception)
                 }
-        }}
-        fun onAddListClicked(index: Int) {
-            val list=_albumListData.value?.songs?.map {
-                item->item.id
-            }
-            musicPlayerManager.addMultipleToQueue(list,index)
         }
-        fun errorShown() {
-            _errorState.value = null
+    }
+
+    fun onAddListClicked(index: Int) {
+        val list = _albumListData.value?.songs?.map { item ->
+            item.id
         }
+        musicPlayerManager.addMultipleToQueue(list, index)
+    }
+
+    fun errorShown() {
+        _errorState.value = null
+    }
 
 }

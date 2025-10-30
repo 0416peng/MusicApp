@@ -5,7 +5,6 @@ import com.example.data.apiService.search.HotSearchApiService
 import com.example.data.apiService.search.SearchDetailApiService
 import com.example.data.apiService.search.SearchSuggestApiService
 import com.example.data.model.search.HotSearchData
-import com.example.data.model.search.SearchResult
 import com.example.data.model.search.SearchSuggestData
 import java.io.IOException
 import javax.inject.Inject

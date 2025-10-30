@@ -1,7 +1,6 @@
 package com.example.data.model.search
 
 
-
 data class SearchSongsDetail(
     val code: Int,
     val result: SongsResult

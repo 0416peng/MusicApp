@@ -25,30 +25,33 @@ import com.example.data.model.search.Artist
 import com.example.ui.LoadingPlaceholder
 
 @Composable
-fun SingerResultScreen(viewModel: SearchDetailViewModel,
-                       onSingerClick:(id:Long)->Unit
-                       ){
-   val singerData by viewModel.singerResult.collectAsState()
+fun SingerResultScreen(
+    viewModel: SearchDetailViewModel,
+    onSingerClick: (id: Long) -> Unit
+) {
+    val singerData by viewModel.singerResult.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val listState= rememberLazyListState()
-    if(singerData!=null){
-        LazyColumn(state = listState){
-            itemsIndexed(singerData!!.result.artists){
-               index,item->SingerItem(item,onSingerClick)
-                if (index>=singerData!!.result.artists.size-3&&!isRefreshing){
+    val listState = rememberLazyListState()
+    if (singerData != null) {
+        LazyColumn(state = listState) {
+            itemsIndexed(singerData!!.result.artists) { index, item ->
+                SingerItem(item, onSingerClick)
+                if (index >= singerData!!.result.artists.size - 3 && !isRefreshing) {
                     viewModel.loadMore()
                 }
             }
         }
-    }else{
+    } else {
         LoadingPlaceholder()
     }
 }
 
 @Composable
-fun SingerItem(item: Artist, onSingerClick:(id:Long)->Unit){
-    Row(modifier = Modifier.fillMaxWidth()
-        .clickable{onSingerClick(item.id)},
+fun SingerItem(item: Artist, onSingerClick: (id: Long) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSingerClick(item.id) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -61,16 +64,18 @@ fun SingerItem(item: Artist, onSingerClick:(id:Long)->Unit){
             contentScale = ContentScale.Crop
         )
         Column(modifier = Modifier.weight(1f)) {
-            if (item.trans!=null){
+            if (item.trans != null) {
                 Text(
-                    item.name+"(${item.transNames})",
+                    item.name + "(${item.transNames})",
                     modifier = Modifier.padding(8.dp),
                     fontSize = 18.sp
                 )
-            }else{
-                Text(item.name,
+            } else {
+                Text(
+                    item.name,
                     modifier = Modifier.padding(8.dp),
-                    fontSize = 18.sp)
+                    fontSize = 18.sp
+                )
             }
 
         }

@@ -7,5 +7,8 @@ import retrofit2.http.Query
 
 interface HotSingerApiService {
     @GET("/top/artists")
-    suspend fun getHotSinger(@Query("offset") offset: Int=0, @Query("limit") limit: Int=15): Response<HotSingerData>
+    suspend fun getHotSinger(
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 15
+    ): Response<HotSingerData>
 }

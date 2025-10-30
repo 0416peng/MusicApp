@@ -1,7 +1,5 @@
 package com.example.data.di.playList
 
-import com.example.data.repository.home.HomeRepository
-import com.example.data.repository.home.HomeRepositoryImpl
 import com.example.data.repository.playList.PlayListRepository
 import com.example.data.repository.playList.PlayListRepositoryImpl
 import dagger.Binds

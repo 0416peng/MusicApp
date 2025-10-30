@@ -8,6 +8,9 @@ import retrofit2.http.Query
 
 interface SearchSuggestApiService {
     @GET("/search/suggest")
-    suspend fun getSearchSuggest(@Query("keywords") keywords: String,@Query("type") type: String="mobile"): Response<SearchSuggestData>
+    suspend fun getSearchSuggest(
+        @Query("keywords") keywords: String,
+        @Query("type") type: String = "mobile"
+    ): Response<SearchSuggestData>
 
 }

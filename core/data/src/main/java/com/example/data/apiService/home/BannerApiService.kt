@@ -7,5 +7,5 @@ import retrofit2.http.Query
 
 interface BannerApiService {
     @GET("banner")
-    suspend fun getBanner(@Query("type") type: Int=1): Response<BannerData>
+    suspend fun getBanner(@Query("type") type: Int = 1): Response<BannerData>
 }

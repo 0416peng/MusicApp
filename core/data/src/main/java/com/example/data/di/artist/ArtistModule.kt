@@ -19,11 +19,13 @@ object ArtistModule {
     fun provideArtistDetailApiService(retrofit: Retrofit): ArtistDetailApiService {
         return retrofit.create(ArtistDetailApiService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideArtistHotSongsApiService(retrofit: Retrofit): ArtistHotSongsApiService {
         return retrofit.create(ArtistHotSongsApiService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideArtistSongsApiService(retrofit: Retrofit): ArtistSongsApiService {

@@ -36,7 +36,7 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         val intent = Intent(context, MusicService::class.java).apply {
             action = ACTION_ADD_TO_QUEUE_MULTIPLE
             putExtra("songIds", songIds.toLongArray())
-            putExtra("startIndex",startIndex)
+            putExtra("startIndex", startIndex)
         }
         context.startService(intent)
     }//添加队列
@@ -49,12 +49,12 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         context.startService(intent)
     }//添加到下一首
 
-    fun clear(){
-        val intent=Intent(context,MusicService::class.java).apply {
-            action= ACTION_CLEAR
+    fun clear() {
+        val intent = Intent(context, MusicService::class.java).apply {
+            action = ACTION_CLEAR
         }
         context.startService(intent)
-        }//清除歌单
+    }//清除歌单
 
     @OptIn(UnstableApi::class)
     fun skipToItem(songIds: List<Long>, itemIndex: Int) {
@@ -70,7 +70,8 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         }
         context.startService(intent)
     }//跳转到列表中的某一首
+
     fun onPlayerStopped() {
         _currentlyPlayingSongId.value = null
     }//播放器停止
-    }
+}

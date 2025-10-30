@@ -27,11 +27,11 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val listState = rememberLazyListState()
-    val context= LocalContext.current
+    val context = LocalContext.current
     val errorState by viewModel.errorState.collectAsState()
     LaunchedEffect(errorState) {
-        if (errorState != null){
-            Toast.makeText(context,errorState, Toast.LENGTH_SHORT).show()
+        if (errorState != null) {
+            Toast.makeText(context, errorState, Toast.LENGTH_SHORT).show()
             viewModel.errorShown()
         }
     }
@@ -43,11 +43,12 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
         } else {
             LoadingPlaceholder()
         }
-        SongList(playListData,currentlyPlayingSongId,listState,
-            {index-> viewModel.onAddListClicked(index)},
-            {id-> viewModel.loadMorePlayListData(id)},
+        SongList(
+            playListData, currentlyPlayingSongId, listState,
+            { index -> viewModel.onAddListClicked(index) },
+            { id -> viewModel.loadMorePlayListData(id) },
             isRefreshing
-            )
+        )
     }
 }
 

@@ -16,15 +16,23 @@ import coil.compose.AsyncImage
 import com.example.data.model.search.data.AlbumData
 
 @Composable
-fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit){
+fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onAlbumClick(item.id) },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
-        Column(modifier = Modifier.padding(12.dp).weight(1f)) {
+        AsyncImage(
+            model = item.picUrl,
+            contentDescription = item.name,
+            modifier = Modifier
+                .padding(12.dp)
+                .size(45.dp)
+        )
+        Column(modifier = Modifier
+            .padding(12.dp)
+            .weight(1f)) {
             Text(item.name, fontSize = 16.sp)
             Text(item.artist, fontSize = 12.sp)
         }

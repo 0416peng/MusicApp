@@ -7,5 +7,9 @@ import retrofit2.http.Query
 
 interface ArtistSongsApiService {
     @GET("artist/songs")
-    suspend fun getArtistSongs(@Query("id") id: Long,@Query("offset") offset: Int,@Query("limit") limit: Int=50): Response<ArtistSongs>
+    suspend fun getArtistSongs(
+        @Query("id") id: Long,
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int = 50
+    ): Response<ArtistSongs>
 }

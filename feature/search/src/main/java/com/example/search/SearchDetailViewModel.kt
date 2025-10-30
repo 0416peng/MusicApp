@@ -2,7 +2,6 @@ package com.example.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.player.MusicPlayerManager
 import com.example.data.model.search.SearchAlbumDetail
 import com.example.data.model.search.SearchMVDetail
 import com.example.data.model.search.SearchPlayListDetail
@@ -11,6 +10,7 @@ import com.example.data.model.search.SearchSingerDetail
 import com.example.data.model.search.SearchSongsDetail
 import com.example.data.model.search.detail.SearchDetail
 import com.example.data.repository.search.SearchDetailRepository
+import com.example.player.MusicPlayerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,12 +18,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-data class SearchCategory(val title: String,val type: Int)
+data class SearchCategory(val title: String, val type: Int)
+
 @HiltViewModel
 class SearchDetailViewModel @Inject constructor(
     private val searchDetailRepository: SearchDetailRepository,
     private val musicPlayerManager: MusicPlayerManager
-): ViewModel() {
+) : ViewModel() {
     val categories = listOf(
         SearchCategory("综合", 1018),
         SearchCategory("单曲", 1),
@@ -76,7 +77,7 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _songsResult.value = data.result
                             }
-                                _offset.value = currentOffset + (data.result.result.songs.size)
+                            _offset.value = currentOffset + (data.result.result.songs.size)
 
 
                         } else {
@@ -97,13 +98,13 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _albumsResult.value = data.result
                             }
-                              _offset.value = currentOffset + (data.result.result.albums.size)
+                            _offset.value = currentOffset + (data.result.result.albums.size)
+                        } else {
+                            _errorState.value = "获取专辑列表失败, 业务码: ${data.result.code}"
                         }
-                            else {
-                                _errorState.value = "获取专辑列表失败, 业务码: ${data.result.code}"
-                            }
 
                     }
+
                     is SearchResult.Singers -> {
                         if (data.result.code == 200) {
                             if (isLoadMore) {
@@ -138,7 +139,7 @@ class SearchDetailViewModel @Inject constructor(
                             } else {
                                 _mvsResult.value = data.result
                             }
-                                _offset.value = currentOffset + (data.result.result.mvs.size)
+                            _offset.value = currentOffset + (data.result.result.mvs.size)
                         } else {
                             _errorState.value = "获取MV列表失败, 业务码: ${data.result.code}"
                         }
@@ -159,7 +160,7 @@ class SearchDetailViewModel @Inject constructor(
                                 _playListsResult.value = data.result
                             }
 
-                                _offset.value = currentOffset + (data.result.result.playlists.size)
+                            _offset.value = currentOffset + (data.result.result.playlists.size)
 
                         } else {
                             _errorState.value = "获取歌单列表失败, 业务码: ${data.result.code}"
@@ -199,10 +200,10 @@ class SearchDetailViewModel @Inject constructor(
     }
 
     fun onAddListClicked(index: Int) {
-        val list=_songsResult.value?.result?.songs?.map {
-            item->item.id
+        val list = _songsResult.value?.result?.songs?.map { item ->
+            item.id
         }
-        musicPlayerManager.addMultipleToQueue(list,index)
+        musicPlayerManager.addMultipleToQueue(list, index)
     }
 
 

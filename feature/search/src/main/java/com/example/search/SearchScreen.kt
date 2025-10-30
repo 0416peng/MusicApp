@@ -27,9 +27,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ui.SearchTextField
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(),
-                 onSearchDetailClick: (keyword:String) -> Unit
-                 ){
+fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel(),
+    onSearchDetailClick: (keyword: String) -> Unit
+) {
     val searchText by viewModel.searchText.collectAsState()
     val hotSearchData by viewModel.hotSearchData.collectAsState()
     val searchSuggestData by viewModel.searchSuggestData.collectAsState()
@@ -38,71 +39,77 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(),
         viewModel.getHotSearchData()
     }
     Column {
-        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)){
-            SearchTextField(value=searchText,
-                onValueChange = {newText->
+        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            SearchTextField(
+                value = searchText,
+                onValueChange = { newText ->
                     viewModel.onSearchTextChanged(newText)
                 },
-                onSearch = {keyword->
+                onSearch = { keyword ->
                     onSearchDetailClick(keyword)
                 },
                 hint = "搜索"
-                )
+            )
         }
-        if (searchSuggestData==null||searchText==""){
-        Card(modifier = Modifier
-            .padding(36.dp)
-            .fillMaxSize(),
-            colors= CardDefaults.cardColors(
-                containerColor = Color.White
-            )
-
-        ) {
-            Text("热搜榜",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(16.dp)
+        if (searchSuggestData == null || searchText == "") {
+            Card(
+                modifier = Modifier
+                    .padding(36.dp)
+                    .fillMaxSize(),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
                 )
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = 1.dp,
-                color = Color.Gray.copy(alpha = 0.3f)
-            )
 
-            if(hotSearchData!=null){
-                LazyColumn {
-                    itemsIndexed(hotSearchData!!.result.hots){
-                        index,item->
-                       val color= if(index<=2) Color.Red else Color.Black
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable{onSearchDetailClick(item.first)},
-                            verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "热搜榜",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 1.dp,
+                    color = Color.Gray.copy(alpha = 0.3f)
+                )
+
+                if (hotSearchData != null) {
+                    LazyColumn {
+                        itemsIndexed(hotSearchData!!.result.hots) { index, item ->
+                            val color = if (index <= 2) Color.Red else Color.Black
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onSearchDetailClick(item.first) },
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                            Text("${index+1}",
-                                modifier=Modifier.padding(16.dp),
-                                color=color
+                                Text(
+                                    "${index + 1}",
+                                    modifier = Modifier.padding(16.dp),
+                                    color = color
                                 )
-                            Text(
-                                item.first,
+                                Text(
+                                    item.first,
 
-                                )
+                                    )
+                            }
                         }
                     }
                 }
-        }
-    }
-}else if(searchSuggestData!=null&&searchSuggestData!!.code==200){
-    LazyColumn {
-        items(searchSuggestData!!.result.allMatch){
-            item->
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(item.keyword,
-                    modifier=Modifier.padding(12.dp)
-                        .clickable{onSearchDetailClick(item.keyword)}
-                    )
+            }
+        } else if (searchSuggestData != null && searchSuggestData!!.code == 200) {
+            LazyColumn {
+                items(searchSuggestData!!.result.allMatch) { item ->
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            item.keyword,
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .clickable { onSearchDetailClick(item.keyword) }
+                        )
+                    }
+                }
             }
         }
+
     }
 }
-
-    }}

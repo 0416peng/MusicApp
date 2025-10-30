@@ -22,8 +22,15 @@ import androidx.compose.ui.unit.dp
 import com.example.data.model.playList.PlayListData
 
 @Composable
-fun SongList(playListData: PlayListData?, currentlyPlayingSongId: Long?, listState: LazyListState, onAddListClick:(index: Int)->Unit, loadMore: (id:Long) -> Unit,  isRefreshing: Boolean){
-    if (playListData!=null){
+fun SongList(
+    playListData: PlayListData?,
+    currentlyPlayingSongId: Long?,
+    listState: LazyListState,
+    onAddListClick: (index: Int) -> Unit,
+    loadMore: (id: Long) -> Unit,
+    isRefreshing: Boolean
+) {
+    if (playListData != null) {
         if (playListData.code == 200) {
             LazyColumn(
                 state = listState,
@@ -48,8 +55,9 @@ fun SongList(playListData: PlayListData?, currentlyPlayingSongId: Long?, listSta
                 itemsIndexed(
                     items = playListData.songs,
                 ) { index, item ->
-                    SongItem(song = item, currentlyPlayingSongId,
-                        {onAddListClick(index)})
+                    SongItem(
+                        song = item, currentlyPlayingSongId,
+                        { onAddListClick(index) })
                     val totalItemsCount = playListData.songs.size
                     if (index >= totalItemsCount - 3 && !isRefreshing) {
                         LaunchedEffect(Unit) {
@@ -74,4 +82,5 @@ fun SongList(playListData: PlayListData?, currentlyPlayingSongId: Long?, listSta
         }
 
 
-}}
+    }
+}

@@ -19,16 +19,16 @@ class PlayListViewModel @Inject constructor(
     private val playListRepository: PlayListRepository,
     private val musicPlayerManager: MusicPlayerManager
 ) : ViewModel() {
-    val currentlyPlayingSongId=musicPlayerManager.currentlyPlayingSongId
+    val currentlyPlayingSongId = musicPlayerManager.currentlyPlayingSongId
 
-    private val _playListData= MutableStateFlow<PlayListData?>(null)
-    val playListData=_playListData.asStateFlow()
-    private val _playListDetailData= MutableStateFlow<PlayListDetailData?>(null)
-    val playListDetailData=_playListDetailData.asStateFlow()
-    private val _currentOffset= MutableStateFlow(0)
+    private val _playListData = MutableStateFlow<PlayListData?>(null)
+    val playListData = _playListData.asStateFlow()
+    private val _playListDetailData = MutableStateFlow<PlayListDetailData?>(null)
+    val playListDetailData = _playListDetailData.asStateFlow()
+    private val _currentOffset = MutableStateFlow(0)
 
-    private val _isRefreshing= MutableStateFlow(false)
-    val isRefreshing=_isRefreshing.asStateFlow()
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
 
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState = _errorState.asStateFlow()
@@ -99,14 +99,15 @@ class PlayListViewModel @Inject constructor(
         }
     }
 
-    fun onAddListClicked(index:Int) {
-        val list=_playListData.value?.songs?.map { item->
+    fun onAddListClicked(index: Int) {
+        val list = _playListData.value?.songs?.map { item ->
             item.id
         }
-        musicPlayerManager.addMultipleToQueue(list,index)
+        musicPlayerManager.addMultipleToQueue(list, index)
     }
 
     // 提供一个方法让 UI 在显示错误后可以重置状态
     fun errorShown() {
         _errorState.value = null
-    }}
+    }
+}

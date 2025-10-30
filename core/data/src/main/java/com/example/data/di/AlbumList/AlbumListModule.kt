@@ -16,4 +16,5 @@ object AlbumListModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): AlbumListApiService {
         return retrofit.create(AlbumListApiService::class.java)
-}}
+    }
+}

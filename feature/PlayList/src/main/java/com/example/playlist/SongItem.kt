@@ -19,18 +19,18 @@ import coil.compose.AsyncImage
 import com.example.data.model.playList.Song
 
 @Composable
-fun SongItem(song: Song, currentlyPlayingSongId: Long?,onClick:(id:Long)->Unit,) {
+fun SongItem(song: Song, currentlyPlayingSongId: Long?, onClick: (id: Long) -> Unit) {
     val isPlaying = currentlyPlayingSongId == song.id
     val color = if (isPlaying) Color.Red else Color.Black
-    Row(modifier = Modifier.fillMaxWidth()
-        .clickable{onClick(song.id)}) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick(song.id) }) {
         AsyncImage(
             model = song.al.picUrl,
             modifier = Modifier
                 .size(60.dp)
-                .padding(12.dp)
-
-            ,
+                .padding(12.dp),
             contentDescription = "song picture"
         )
         Column(modifier = Modifier.weight(1f)) {

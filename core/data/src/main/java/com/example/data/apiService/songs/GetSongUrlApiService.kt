@@ -7,5 +7,8 @@ import retrofit2.http.Query
 
 interface GetSongUrlApiService {
     @GET("song/url/v1")
-    suspend fun getSongUrl(@Query("id") id: String,@Query("level") level: String="exhigh"): Response<SongUrlData>
+    suspend fun getSongUrl(
+        @Query("id") id: String,
+        @Query("level") level: String = "exhigh"
+    ): Response<SongUrlData>
 }

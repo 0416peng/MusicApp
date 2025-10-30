@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 class SongRepositoryImpl @Inject constructor(
     private val getSongUrlApiService: GetSongUrlApiService
-) : SongRepository{
+) : SongRepository {
     override suspend fun getSongUrl(ids: List<Long>): Result<SongUrlData> {
         return try {
-            val idsString=ids.joinToString(separator = ",")
-            val response =getSongUrlApiService.getSongUrl(idsString)
+            val idsString = ids.joinToString(separator = ",")
+            val response = getSongUrlApiService.getSongUrl(idsString)
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {

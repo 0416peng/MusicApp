@@ -18,21 +18,26 @@ import com.example.data.model.search.data.SongData
 import com.example.ui.LoadingPlaceholder
 
 @Composable
-fun SongResultScreen(viewModel: SearchDetailViewModel){
+fun SongResultScreen(viewModel: SearchDetailViewModel) {
     val songsData by viewModel.songsResult.collectAsState()
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val listState= rememberLazyListState()
-    if(songsData!=null){
-       val songsItem= songsData!!.result.songs.map {
-           SongData(it.id, it.name,it.artists.joinToString("/"){ar->ar.name})
-       }
+    val listState = rememberLazyListState()
+    if (songsData != null) {
+        val songsItem = songsData!!.result.songs.map {
+            SongData(it.id, it.name, it.artists.joinToString("/") { ar -> ar.name })
+        }
         LazyColumn(state = listState) {
-            itemsIndexed(songsItem){index,item->
+            itemsIndexed(songsItem) { index, item ->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
-                SongItem(item,color,onPlayClick = {index->viewModel.onAddListClicked(index)},index)
-                if(index>=songsItem.size-3&&!isRefreshing){
+                SongItem(
+                    item,
+                    color,
+                    onPlayClick = { index -> viewModel.onAddListClicked(index) },
+                    index
+                )
+                if (index >= songsItem.size - 3 && !isRefreshing) {
                     viewModel.loadMore()
                 }
             }
@@ -50,8 +55,7 @@ fun SongResultScreen(viewModel: SearchDetailViewModel){
             }
         }
 
-    }
-    else{
+    } else {
         LoadingPlaceholder()
     }
 }

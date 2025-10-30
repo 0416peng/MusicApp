@@ -1,7 +1,6 @@
 package com.example.data.repository.search
 
 import com.example.data.model.search.HotSearchData
-import com.example.data.model.search.SearchResult
 import com.example.data.model.search.SearchSuggestData
 
 interface SearchRepository {

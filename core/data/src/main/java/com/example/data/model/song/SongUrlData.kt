@@ -2,7 +2,7 @@ package com.example.data.model.song
 
 data class SongUrlData(
     val code: Int,
-    val `data`:List<Data>
+    val `data`: List<Data>
 )
 
 data class Data(

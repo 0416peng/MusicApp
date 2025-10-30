@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -23,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.albumList.Song
 
 @Composable
-fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(index: Int)-> Unit) {
+fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick: (index: Int) -> Unit) {
 
     LazyColumn {
         item {
@@ -42,8 +41,8 @@ fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(index: 
                 Text("播放全部")
             }
         }
-        itemsIndexed(songs) {index, item ->
-            val isPlaying = currentlyPlayingSongId==item.id
+        itemsIndexed(songs) { index, item ->
+            val isPlaying = currentlyPlayingSongId == item.id
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -51,32 +50,37 @@ fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(index: 
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if(isPlaying){
-                    Icon(imageVector = Icons.Filled.Pause,
+                if (isPlaying) {
+                    Icon(
+                        imageVector = Icons.Filled.Pause,
                         contentDescription = "正在播放",
                         tint = Color.Red,
                         modifier = Modifier.padding(16.dp)
                     )
-                }else{
-                    Text("${songs.indexOf(item)+1}",
+                } else {
+                    Text(
+                        "${songs.indexOf(item) + 1}",
                         modifier = Modifier.padding(16.dp)
                     )
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
                     val color = if (isPlaying) Color.Red else Color.Black
-                    Text(item.name,
+                    Text(
+                        item.name,
                         fontSize = 14.sp,
-                        color=color
+                        color = color
                     )
-                    Text(item.ar.joinToString("/"){it.name},
+                    Text(
+                        item.ar.joinToString("/") { it.name },
                         fontSize = 10.sp,
 
                         )
                 }
-                Icon(imageVector = Icons.Default.MoreVert,
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
                     contentDescription = "更多选项",
-                    modifier = Modifier.clickable{/*TODO:歌曲菜单*/}
+                    modifier = Modifier.clickable {/*TODO:歌曲菜单*/ }
                 )
             }
         }

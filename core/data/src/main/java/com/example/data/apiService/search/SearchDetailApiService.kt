@@ -7,10 +7,12 @@ import retrofit2.http.Query
 
 interface SearchDetailApiService {
     @GET("search")
-    suspend fun getSearchDetail(@Query("keywords") keywords: String,
-                                @Query("offset") offset: Int,
-                                @Query("limit") limit: Int=30,
-                                @Query("type") type: Int): Response<SearchResult>
+    suspend fun getSearchDetail(
+        @Query("keywords") keywords: String,
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int = 30,
+        @Query("type") type: Int
+    ): Response<SearchResult>
 }
 
 

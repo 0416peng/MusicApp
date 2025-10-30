@@ -1,6 +1,5 @@
 package com.example.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.repository.auth.AuthRepository
@@ -14,25 +13,26 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginRepository: AuthRepository
-) : ViewModel(){
-    private val _url= MutableStateFlow<String>("")
-    val url=_url.asStateFlow()
-     fun login(){
-         viewModelScope.launch {
-            val keyData= loginRepository.getKey()
-             val key=keyData.data.unikey
-             if (keyData.code==200){
-                 val loginPic=loginRepository.getPic(key)
-                 if (loginPic.code==200){
-                     _url.value=loginPic.data.qrurl
-                 }
-         }
+) : ViewModel() {
+    private val _url = MutableStateFlow<String>("")
+    val url = _url.asStateFlow()
+    fun login() {
+        viewModelScope.launch {
+            val keyData = loginRepository.getKey()
+            val key = keyData.data.unikey
+            if (keyData.code == 200) {
+                val loginPic = loginRepository.getPic(key)
+                if (loginPic.code == 200) {
+                    _url.value = loginPic.data.qrurl
+                }
+            }
+        }
+
     }
 
-}
-    fun visitorLogin(){
+    fun visitorLogin() {
         viewModelScope.launch {
-            val data=loginRepository.VisitorLogin()
+            val data = loginRepository.VisitorLogin()
         }
     }
 }

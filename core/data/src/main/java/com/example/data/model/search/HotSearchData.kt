@@ -1,7 +1,6 @@
 package com.example.data.model.search
 
 
-
 data class HotSearchData(
     val code: Int,
     val result: HotResult

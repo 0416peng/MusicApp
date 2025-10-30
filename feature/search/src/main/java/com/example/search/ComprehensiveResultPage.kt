@@ -43,7 +43,9 @@ fun ComprehensiveResultPage(
         if (detailData != null) {
             item {
                 Row(
-                    Modifier.fillMaxWidth().clickable{onSingerClick(detailData!!.result.artist.artists[0].id)},
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onSingerClick(detailData!!.result.artist.artists[0].id) },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
@@ -65,7 +67,9 @@ fun ComprehensiveResultPage(
             }
             item {
                 Row(
-                    Modifier.fillMaxWidth().clickable{onAlbumClick(detailData!!.result.album.albums[0].id)},
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onAlbumClick(detailData!!.result.album.albums[0].id) },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
@@ -85,7 +89,9 @@ fun ComprehensiveResultPage(
             }
             item {
                 Row(
-                    Modifier.fillMaxWidth().clickable{onPlayListClick(detailData!!.result.playList.playLists[0].id)},
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onPlayListClick(detailData!!.result.playList.playLists[0].id) },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
@@ -124,10 +130,15 @@ fun ComprehensiveResultPage(
             val songItems = detailData!!.result.song.songs.take(10).map {
                 SongData(it.id, it.name, it.ar.joinToString("/") { ar -> ar.name })
             }
-            itemsIndexed(songItems) {index,item ->
+            itemsIndexed(songItems) { index, item ->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
-                SongItem(item,color,onPlayClick = {index->viewModel.onAddListClicked(index)},index)
+                SongItem(
+                    item,
+                    color,
+                    onPlayClick = { index -> viewModel.onAddListClicked(index) },
+                    index
+                )
             }
 
             item {
@@ -147,10 +158,10 @@ fun ComprehensiveResultPage(
                 )
             }
             val playListItems = detailData!!.result.playList.playLists.take(5).map {
-                PlayListData(it.name,it.id,it.coverImgUrl, it.trackCount)
+                PlayListData(it.name, it.id, it.coverImgUrl, it.trackCount)
             }
             items(playListItems) { item ->
-                PlayListItem(item, onPlayListClick = {onPlayListClick(item.id)})
+                PlayListItem(item, onPlayListClick = { onPlayListClick(item.id) })
             }
             item {
                 HorizontalDivider(
@@ -169,10 +180,10 @@ fun ComprehensiveResultPage(
                 )
             }
             val albumItems = detailData!!.result.album.albums.take(5).map {
-                AlbumData(it.name,it.id,it.picUrl,it.artist.name)
+                AlbumData(it.name, it.id, it.picUrl, it.artist.name)
             }
-            items(albumItems){item->
-                AlbumListItem(item, onAlbumClick = {onAlbumClick(item.id)})
+            items(albumItems) { item ->
+                AlbumListItem(item, onAlbumClick = { onAlbumClick(item.id) })
             }
 
 

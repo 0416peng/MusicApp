@@ -29,7 +29,7 @@ import com.example.data.model.albumList.AlbumListData
 import com.example.ui.LoadingPlaceholder
 
 @Composable
-fun Album(albumListData: AlbumListData?){
+fun Album(albumListData: AlbumListData?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,8 +59,10 @@ fun Album(albumListData: AlbumListData?){
                         .clip(RoundedCornerShape(8.dp)),
                     contentDescription = "album Picture"
                 )
-                Column(modifier = Modifier.padding(16.dp)
-                    .weight(1f)
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .weight(1f)
                 ) {
                     Text(
                         albumListData.album.name,

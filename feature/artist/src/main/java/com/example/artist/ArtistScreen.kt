@@ -137,7 +137,12 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SongRowItem(song: HotSong, onPlayClick: (id: Long) -> Unit, currentlyPlayingSongId: Long?, index: Int) {
+fun SongRowItem(
+    song: HotSong,
+    onPlayClick: (id: Long) -> Unit,
+    currentlyPlayingSongId: Long?,
+    index: Int
+) {
     val isPlaying = currentlyPlayingSongId == song.id
     Row(
         modifier = Modifier

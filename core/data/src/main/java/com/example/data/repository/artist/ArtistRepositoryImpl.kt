@@ -13,57 +13,57 @@ class ArtistRepositoryImpl @Inject constructor(
     private val artistDetailApiService: ArtistDetailApiService,
     private val artistHotSongsApiService: ArtistHotSongsApiService,
     private val artistSongsApiService: ArtistSongsApiService
-): ArtistRepository {
+) : ArtistRepository {
     override suspend fun getArtistDetail(id: Long): Result<ArtistDetail> {
-        return  try {
-            val response= artistDetailApiService.getArtistDetail(id)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
+        return try {
+            val response = artistDetailApiService.getArtistDetail(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
                     Result.success(body)
-                }else{
+                } else {
                     Result.failure(IOException("Response body is null"))
                 }
-            }else{
+            } else {
                 Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     override suspend fun getArtistHotSongs(id: Long): Result<ArtistHotSongs> {
-        return  try {
-            val response= artistHotSongsApiService.getArtistHotSongs(id)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
+        return try {
+            val response = artistHotSongsApiService.getArtistHotSongs(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
                     Result.success(body)
-                }else{
+                } else {
                     Result.failure(IOException("Response body is null"))
                 }
-            }else{
+            } else {
                 Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun getArtistSongs(id: Long,offset: Int): Result<ArtistSongs> {
-        return  try {
-            val response= artistSongsApiService.getArtistSongs(id,offset)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
+    override suspend fun getArtistSongs(id: Long, offset: Int): Result<ArtistSongs> {
+        return try {
+            val response = artistSongsApiService.getArtistSongs(id, offset)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
                     Result.success(body)
-                }else{
+                } else {
                     Result.failure(IOException("Response body is null"))
                 }
-            }else{
+            } else {
                 Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

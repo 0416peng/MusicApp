@@ -18,22 +18,21 @@ import com.example.ui.LoadingPlaceholder
 
 
 @Composable
-fun AlbumListResultScreen(viewModel: SearchDetailViewModel,
-                          onAlbumClick:(id:Long)->Unit
-                          ){
+fun AlbumListResultScreen(
+    viewModel: SearchDetailViewModel,
+    onAlbumClick: (id: Long) -> Unit
+) {
     val albumData by viewModel.albumsResult.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val listState= rememberLazyListState()
-    if (albumData!=null){
-        val albumItems=albumData!!.result.albums.map {
-            item->
+    val listState = rememberLazyListState()
+    if (albumData != null) {
+        val albumItems = albumData!!.result.albums.map { item ->
             AlbumData(item.name, item.id, item.picUrl, item.artist.name)
         }
         LazyColumn(state = listState) {
-            itemsIndexed(albumItems){
-                index,item->
-                AlbumListItem(item,onAlbumClick)
-                if(index>=albumItems.size-3&&!isRefreshing){
+            itemsIndexed(albumItems) { index, item ->
+                AlbumListItem(item, onAlbumClick)
+                if (index >= albumItems.size - 3 && !isRefreshing) {
                     viewModel.loadMore()
                 }
             }
@@ -51,7 +50,7 @@ fun AlbumListResultScreen(viewModel: SearchDetailViewModel,
             }
         }
 
-    }else{
+    } else {
         LoadingPlaceholder()
     }
 }

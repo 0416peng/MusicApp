@@ -15,31 +15,30 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
     private val artistRepository: ArtistRepository,
     private val musicPlayerManager: MusicPlayerManager
 ) : ViewModel() {
-    val currentlyPlayingSongId=musicPlayerManager.currentlyPlayingSongId
+    val currentlyPlayingSongId = musicPlayerManager.currentlyPlayingSongId
     private val _hotSongs = MutableStateFlow<ArtistHotSongs?>(null)
     val hotSongs = _hotSongs.asStateFlow()
     private val _songs = MutableStateFlow<ArtistSongs?>(null)
     val songs = _songs.asStateFlow()
     private val _detail = MutableStateFlow<ArtistDetail?>(null)
     val detail = _detail.asStateFlow()
-    private val _currentOffset= MutableStateFlow(0)
+    private val _currentOffset = MutableStateFlow(0)
 
-    private val _isRefreshing= MutableStateFlow(false)
-    val isRefreshing=_isRefreshing.asStateFlow()
-    private val _errorState= MutableStateFlow<String?>(null)
-    val errorState=_errorState.asStateFlow()
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState = _errorState.asStateFlow()
     fun getArtistDetail(id: Long) {
         viewModelScope.launch {
             artistRepository.getArtistDetail(id)
                 .onSuccess { data ->
                     if (data.code == 200) {
-                       _detail.value = data
+                        _detail.value = data
                     } else {
                         val errorMsg = "获取歌单列表失败, 业务码: ${data.code}"
                         _errorState.value = errorMsg

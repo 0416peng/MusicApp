@@ -7,7 +7,7 @@ import com.example.data.model.artist.ArtistSongs
 interface ArtistRepository {
     suspend fun getArtistDetail(id: Long): Result<ArtistDetail>
     suspend fun getArtistHotSongs(id: Long): Result<ArtistHotSongs>
-    suspend fun getArtistSongs(id: Long,offset: Int): Result<ArtistSongs>
+    suspend fun getArtistSongs(id: Long, offset: Int): Result<ArtistSongs>
 }
 
 

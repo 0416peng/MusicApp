@@ -24,20 +24,20 @@ class HomeRepositoryImpl @Inject constructor(
     @SuppressLint("SuspiciousIndentation")
     override suspend fun getRecommendAlbum(limit: Int): Result<RecommendAlbumData> {
 
-      return  try {
-          val response= recommendAlbumApiService.getRecommendAlbum(limit)
-            if (response.isSuccessful){
-                val body= response.body()
-                if(body!=null){
+        return try {
+            val response = recommendAlbumApiService.getRecommendAlbum(limit)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
                     Result.success(body)
-                }else{
+                } else {
                     Result.failure(IOException("Response body is null"))
                 }
-            }else{
+            } else {
                 Result.failure(IOException("API Error: ${response.code()}"))
             }
-        }catch (e: Exception){
-          Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

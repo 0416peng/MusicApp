@@ -1,7 +1,6 @@
 package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.core.util.TypedValueCompat
 
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -12,4 +11,4 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val myBackgroundColor=Color(0xFFF0F0F0)
+val myBackgroundColor = Color(0xFFF0F0F0)

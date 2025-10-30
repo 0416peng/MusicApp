@@ -26,12 +26,12 @@ class HomeViewModel @Inject constructor(
     val newAlbum = _newAlbum.asStateFlow()
     private val _banner = MutableStateFlow<BannerData?>(null)
     val banner = _banner.asStateFlow()
-    private val _hotSinger= MutableStateFlow<HotSingerData?>(null)
-    val hotSinger= _hotSinger.asStateFlow()
-    private val _topList= MutableStateFlow<TopListData?>(null)
-    val topList= _topList.asStateFlow()
-    private val _searchText=MutableStateFlow("")
-    val searchText=_searchText.asStateFlow()
+    private val _hotSinger = MutableStateFlow<HotSingerData?>(null)
+    val hotSinger = _hotSinger.asStateFlow()
+    private val _topList = MutableStateFlow<TopListData?>(null)
+    val topList = _topList.asStateFlow()
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
 
 
     private val _errorState = MutableStateFlow<String?>(null)
@@ -127,6 +127,7 @@ class HomeViewModel @Inject constructor(
                 }
         }
     }
+
     fun onSearchTextChanged(text: String) {
         _searchText.value = text
     }

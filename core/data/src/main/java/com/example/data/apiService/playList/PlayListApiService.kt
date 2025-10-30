@@ -8,5 +8,8 @@ import retrofit2.http.Query
 
 interface PlayListApiService {
     @GET("/playlist/track/all")
-    suspend fun getPlayListData(@Query("id") id: Long,@Query("offset") offset: Int): Response<PlayListData>
+    suspend fun getPlayListData(
+        @Query("id") id: Long,
+        @Query("offset") offset: Int
+    ): Response<PlayListData>
 }

@@ -22,7 +22,12 @@ import coil.compose.AsyncImage
 import com.example.data.model.home.DisplayableAlbumItemData
 
 @Composable
-fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit,onPlayListClick: (Long) -> Unit,type:Int) {
+fun AlbumList(
+    items: List<DisplayableAlbumItemData>,
+    onAlbumClick: (Long) -> Unit,
+    onPlayListClick: (Long) -> Unit,
+    type: Int
+) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -37,8 +42,9 @@ fun AlbumList(items: List<DisplayableAlbumItemData>,onAlbumClick:(Long)->Unit,on
                         .width(120.dp)
                         .aspectRatio(1f)
                         .clickable {
-                            if (type==0) onPlayListClick(item.albumId)
-                            else onAlbumClick(item.albumId) }
+                            if (type == 0) onPlayListClick(item.albumId)
+                            else onAlbumClick(item.albumId)
+                        }
 
 
                 ) {

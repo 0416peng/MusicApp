@@ -19,11 +19,13 @@ object SearchModule {
     fun provideSearchApiService(retrofit: Retrofit): HotSearchApiService {
         return retrofit.create(HotSearchApiService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideSearchSuggestApiService(retrofit: Retrofit): SearchSuggestApiService {
         return retrofit.create(SearchSuggestApiService::class.java)
     }
+
     @Provides
     @Singleton
     fun provideSearchDetailApiService(retrofit: Retrofit): SearchDetailApiService {

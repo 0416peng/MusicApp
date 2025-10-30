@@ -15,7 +15,7 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
-class SearchResultConverterFactory(private val gson: Gson): Converter.Factory() {
+class SearchResultConverterFactory(private val gson: Gson) : Converter.Factory() {
     override fun responseBodyConverter(
         type: Type,
         annotations: Array<out Annotation>,
@@ -28,24 +28,27 @@ class SearchResultConverterFactory(private val gson: Gson): Converter.Factory() 
         return SearchResultConverter(gson)
     }
 
-    private class SearchResultConverter(private val gson: Gson) : Converter<ResponseBody, SearchResult> {
+    private class SearchResultConverter(private val gson: Gson) :
+        Converter<ResponseBody, SearchResult> {
         override fun convert(value: ResponseBody): SearchResult? {
             val responseString = value.string()
             return when {
-                responseString.contains("\"song\"") ->{
+                responseString.contains("\"song\"") -> {
                     Log.d("SearchResultConverter", "song")
                     val result = gson.fromJson(responseString, SearchDetail::class.java)
                     SearchResult.Detail(result)
                 }
+
                 responseString.contains("\"albums\"") -> {
                     Log.d("SearchResultConverter", "albums")
                     val result = gson.fromJson(responseString, SearchAlbumDetail::class.java)
                     SearchResult.Albums(result)
                 }
+
                 responseString.contains("\"songs\"") -> {
                     Log.d("SearchResultConverter", "songs")
                     val result = gson.fromJson(responseString, SearchSongsDetail::class.java)
-                   SearchResult.Songs(result)
+                    SearchResult.Songs(result)
                 }
 
                 responseString.contains("\"artists\"") -> {
@@ -53,15 +56,18 @@ class SearchResultConverterFactory(private val gson: Gson): Converter.Factory() 
                     val result = gson.fromJson(responseString, SearchSingerDetail::class.java)
                     SearchResult.Singers(result)
                 }
+
                 responseString.contains("\"playlists\"") -> {
                     Log.d("SearchResultConverter", "playlists")
                     val result = gson.fromJson(responseString, SearchPlayListDetail::class.java)
                     SearchResult.PlayLists(result)
                 }
+
                 responseString.contains("\"mvs\"") -> {
                     val result = gson.fromJson(responseString, SearchMVDetail::class.java)
                     SearchResult.MV(result)
                 }
+
                 else -> null
             }
         }

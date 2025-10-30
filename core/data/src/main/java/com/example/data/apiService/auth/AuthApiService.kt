@@ -8,5 +8,5 @@ import retrofit2.http.Query
 
 interface AuthApiService {
     @GET("login/qr/check")
-    suspend fun getStatue(@Query("key") key:String): Response<AuthStatue>
+    suspend fun getStatue(@Query("key") key: String): Response<AuthStatue>
 }

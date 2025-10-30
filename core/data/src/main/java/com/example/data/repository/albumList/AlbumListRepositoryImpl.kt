@@ -6,10 +6,10 @@ import com.example.data.model.albumList.AlbumListData
 import java.io.IOException
 import javax.inject.Inject
 
-class AlbumListRepositoryImpl@Inject constructor(
+class AlbumListRepositoryImpl @Inject constructor(
     private val albumListApiService: AlbumListApiService,
-):AlbumListRepository  {
-    override suspend fun getAlbumListData(id: Long):Result< AlbumListData> {
+) : AlbumListRepository {
+    override suspend fun getAlbumListData(id: Long): Result<AlbumListData> {
         return try {
             val response = albumListApiService.getAlbumListData(id)
             if (response.isSuccessful) {

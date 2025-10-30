@@ -16,15 +16,23 @@ import coil.compose.AsyncImage
 import com.example.data.model.search.data.PlayListData
 
 @Composable
-fun PlayListItem(item: PlayListData,onPlayListClick:(id: Long)-> Unit){
+fun PlayListItem(item: PlayListData, onPlayListClick: (id: Long) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onPlayListClick(item.id) },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(model = item.picUrl, contentDescription = item.name, modifier = Modifier.padding(12.dp).size(45.dp))
-        Column(modifier = Modifier.padding(12.dp).weight(1f)) {
+        AsyncImage(
+            model = item.picUrl,
+            contentDescription = item.name,
+            modifier = Modifier
+                .padding(12.dp)
+                .size(45.dp)
+        )
+        Column(modifier = Modifier
+            .padding(12.dp)
+            .weight(1f)) {
             Text(item.name, fontSize = 16.sp)
             Text(item.trackCount.toString() + "首", fontSize = 12.sp)
         }

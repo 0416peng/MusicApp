@@ -17,22 +17,21 @@ import com.example.data.model.search.data.PlayListData
 import com.example.ui.LoadingPlaceholder
 
 @Composable
-fun PlayListResultScreen(viewModel: SearchDetailViewModel,
-                         onPlayListClick:(id: Long)-> Unit
-                         ){
+fun PlayListResultScreen(
+    viewModel: SearchDetailViewModel,
+    onPlayListClick: (id: Long) -> Unit
+) {
     val playListData by viewModel.playListsResult.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val listState= rememberLazyListState()
-    if(playListData!=null){
-        val playListItems=playListData!!.result.playlists.map {
-            item->
-            PlayListData(item.name, item.id, item.coverImgUrl,item.trackCount)
+    val listState = rememberLazyListState()
+    if (playListData != null) {
+        val playListItems = playListData!!.result.playlists.map { item ->
+            PlayListData(item.name, item.id, item.coverImgUrl, item.trackCount)
         }
         LazyColumn(state = listState) {
-            itemsIndexed(playListItems){
-                index,item->
-               PlayListItem(item,onPlayListClick)
-                if(index>=playListItems.size-3&&!isRefreshing){
+            itemsIndexed(playListItems) { index, item ->
+                PlayListItem(item, onPlayListClick)
+                if (index >= playListItems.size - 3 && !isRefreshing) {
                     viewModel.loadMore()
                 }
             }
@@ -49,7 +48,7 @@ fun PlayListResultScreen(viewModel: SearchDetailViewModel,
                 }
             }
         }
-    }else{
+    } else {
         LoadingPlaceholder()
     }
 }

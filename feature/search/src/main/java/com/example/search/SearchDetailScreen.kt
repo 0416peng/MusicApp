@@ -62,7 +62,7 @@ fun SearchDetailScreen(
         ) { page ->
             when (viewModel.categories[page].type) {
                 1018 -> {
-                    ComprehensiveResultPage(viewModel, onPlayListClick, onAlbumClick,onSingerClick)
+                    ComprehensiveResultPage(viewModel, onPlayListClick, onAlbumClick, onSingerClick)
                     viewModel.onTabSelected(page)
                 }
 

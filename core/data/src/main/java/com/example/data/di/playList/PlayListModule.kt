@@ -18,6 +18,7 @@ object PlayListModule {
     fun providePlayListApiService(retrofit: Retrofit): PlayListApiService {
         return retrofit.create(PlayListApiService::class.java)
     }
+
     @Provides
     @Singleton
     fun providePlayListDetailApiService(retrofit: Retrofit): PlayListDetailApiService {

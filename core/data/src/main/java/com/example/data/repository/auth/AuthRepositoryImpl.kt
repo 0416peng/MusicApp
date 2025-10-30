@@ -18,31 +18,33 @@ class AuthRepositoryImpl @Inject constructor(
     private val loginPicApiService: LoginPicApiService,
     private val authApiService: AuthApiService,
     private val visitorLoginApiService: VisitorLoginApiService,
-    private val userSessionManager: UserSessionManager) :
+    private val userSessionManager: UserSessionManager
+) :
     AuthRepository {
     @SuppressLint("SuspiciousIndentation")
     override suspend fun getKey(): LoginKey {
-      val response = loginApiService.getKey()
-        try{
-            if (response.isSuccessful){
-            return response.body()!!
-        }else{
-            throw IOException("API Error: ${response.code()}")
-        }}catch (e: Exception){
+        val response = loginApiService.getKey()
+        try {
+            if (response.isSuccessful) {
+                return response.body()!!
+            } else {
+                throw IOException("API Error: ${response.code()}")
+            }
+        } catch (e: Exception) {
             throw e
         }
 
     }
 
-    override suspend fun getPic(key:String): LoginPic {
+    override suspend fun getPic(key: String): LoginPic {
         val response = loginPicApiService.getPic(key)
         try {
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 return response.body()!!
-            }else{
+            } else {
                 throw IOException("API Error: ${response.code()}")
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
         }
     }
@@ -50,33 +52,30 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun getStatue(key: String): AuthStatue {
         val response = authApiService.getStatue(key)
         try {
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 return response.body()!!
-            }else{
+            } else {
                 throw IOException("API Error: ${response.code()}")
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
         }
     }
-
-
 
 
     override suspend fun VisitorLogin(): VisitorLoginData {
         val response = visitorLoginApiService.visitorLogin()
         try {
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 return response.body()!!
                 userSessionManager.saveCookie(response.body()!!.cookie)
-            }else{
+            } else {
                 throw IOException("API Error: ${response.code()}")
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw e
         }
     }
 
 
-
-    }
+}

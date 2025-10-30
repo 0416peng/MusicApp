@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.search.data.SongData
 
 @Composable
-fun SongItem(item: SongData,color: Color,onPlayClick:(index: Int)->Unit,index:Int){
+fun SongItem(item: SongData, color: Color, onPlayClick: (index: Int) -> Unit, index: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
