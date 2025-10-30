@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
@@ -22,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.albumList.Song
 
 @Composable
-fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(id: Long)-> Unit) {
+fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(index: Int)-> Unit) {
 
     LazyColumn {
         item {
@@ -41,12 +42,12 @@ fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick:(id: Lon
                 Text("播放全部")
             }
         }
-        items(songs) { item ->
+        itemsIndexed(songs) {index, item ->
             val isPlaying = currentlyPlayingSongId==item.id
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {/*TODO:播放音乐*/onClick(item.id) }
+                    .clickable {/*TODO:播放音乐*/onClick(index) }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

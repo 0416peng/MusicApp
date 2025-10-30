@@ -74,7 +74,11 @@ class ArtistViewModel @Inject constructor(
         }
     }
 
-    fun onPlayPauseClicked(songId: Long) {
-        musicPlayerManager.playSong(songId)
+    fun onPlayPauseClicked(index: Int) {
+        /*TODO:待完善歌手页面之后再编写
+        val list =_songs.value?.songs?.map {
+            item->item.id
+        }
+        musicPlayerManager.addMultipleToQueue(list,index)*/
     }
 }

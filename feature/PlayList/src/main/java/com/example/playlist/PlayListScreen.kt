@@ -44,7 +44,7 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
             LoadingPlaceholder()
         }
         SongList(playListData,currentlyPlayingSongId,listState,
-            {id-> viewModel.onPlayPauseClicked(id)},
+            {index-> viewModel.onAddListClicked(index)},
             {id-> viewModel.loadMorePlayListData(id)},
             isRefreshing
             )

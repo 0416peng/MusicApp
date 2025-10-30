@@ -59,7 +59,7 @@ fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
         }
         if (albumListData!=null){
             if(albumListData!!.code==200){
-                AlbumList(albumListData!!.songs,currentlyPlayingSongId, onClick = {id-> viewModel.onPlayPauseClicked( id) })
+                AlbumList(albumListData!!.songs,currentlyPlayingSongId, onClick = {index-> viewModel.onAddListClicked(index) })
             }
         }else{
             Box(modifier = Modifier.fillMaxSize()) {

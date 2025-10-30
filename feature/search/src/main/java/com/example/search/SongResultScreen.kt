@@ -31,7 +31,7 @@ fun SongResultScreen(viewModel: SearchDetailViewModel){
             itemsIndexed(songsItem){index,item->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
-                SongItem(item,color,onPlayClick = {id->viewModel.onPlayPauseClicked(id)})
+                SongItem(item,color,onPlayClick = {index->viewModel.onAddListClicked(index)},index)
                 if(index>=songsItem.size-3&&!isRefreshing){
                     viewModel.loadMore()
                 }

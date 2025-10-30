@@ -198,8 +198,11 @@ class SearchDetailViewModel @Inject constructor(
         onSearchTriggered(_searchKeyword.value)
     }
 
-    fun onPlayPauseClicked(songId: Long) {
-        musicPlayerManager.playSong(songId)
+    fun onAddListClicked(index: Int) {
+        val list=_songsResult.value?.result?.songs?.map {
+            item->item.id
+        }
+        musicPlayerManager.addMultipleToQueue(list,index)
     }
 
 

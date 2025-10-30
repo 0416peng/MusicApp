@@ -99,8 +99,11 @@ class PlayListViewModel @Inject constructor(
         }
     }
 
-    fun onPlayPauseClicked(songId: Long) {
-        musicPlayerManager.playSong(songId)
+    fun onAddListClicked(index:Int) {
+        val list=_playListData.value?.songs?.map { item->
+            item.id
+        }
+        musicPlayerManager.addMultipleToQueue(list,index)
     }
 
     // 提供一个方法让 UI 在显示错误后可以重置状态

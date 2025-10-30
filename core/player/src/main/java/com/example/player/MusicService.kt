@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -29,6 +30,8 @@ const val ACTION_SKIP_TO_ITEM="ACTION_SKIP_TO_ITEM"//跳转到列表的其他歌
 const val ACTION_ADD_TO_QUEUE_MULTIPLE="ACTION_ADD_TO_QUEUE_MULTIPLE"
 
 
+
+
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
     @Inject
@@ -43,6 +46,19 @@ class MusicService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         mediaSession=MediaSession.Builder(this,player).build()
+        player.addListener(object : Player.Listener{
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                if(mediaItem!=null){
+                    val songId=mediaItem.mediaId.toLongOrNull()
+                    if(songId!=null){
+                        musicPlayerManager.onTrackChanged(songId)
+                    }else{
+                        musicPlayerManager.onPlayerStopped()
+                    }
+                }
+            }
+        })
     }
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
         return mediaSession
@@ -107,7 +123,6 @@ class MusicService : MediaSessionService() {
         }
     }//将单首歌曲添加到下一首
     private fun handleAddToQueueMultiple(intent: Intent){
-
         val songIds=intent.getLongArrayExtra("songIds")
         val startIndex=intent.getIntExtra("startIndex",0)
         val songIdsList=songIds?.toList()
@@ -139,21 +154,43 @@ class MusicService : MediaSessionService() {
         }
     }//清除列表并关闭播放器
 
-    private suspend fun buildItem(songId:List<Long>):List<MediaItem>?{
-        val urlResult=songRepository.getSongUrl(songId)
-        return urlResult.getOrNull()?.data?.map { urlData ->
-            val songId=urlData.id
-            val url=urlData.url
-            MediaItem.Builder()
-                .setMediaId(songId.toString())
-                .setUri(url)
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle("歌曲名 $songId") // TODO: 替换为真实歌曲名
-                        .setArtist("歌手")         // TODO: 替换为真实歌手名
+    private suspend fun buildItem(songIds:List<Long>):List<MediaItem>?{
+        val mediaItems = mutableListOf<MediaItem>()
+
+        // 2. 遍历传入的每一个 songId
+        val songId=songIds[0]
+            try {
+                // 3. 【核心改动】在循环内部，每次只请求一个 songId
+                //    我们将 songId 包装成一个单元素的列表来调用现有 repository 方法
+                val urlResult = songRepository.getSongUrl(listOf(songId))
+
+                // 4. 从单次请求的结果中提取 URL
+                val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
+
+                if (songUrlData != null && songUrlData.url != null) {
+                    // 5. 如果成功获取到有效的 URL，就创建并添加 MediaItem
+                    val mediaItem = MediaItem.Builder()
+                        .setMediaId(songUrlData.id.toString())
+                        .setUri(songUrlData.url)
+                        .setMediaMetadata(
+                            MediaMetadata.Builder()
+                                .setTitle("歌曲名 ${songUrlData.id}") // TODO: 替换为真实歌曲名
+                                .setArtist("歌手")         // TODO: 替换为真实歌手名
+                                .build()
+                        )
                         .build()
-                )
-                .build()
-        }
+                    mediaItems.add(mediaItem)
+                } else {
+                    // 如果某首歌的URL为null或请求失败，记录日志并跳过
+                    Log.w("MusicService", "Failed to get URL for songId: $songId. Skipping.")
+                }
+            } catch (e: Exception) {
+                // 捕获单次请求可能发生的异常（如网络问题），防止整个循环中断
+                Log.e("MusicService", "Error fetching URL for songId: $songId", e)
+            }
+
+
+        // 6. 返回收集到的所有有效的 MediaItem
+        return mediaItems
     }//创建buildItem
 }

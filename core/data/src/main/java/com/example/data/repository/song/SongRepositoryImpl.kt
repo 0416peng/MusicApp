@@ -10,7 +10,7 @@ class SongRepositoryImpl @Inject constructor(
 ) : SongRepository{
     override suspend fun getSongUrl(ids: List<Long>): Result<SongUrlData> {
         return try {
-            val idsString=ids.joinToString(separator = ".")
+            val idsString=ids.joinToString(separator = ",")
             val response =getSongUrlApiService.getSongUrl(idsString)
             if (response.isSuccessful) {
                 val body = response.body()

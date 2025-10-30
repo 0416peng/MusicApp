@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -123,10 +124,10 @@ fun ComprehensiveResultPage(
             val songItems = detailData!!.result.song.songs.take(10).map {
                 SongData(it.id, it.name, it.ar.joinToString("/") { ar -> ar.name })
             }
-            items(songItems) { item ->
+            itemsIndexed(songItems) {index,item ->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
-                SongItem(item,color,onPlayClick = {id->viewModel.onPlayPauseClicked(id)})
+                SongItem(item,color,onPlayClick = {index->viewModel.onAddListClicked(index)},index)
             }
 
             item {

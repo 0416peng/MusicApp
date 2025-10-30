@@ -43,8 +43,11 @@ class AlbumListViewModel @Inject constructor(
                     Log.e("HomeViewModel", "getAlbumList网络或解析错误", exception)
                 }
         }}
-        fun onPlayPauseClicked(songId: Long) {
-            musicPlayerManager.playSong(songId)
+        fun onAddListClicked(index: Int) {
+            val list=_albumListData.value?.songs?.map {
+                item->item.id
+            }
+            musicPlayerManager.addMultipleToQueue(list,index)
         }
         fun errorShown() {
             _errorState.value = null
