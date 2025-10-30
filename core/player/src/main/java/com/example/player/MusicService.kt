@@ -3,6 +3,7 @@ package com.example.player
 import android.content.ComponentName
 import android.content.Intent
 import android.util.Log
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -16,7 +17,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import hilt_aggregated_deps._com_example_player_MusicService_GeneratedInjector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,6 +44,7 @@ class MusicService : MediaSessionService() {
     @Inject
     lateinit var musicPlayerManager: MusicPlayerManager
     private val serviceJob= SupervisorJob()
+    private var backgroundLoadJob: Job?=null
     private val serviceScope=CoroutineScope(Dispatchers.Main+serviceJob)
     private var mediaSession: MediaSession?=null
     override fun onCreate() {
@@ -67,13 +71,10 @@ class MusicService : MediaSessionService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         when(intent?.action){
-            ACTION_ADD_TO_QUEUE->handleAddToQueue(intent)
             ACTION_PLAY_OR_PAUSE->handlePlayOrPause(intent)
             ACTION_ADD_TO_NEXT->handleAddToNext(intent)
             ACTION_CLEAR->clear()
-            ACTION_SKIP_TO_ITEM->handleSkipToItem(intent)
             ACTION_ADD_TO_QUEUE_MULTIPLE->handleAddToQueueMultiple(intent)
-
         else->{
             if(player.isPlaying){
             player.pause()}
@@ -92,61 +93,44 @@ class MusicService : MediaSessionService() {
     }
     private fun handlePlayOrPause(intent: Intent){
         if(player.isPlaying) player.pause() else player.play()
-    }//继续播放或者暂停播放
-    private fun handleAddToQueue(intent: Intent){
-        val songId=intent.getLongExtra("songId",-1L)
-        if(songId!=-1L){
-            serviceScope.launch {
-                val songIds=listOf(songId)
-                val mediaItems=buildItem(songIds)
-                if (mediaItems!=null){
-                    player.addMediaItem(mediaItems[0])
-                }
-                if(!player.isPlaying&&player.playbackState== ExoPlayer.STATE_IDLE){
-                    player.prepare()
-                    player.play()
-                }
-            }
-        }
-    }//添加单首到队尾，如果没有歌曲正在播放则进行播放。
+    }
+
     private fun handleAddToNext(intent: Intent){
-        val currentIndex=player.currentMediaItemIndex
-        val songId=intent.getLongExtra("songId",-1L)
-        if(songId!=-1L){
+        val currentIndex = player.currentMediaItemIndex
+        val songId = intent.getLongExtra("songId",-1L)
+        if(songId != -1L){
             serviceScope.launch {
-                val songIds=listOf(songId)
-                val mediaItems=buildItem(songIds)
-                if(mediaItems!=null){
-                    player.addMediaItem(currentIndex+1,mediaItems[0])
+                val mediaItem = buildSingleItem(songId)
+                if(mediaItem != null){
+                    val insertIndex = if (currentIndex == C.INDEX_UNSET) 0 else currentIndex + 1
+                    player.addMediaItem(insertIndex, mediaItem)
                 }
             }
         }
     }//将单首歌曲添加到下一首
-    private fun handleAddToQueueMultiple(intent: Intent){
-        val songIds=intent.getLongArrayExtra("songIds")
-        val startIndex=intent.getIntExtra("startIndex",0)
-        val songIdsList=songIds?.toList()
-        if(!songIdsList.isNullOrEmpty()){
+    private fun handleAddToQueueMultiple(intent: Intent) {
+        val songIds = intent.getLongArrayExtra("songIds")
+        val startIndex = intent.getIntExtra("startIndex", 0)
+        val songIdsList = songIds?.toList()
+        if (!songIdsList.isNullOrEmpty() && startIndex in songIdsList.indices) {
             serviceScope.launch {
-                val mediaItems=buildItem(songIdsList)
-                if(mediaItems!=null&&mediaItems.isNotEmpty()){
-                    val validStartIndex = if (startIndex in mediaItems.indices) startIndex else 0
-                    player.setMediaItems(mediaItems,validStartIndex,0L)
-                        player.prepare()
-                        player.play()
+                val clickedSongId = songIdsList[startIndex]
+                val clickedMediaItem = buildSingleItem(clickedSongId)
+                if (clickedMediaItem != null) {
+                    player.setMediaItems(listOf(clickedMediaItem), 0, 0L)
+                    player.prepare()
+                    player.play()
+                    Log.d("MusicService", "Started immediate playback for songId: $clickedSongId")
+                    backgroundLoadJob?.cancel()
+                    val itemsAfterClicked = songIdsList.subList(startIndex + 1, songIdsList.size)
+                    val itemsBeforeClicked = songIdsList.subList(0, startIndex)
+                   backgroundLoadJob= addRemainingItemsInOrder(itemsAfterClicked, itemsBeforeClicked)
+                } else {
+                    Log.e("MusicService", "Failed to get URL for the clicked song, cannot start playback.")
                 }
             }
         }
-    }//清除当前正在播放的列表并添加新的列表。
-    private fun handleSkipToItem(intent: Intent){
-        val itemIndex=intent.getIntExtra("itemIndex",-1)
-        if(itemIndex!=-1&&itemIndex< player.mediaItemCount){
-            player.seekTo(itemIndex,0L)
-            player.play()
-        }else{
-            Log.w("MusicService","Invalid item index: $itemIndex")
-        }
-    }//播放列表中的其他歌曲
+    }
     private fun clear(){
         serviceScope.launch {
             player.clearMediaItems()
@@ -154,43 +138,43 @@ class MusicService : MediaSessionService() {
         }
     }//清除列表并关闭播放器
 
-    private suspend fun buildItem(songIds:List<Long>):List<MediaItem>?{
-        val mediaItems = mutableListOf<MediaItem>()
-
-        // 2. 遍历传入的每一个 songId
-        val songId=songIds[0]
-            try {
-                // 3. 【核心改动】在循环内部，每次只请求一个 songId
-                //    我们将 songId 包装成一个单元素的列表来调用现有 repository 方法
-                val urlResult = songRepository.getSongUrl(listOf(songId))
-
-                // 4. 从单次请求的结果中提取 URL
-                val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
-
-                if (songUrlData != null && songUrlData.url != null) {
-                    // 5. 如果成功获取到有效的 URL，就创建并添加 MediaItem
-                    val mediaItem = MediaItem.Builder()
-                        .setMediaId(songUrlData.id.toString())
-                        .setUri(songUrlData.url)
-                        .setMediaMetadata(
-                            MediaMetadata.Builder()
-                                .setTitle("歌曲名 ${songUrlData.id}") // TODO: 替换为真实歌曲名
-                                .setArtist("歌手")         // TODO: 替换为真实歌手名
-                                .build()
-                        )
-                        .build()
-                    mediaItems.add(mediaItem)
-                } else {
-                    // 如果某首歌的URL为null或请求失败，记录日志并跳过
-                    Log.w("MusicService", "Failed to get URL for songId: $songId. Skipping.")
+    private fun addRemainingItemsInOrder(itemsAfter: List<Long>, itemsBefore: List<Long>): Job {
+       return serviceScope.launch(Dispatchers.IO) {
+            for (songId in itemsAfter) {
+                val mediaItem = buildSingleItem(songId)
+                if (mediaItem != null) {
+                    launch(Dispatchers.Main) {
+                        player.addMediaItem(mediaItem)
+                    }
                 }
-            } catch (e: Exception) {
-                // 捕获单次请求可能发生的异常（如网络问题），防止整个循环中断
-                Log.e("MusicService", "Error fetching URL for songId: $songId", e)
             }
 
+            for (songId in itemsBefore) {
+                ensureActive()
+                val mediaItem = buildSingleItem(songId)
+                if (mediaItem != null) {
+                    launch(Dispatchers.Main) {
+                        player.addMediaItem(mediaItem)
+                    }
+                }
+            }
 
-        // 6. 返回收集到的所有有效的 MediaItem
-        return mediaItems
-    }//创建buildItem
+            Log.d("MusicService", "Finished adding remaining items in correct order.")
+        }
+    }//添加歌曲的逻辑
+    private suspend fun buildSingleItem(songId: Long): MediaItem? {
+        try {
+            val urlResult = songRepository.getSongUrl(listOf(songId))
+            val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
+            if (songUrlData != null && songUrlData.url != null) {
+                return MediaItem.Builder()
+                    .setMediaId(songUrlData.id.toString())
+                    .setUri(songUrlData.url)
+                    .build()
+            }
+        } catch (e: Exception) {
+            Log.e("MusicService", "Error fetching URL for songId: $songId", e)
+        }
+        return null
+    }//获取单个歌曲的url
 }

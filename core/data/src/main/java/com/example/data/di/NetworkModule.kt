@@ -48,7 +48,9 @@ object NetworkModule {
             if (cookie != null) {
                 requestBuilder.addHeader("Cookie", cookie)
             }
-
+            val originalUrl = originalRequest.url
+            val newUrl = originalUrl.newBuilder().addQueryParameter("randomCNIP","true").build()
+            requestBuilder.url(newUrl)
             val newRequest = requestBuilder.build()
             return chain.proceed(newRequest)
         }
