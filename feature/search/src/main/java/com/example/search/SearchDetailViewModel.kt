@@ -9,6 +9,7 @@ import com.example.data.model.search.SearchResult
 import com.example.data.model.search.SearchSingerDetail
 import com.example.data.model.search.SearchSongsDetail
 import com.example.data.model.search.detail.SearchDetail
+import com.example.data.model.song.SongsListData
 import com.example.data.repository.search.SearchDetailRepository
 import com.example.player.MusicPlayerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -200,8 +201,9 @@ class SearchDetailViewModel @Inject constructor(
     }
 
     fun onAddListClicked(index: Int) {
-        val list = _songsResult.value?.result?.songs?.map { item ->
-            item.id
+        val list=mutableListOf<SongsListData>()
+        for(i in _songsResult.value!!.result.songs){
+            list.add(SongsListData(i.id,i.name))
         }
         musicPlayerManager.addMultipleToQueue(list, index)
     }

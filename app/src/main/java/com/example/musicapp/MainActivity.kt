@@ -4,7 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +19,7 @@ import androidx.navigation.navArgument
 import com.example.albumList.AlbumListScreen
 import com.example.artist.ArtistScreen
 import com.example.home.ui.HomeScreen
+import com.example.musicapp.ui.MiniPlayer
 import com.example.playlist.PlayListScreen
 import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
@@ -29,7 +35,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MusicAppTheme {
                 val navController: NavHostController = rememberNavController()
-                MusicNavGraph(navController = navController)
+                Scaffold(bottomBar = {MiniPlayer()}) {
+                    innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
+                }
             }
         }
     }
@@ -50,12 +58,14 @@ object AppDestinations {
 
 @Composable
 fun MusicNavGraph(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = AppDestinations.HOME_ROUTE
+    startDestination: String = AppDestinations.HOME_ROUTE,
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier=modifier
     ) {
         composable(AppDestinations.HOME_ROUTE) {
             HomeScreen(

@@ -8,5 +8,5 @@ import retrofit2.http.Query
 
 interface GetSongDetailApiService {
     @GET("song/detail")
-    suspend fun getSongDetail(@Query("id") id: Long): Response<SongDetailData>
+    suspend fun getSongDetail(@Query("ids") id: Long): Response<SongDetailData>
 }

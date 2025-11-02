@@ -21,8 +21,8 @@ data class Privilege(
     val fl: Int,
     val flLevel: String,
     val flag: Int,
-    val freeTrialPrivilege: FreeTrialPrivilege,
-    val id: Int,
+    val freeTrialPrivilege: FreeTrialPrivilegeX,
+    val id: Long,
     val ignoreCache: Any,
     val maxBrLevel: String,
     val maxbr: Int,
@@ -62,7 +62,7 @@ data class Song(
     val ftype: Int,
     val h: H,
     val hr: Any,
-    val id: Int,
+    val id: Long,
     val l: L,
     val m: M,
     val mainTitle: Any,
@@ -103,7 +103,7 @@ data class ChargeInfo(
     val rate: Int
 )
 
-data class FreeTrialPrivilege(
+data class FreeTrialPrivilegeX(
     val cannotListenReason: Int,
     val freeLimitTagType: Any,
     val listenType: Any,
