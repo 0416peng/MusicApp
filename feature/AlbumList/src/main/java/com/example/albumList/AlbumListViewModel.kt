@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.example.data.model.albumList.AlbumListData
+import com.example.data.model.song.SongsListData
 import com.example.data.repository.albumList.AlbumListRepository
 import com.example.player.MusicPlayerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,9 +47,10 @@ class AlbumListViewModel @Inject constructor(
     }
 
     fun onAddListClicked(index: Int) {
-        val list = _albumListData.value?.songs?.map { item ->
-            item.id
-        }
+        val list=mutableListOf<SongsListData>()
+       for(i in _albumListData.value!!.songs){
+           list.add(SongsListData(i.id,i.name))
+       }
         musicPlayerManager.addMultipleToQueue(list, index)
     }
 
