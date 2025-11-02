@@ -1,6 +1,7 @@
 
 package com.example.musicapp.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,17 +45,18 @@ import com.example.musicapp.PlayerViewModel
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniPlayer(
-    viewModel: PlayerViewModel = hiltViewModel()
+    viewModel: PlayerViewModel = hiltViewModel(),
+    onShowListClick:()->Unit,
 ){
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val songsData by viewModel.songsList.collectAsState()
     val songDetail by viewModel.songDetailData.collectAsState()
-    var showList by remember{mutableStateOf(false)}
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+
+
     val errorState by viewModel.errorState.collectAsState()
 
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -72,22 +74,7 @@ fun MiniPlayer(
     val isPlaying=true
         if (songDetail!=null) {
             Log.d("songDetail",songDetail.toString())
-            if (showList) {
-                ModalBottomSheet(
-                    onDismissRequest = { showList = false },
-                    sheetState = sheetState
-                ) {
-                    songsData?.let { list ->
-                        PlayListSheet(
-                            items = list,
-                            onClick = { index -> viewModel.addMultipleToQueue(index) })
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showList = false
-                            }
-                        }
-                    }
-                }}
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -114,7 +101,7 @@ fun MiniPlayer(
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                    IconButton(onClick = { showList = true }) {
+                    IconButton(onClick = { onShowListClick }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.List,
                             contentDescription = "列表",

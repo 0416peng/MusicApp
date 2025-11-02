@@ -18,7 +18,6 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
     val currentlyPlayingSongId = _currentlyPlayingSongId.asStateFlow()
     private val _songsList= MutableStateFlow<List<SongsListData>?>(null)
     val songsList= _songsList.asStateFlow()
-
     @OptIn(UnstableApi::class)
     fun onTrackChanged(songId: Long) {
         _currentlyPlayingSongId.value = songId
