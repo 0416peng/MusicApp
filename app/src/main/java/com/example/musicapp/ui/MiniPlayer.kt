@@ -74,12 +74,11 @@ fun MiniPlayer(
     val isPlaying=true
         if (songDetail!=null) {
             Log.d("songDetail",songDetail.toString())
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -101,7 +100,7 @@ fun MiniPlayer(
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                    IconButton(onClick = { onShowListClick }) {
+                    IconButton(onClick =  onShowListClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.List,
                             contentDescription = "列表",

@@ -1,11 +1,10 @@
 package com.example.musicapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -148,10 +147,11 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showList by remember{mutableStateOf(false)}
     val navController: NavHostController = rememberNavController()
-    Scaffold(bottomBar = {MiniPlayer(onShowListClick = {showList=true})}) {
+    Scaffold(bottomBar = {MiniPlayer(onShowListClick = {showList=true
+    })}) {
             innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
     }
-    if(showList==true){
+    if(showList){
         ModalBottomSheet(
             onDismissRequest = { showList = false },
             sheetState = sheetState
@@ -159,12 +159,15 @@ fun MainScreen(
             songsData?.let { list ->
                 PlayListSheet(
                     items = list,
-                    onClick = { index -> viewModel.addMultipleToQueue(index) })
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showList = false
-                    }
-                }
+                    onClick = { index -> viewModel.addMultipleToQueue(index)
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showList = false
+                            }
+                        }
+
+                    })
+
             }
         }
     }
