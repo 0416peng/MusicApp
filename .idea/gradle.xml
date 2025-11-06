@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/feature/artist" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/login" />
+            <option value="$PROJECT_DIR$/feature/player" />
             <option value="$PROJECT_DIR$/feature/search" />
           </set>
         </option>

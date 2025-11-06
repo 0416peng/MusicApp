@@ -30,6 +30,7 @@ import com.example.artist.ArtistScreen
 import com.example.home.ui.HomeScreen
 import com.example.musicapp.ui.MiniPlayer
 import com.example.musicapp.ui.PlayListSheet
+import com.example.player.PlayerScreen
 import com.example.playlist.PlayListScreen
 import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
@@ -63,6 +64,8 @@ object AppDestinations {
     const val SEARCH_DETAIL_ROUTE = "searchDetail"
     const val ARTIST_ROUTE = "artist"
     const val ARTIST_ID_ARG = "artistId"
+    const val PLAYER_SCREEN="playerScreen"
+    const val PLAYER_ID_ARG="id"
 }
 
 @Composable
@@ -134,7 +137,16 @@ fun MusicNavGraph(
             val artistId = backStackEntry.arguments?.getLong(AppDestinations.ARTIST_ID_ARG)
             ArtistScreen(id = artistId!!)
         }
-
+        composable(
+            route ="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}",
+            arguments = listOf(navArgument(AppDestinations.PLAYER_ID_ARG){
+                type=NavType.LongType
+            })
+        ){
+            backStackEntry->
+            val id=backStackEntry.arguments?.getLong(AppDestinations.PLAYER_ID_ARG)
+            PlayerScreen(id = id!!)
+        }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -147,8 +159,9 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var showList by remember{mutableStateOf(false)}
     val navController: NavHostController = rememberNavController()
-    Scaffold(bottomBar = {MiniPlayer(onShowListClick = {showList=true
-    })}) {
+    Scaffold(topBar = {MiniPlayer(
+        onShowListClick = {showList=true },
+        onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id")})}) {
             innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
     }
     if(showList){
@@ -165,8 +178,9 @@ fun MainScreen(
                                 showList = false
                             }
                         }
-
-                    })
+                    },
+                    onPlayerClick = { id -> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id") }
+                    )
 
             }
         }

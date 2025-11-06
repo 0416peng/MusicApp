@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 fun MiniPlayer(
     viewModel: PlayerViewModel = hiltViewModel(),
     onShowListClick:()->Unit,
+    onPlayerClick:(Long)->Unit
 ){
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val songsData by viewModel.songsList.collectAsState()
@@ -73,7 +74,6 @@ fun MiniPlayer(
     }
     val isPlaying=true
         if (songDetail!=null) {
-            Log.d("songDetail",songDetail.toString())
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -89,7 +89,7 @@ fun MiniPlayer(
                             .padding(8.dp)
                             .clip(CircleShape)
                             .size(48.dp)
-                            .clickable {/*TODO:跳转到歌曲详情页*/ },
+                            .clickable {onPlayerClick(songDetail!!.songs[0].id) },
                         contentScale = ContentScale.Crop
                     )
                     Text(text = songDetail!!.songs[0].name)
@@ -114,7 +114,7 @@ fun MiniPlayer(
 
 
 @Composable
-fun PlayListSheet(items:List<SongsListData>,onClick:(Int)->Unit){
+fun PlayListSheet(items:List<SongsListData>,onClick:(Int)->Unit,onPlayerClick:(Long)->Unit){
     LazyColumn(modifier = Modifier.padding(bottom = 16.dp)) {
         itemsIndexed(items){
             index,item->
@@ -122,6 +122,7 @@ fun PlayListSheet(items:List<SongsListData>,onClick:(Int)->Unit){
                 modifier=Modifier
                     .clickable {
                         onClick(index)
+                        onPlayerClick(item.id)
                     }
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             )

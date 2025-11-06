@@ -1,6 +1,7 @@
 package com.example.data.di.song
 
 import com.example.data.apiService.songs.GetSongDetailApiService
+import com.example.data.apiService.songs.GetSongLyricApiService
 import com.example.data.apiService.songs.GetSongUrlApiService
 import dagger.Module
 import dagger.Provides
@@ -22,5 +23,10 @@ object SongModule {
     @Singleton
     fun provideGetSongDetailApiService(retrofit: Retrofit): GetSongDetailApiService {
         return retrofit.create(GetSongDetailApiService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideGetSongLyticApiService(retrofit: Retrofit): GetSongLyricApiService {
+        return retrofit.create(GetSongLyricApiService::class.java)
     }
 }

@@ -4,11 +4,10 @@ plugins {
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.plugin.compose")
-
 }
 
 android {
-    namespace = "com.example.playlist"
+    namespace = "com.example.player"
     compileSdk = 36
 
     defaultConfig {
@@ -42,6 +41,8 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:player"))
     implementation("androidx.compose.material:material:1.6.8")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.coil.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     val composeBom = platform(libs.androidx.compose.bom)
