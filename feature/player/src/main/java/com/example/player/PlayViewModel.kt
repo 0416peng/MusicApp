@@ -22,6 +22,7 @@ class PlayViewModel @Inject constructor(
     val songDetail=_songDetail.asStateFlow()
     private val _errorState= MutableStateFlow<String?>(null)
     val errorState=_errorState.asStateFlow()
+    val isPlaying =musicPlayerManager.isPlaying
     fun getSongLyric(id:Long){
         viewModelScope.launch {
             songRepository.getSongLyric(id)

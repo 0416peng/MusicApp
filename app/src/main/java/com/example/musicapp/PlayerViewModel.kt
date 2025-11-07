@@ -20,6 +20,7 @@ class PlayerViewModel @Inject constructor(
     val musicPlayerManager: MusicPlayerManager
 ): ViewModel() {
     val currentlyPlayingSongId = musicPlayerManager.currentlyPlayingSongId
+    val isPlaying =musicPlayerManager.isPlaying
     private val _songDetail= MutableStateFlow<SongDetailData?>(null)
     val songDetailData = _songDetail.asStateFlow()
     private val _errorState = MutableStateFlow<String?>(null)

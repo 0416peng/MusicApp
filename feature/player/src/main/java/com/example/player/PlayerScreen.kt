@@ -16,16 +16,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
 import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,6 +49,7 @@ fun PlayerScreen(
         viewModel.getSongLyric(id)
         viewModel.getSongDetail(id)
     }
+    val isPlaying: Boolean by viewModel.isPlaying.collectAsState()
     val songDetail by viewModel.songDetail.collectAsState()
     val lyricData by viewModel.lyricData.collectAsState()
     val infiniteTransition= rememberInfiniteTransition(label = "imageRotation")
@@ -108,7 +109,7 @@ fun PlayerScreen(
                         )
                     }
 
-                    // 2. 上一首图标
+
                     IconButton(onClick = { /* TODO: 播放上一首 */ }) {
                         Icon(
                             imageVector = Icons.Default.SkipPrevious,
@@ -116,17 +117,15 @@ fun PlayerScreen(
                         )
                     }
 
-                    // 3. 暂停/播放图标 (可以根据播放状态切换)
                     IconButton(onClick = { /* TODO: 暂停或播放 */ }) {
                         Icon(
-                            // 假设当前是播放状态，显示暂停图标
-                            imageVector = Icons.Default.Pause,
+                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                             contentDescription = "暂停/播放",
-                            modifier = Modifier.size(48.dp) // 让中间的按钮更大更突出
+                            modifier = Modifier.size(48.dp)
                         )
                     }
 
-                    // 4. 下一首图标
+
                     IconButton(onClick = { /* TODO: 播放下一首 */ }) {
                         Icon(
                             imageVector = Icons.Default.SkipNext,
@@ -134,7 +133,7 @@ fun PlayerScreen(
                         )
                     }
 
-                    // 5. 歌曲列表图标
+
                     IconButton(onClick = { /* TODO: 打开播放列表 */ }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.PlaylistPlay,

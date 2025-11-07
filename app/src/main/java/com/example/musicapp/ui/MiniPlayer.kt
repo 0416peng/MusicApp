@@ -56,7 +56,7 @@ fun MiniPlayer(
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val songsData by viewModel.songsList.collectAsState()
     val songDetail by viewModel.songDetailData.collectAsState()
-
+    val isPlaying by viewModel.isPlaying.collectAsState()
 
     val errorState by viewModel.errorState.collectAsState()
 
@@ -72,7 +72,7 @@ fun MiniPlayer(
     LaunchedEffect(errorState) {
         Log.d("error",errorState.toString())
     }
-    val isPlaying=true
+
         if (songDetail!=null) {
                 Row(
                     modifier = Modifier

@@ -60,6 +60,11 @@ class MusicService : MediaSessionService() {
                     }
                 }
             }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                musicPlayerManager.onIsPlayingChanged(isPlaying)
+            }
         })
     }
 

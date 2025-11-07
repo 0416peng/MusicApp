@@ -16,6 +16,8 @@ import javax.inject.Singleton
 class MusicPlayerManager @Inject constructor(@ApplicationContext private val context: Context) {
     private val _currentlyPlayingSongId = MutableStateFlow<Long?>(null)
     val currentlyPlayingSongId = _currentlyPlayingSongId.asStateFlow()
+    private val _isPlaying= MutableStateFlow<Boolean>(false)
+    val isPlaying=_isPlaying.asStateFlow()
     private val _songsList= MutableStateFlow<List<SongsListData>?>(null)
     val songsList= _songsList.asStateFlow()
     @OptIn(UnstableApi::class)
@@ -74,6 +76,9 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         }
         context.startService(intent)
     }//跳转到列表中的某一首
+    fun onIsPlayingChanged(isPlaying: Boolean){
+        _isPlaying.value=isPlaying
+    }
 
     fun onPlayerStopped() {
         _currentlyPlayingSongId.value = null
