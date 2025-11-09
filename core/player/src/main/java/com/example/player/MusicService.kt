@@ -2,17 +2,11 @@ package com.example.player
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
-import android.os.Handler
 import android.util.Log
-import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.example.data.repository.song.SongRepository
@@ -21,18 +15,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.android.asCoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
-
 import javax.inject.Inject
-
-
 
 
 @SuppressLint("Instantiatable")
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
+    private var progressBroadcastJob: Job? = null
+
     @Inject
     lateinit var songRepository: SongRepository
 
@@ -64,6 +57,11 @@ class MusicService : MediaSessionService() {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 musicPlayerManager.onIsPlayingChanged(isPlaying)
+                if (isPlaying) {
+                    startProgressBroadcast()
+                } else {
+                    stopProgressBroadcast()
+                }
             }
         })
     }
@@ -79,6 +77,7 @@ class MusicService : MediaSessionService() {
             ACTION_ADD_TO_NEXT -> handleAddToNext(intent)
             ACTION_CLEAR -> clear()
             ACTION_ADD_TO_QUEUE_MULTIPLE -> handleAddToQueueMultiple(intent)
+            ACTION_SEEK_TO->handleSeekTo(intent)
             else -> {
                 if (player.isPlaying) {
                     player.pause()
@@ -192,4 +191,25 @@ class MusicService : MediaSessionService() {
         }
         return null
     }//获取单个歌曲的url
+
+    private fun startProgressBroadcast() {
+        stopProgressBroadcast()
+        progressBroadcastJob = serviceScope.launch {
+            while (true) {
+                if (player.isPlaying) {
+                    musicPlayerManager.onProgressUpdate(player.currentPosition, player.duration)
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    private fun stopProgressBroadcast() {
+        progressBroadcastJob?.cancel()
+        progressBroadcastJob = null
+    }
+    private fun handleSeekTo(intent: Intent) {
+        val position=intent.getLongExtra("position",0L)
+        player.seekTo(position)
+    }
 }

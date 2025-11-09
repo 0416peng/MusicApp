@@ -16,10 +16,15 @@ import javax.inject.Singleton
 class MusicPlayerManager @Inject constructor(@ApplicationContext private val context: Context) {
     private val _currentlyPlayingSongId = MutableStateFlow<Long?>(null)
     val currentlyPlayingSongId = _currentlyPlayingSongId.asStateFlow()
-    private val _isPlaying= MutableStateFlow<Boolean>(false)
-    val isPlaying=_isPlaying.asStateFlow()
-    private val _songsList= MutableStateFlow<List<SongsListData>?>(null)
-    val songsList= _songsList.asStateFlow()
+    private val _isPlaying = MutableStateFlow<Boolean>(false)
+    val isPlaying = _isPlaying.asStateFlow()
+    private val _songsList = MutableStateFlow<List<SongsListData>?>(null)
+    val songsList = _songsList.asStateFlow()
+    private val _playbackProgress = MutableStateFlow<Long>(0)
+    val playbackProgress = _playbackProgress.asStateFlow()
+    private val _currentSongDuration = MutableStateFlow<Long>(0)
+    val currentSongDuration = _currentSongDuration.asStateFlow()
+
     @OptIn(UnstableApi::class)
     fun onTrackChanged(songId: Long) {
         _currentlyPlayingSongId.value = songId
@@ -37,11 +42,11 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
 
     fun addMultipleToQueue(songs: List<SongsListData>?, startIndex: Int) {
         if (songs!!.isEmpty()) return
-        _songsList .value=songs
+        _songsList.value = songs
         val songIds = songs.map { it.id }.toLongArray()
         val intent = Intent(context, MusicService::class.java).apply {
             action = ACTION_ADD_TO_QUEUE_MULTIPLE
-            putExtra("songIds",songIds)
+            putExtra("songIds", songIds)
             putExtra("startIndex", startIndex)
         }
         context.startService(intent)
@@ -76,11 +81,25 @@ class MusicPlayerManager @Inject constructor(@ApplicationContext private val con
         }
         context.startService(intent)
     }//跳转到列表中的某一首
-    fun onIsPlayingChanged(isPlaying: Boolean){
-        _isPlaying.value=isPlaying
+
+    fun onIsPlayingChanged(isPlaying: Boolean) {
+        _isPlaying.value = isPlaying
     }
 
     fun onPlayerStopped() {
         _currentlyPlayingSongId.value = null
     }//播放器停止
-}
+
+    fun onProgressUpdate(position: Long, duration: Long) {
+        _playbackProgress.value = position
+        if (duration > 0 && currentSongDuration.value != duration) {
+            _currentSongDuration.value = duration
+        }
+    }
+    fun seekTo(position: Long){
+        val intent=Intent(context,MusicService::class.java).apply {
+            action= ACTION_SEEK_TO
+            putExtra("position",position)
+    }
+        context.startService(intent)
+}}

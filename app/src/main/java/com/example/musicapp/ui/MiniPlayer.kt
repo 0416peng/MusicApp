@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,7 +87,7 @@ fun MiniPlayer(
                         model = songDetail!!.songs[0].al.picUrl,
                         contentDescription = songDetail!!.songs[0].name,
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(6.dp)
                             .clip(CircleShape)
                             .size(48.dp)
                             .clickable {onPlayerClick(songDetail!!.songs[0].id) },
@@ -114,11 +115,13 @@ fun MiniPlayer(
 
 
 @Composable
-fun PlayListSheet(items:List<SongsListData>,onClick:(Int)->Unit,onPlayerClick:(Long)->Unit){
+fun PlayListSheet(items:List<SongsListData>,onClick:(Int)->Unit,onPlayerClick:(Long)->Unit,currentlyPlayingSongId: Long?){
     LazyColumn(modifier = Modifier.padding(bottom = 16.dp)) {
         itemsIndexed(items){
             index,item->
+           val color= if(currentlyPlayingSongId==item.id) Color.Red else Color.Black
             Text(text = "${index+1}.${item.name}",
+                color=color,
                 modifier=Modifier
                     .clickable {
                         onClick(index)

@@ -154,14 +154,19 @@ fun MusicNavGraph(
 fun MainScreen(
     viewModel: PlayerViewModel = hiltViewModel(),
 ){
+    val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val songsData by viewModel.songsList.collectAsState()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showList by remember{mutableStateOf(false)}
     val navController: NavHostController = rememberNavController()
-    Scaffold(topBar = {MiniPlayer(
-        onShowListClick = {showList=true },
-        onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id")})}) {
+    val navBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
+    val currentRoute = navBackStackEntry?.destination?.route
+    Scaffold(topBar = {
+        if(currentRoute!="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}"){ MiniPlayer(
+            onShowListClick = {showList=true },
+            onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id")})}
+       }) {
             innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
     }
     if(showList){
@@ -179,7 +184,8 @@ fun MainScreen(
                             }
                         }
                     },
-                    onPlayerClick = { id -> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id") }
+                    onPlayerClick = { id -> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id") },
+                    currentlyPlayingSongId
                     )
 
             }
