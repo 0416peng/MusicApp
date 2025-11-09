@@ -78,6 +78,10 @@ fun PlayerScreen(
     var sliderPosition by remember { mutableStateOf<Float?>(null) }
     var showPicOrLyr by remember { mutableStateOf<String>(SHOW_PIC) }
     LaunchedEffect(Unit,id,currentlyPlayingSongId) {
+        if(currentlyPlayingSongId==null){
+            viewModel.getSongLyric(id)
+            viewModel.getSongLyric(id)
+        }
         viewModel.getSongLyric(currentlyPlayingSongId!!)
         viewModel.getSongDetail(currentlyPlayingSongId!!)
         Log.d("PlayerScreen","PlayerScreen")

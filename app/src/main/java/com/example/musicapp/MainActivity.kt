@@ -162,7 +162,7 @@ fun MainScreen(
     val navController: NavHostController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
     val currentRoute = navBackStackEntry?.destination?.route
-    Scaffold(topBar = {
+    Scaffold(bottomBar = {
         if(currentRoute!="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}"){ MiniPlayer(
             onShowListClick = {showList=true },
             onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id")})}

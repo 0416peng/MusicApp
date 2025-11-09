@@ -136,7 +136,7 @@ fun ComprehensiveResultPage(
                 SongItem(
                     item,
                     color,
-                    onPlayClick = { index -> viewModel.onAddListClicked(index) },
+                    onPlayClick = { index -> viewModel.onAddListClickedInComprehensive(index) },
                     index
                 )
             }

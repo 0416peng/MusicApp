@@ -200,6 +200,13 @@ class SearchDetailViewModel @Inject constructor(
         onSearchTriggered(_searchKeyword.value)
     }
 
+    fun onAddListClickedInComprehensive(index: Int) {
+        val list=mutableListOf<SongsListData>()
+        for(i in _detailResult.value!!.result.song.songs){
+            list.add(SongsListData(i.id,i.name))
+        }
+        musicPlayerManager.addMultipleToQueue(list, index)
+    }
     fun onAddListClicked(index: Int) {
         val list=mutableListOf<SongsListData>()
         for(i in _songsResult.value!!.result.songs){
@@ -207,6 +214,5 @@ class SearchDetailViewModel @Inject constructor(
         }
         musicPlayerManager.addMultipleToQueue(list, index)
     }
-
 
 }
