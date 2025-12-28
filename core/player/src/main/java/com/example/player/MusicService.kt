@@ -180,11 +180,12 @@ class MusicService : MediaSessionService() {
         try {
             val urlResult = songRepository.getSongUrl(listOf(songId))
             val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
-            if (songUrlData != null && songUrlData.url != null) {
+            if (songUrlData != null) {
                 return MediaItem.Builder()
                     .setMediaId(songUrlData.id.toString())
                     .setUri(songUrlData.url)
                     .build()
+                Log.d("service","创建成功")
             }
         } catch (e: Exception) {
             Log.e("MusicService", "Error fetching URL for songId: $songId", e)
