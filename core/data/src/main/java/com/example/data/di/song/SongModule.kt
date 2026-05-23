@@ -1,8 +1,6 @@
 package com.example.data.di.song
 
-import com.example.data.apiService.songs.GetSongDetailApiService
-import com.example.data.apiService.songs.GetSongLyricApiService
-import com.example.data.apiService.songs.GetSongUrlApiService
+import com.example.data.apiService.songs.SongApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,17 +14,7 @@ import javax.inject.Singleton
 object SongModule {
     @Provides
     @Singleton
-    fun provideGetSongUrlApiService(retrofit: Retrofit): GetSongUrlApiService {
-        return retrofit.create(GetSongUrlApiService::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideGetSongDetailApiService(retrofit: Retrofit): GetSongDetailApiService {
-        return retrofit.create(GetSongDetailApiService::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideGetSongLyticApiService(retrofit: Retrofit): GetSongLyricApiService {
-        return retrofit.create(GetSongLyricApiService::class.java)
+    fun provideSongApiService(retrofit: Retrofit): SongApiService {
+        return retrofit.create(SongApiService::class.java)
     }
 }
