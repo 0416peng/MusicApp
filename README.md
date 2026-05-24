@@ -161,3 +161,6 @@ core/data/src/main/java/com/example/data/di/NetworkModule.kt
 5. 播放相关操作交由 `core:player` 中的播放器管理与 Media3 服务处理。
 6. 播放页展示歌曲封面、歌词、进度条和播放控制。
 
+## 许可证
+
+本项目基于 MIT License 开源，详情请查看 [LICENSE](./LICENSE) 文件。
