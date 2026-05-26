@@ -1,162 +1,150 @@
 package com.example.player
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaSession.ConnectionResult
+import androidx.media3.session.MediaSession.ControllerInfo
 import androidx.media3.session.MediaSessionService
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
 import com.example.data.repository.song.SongRepository
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 
 @SuppressLint("Instantiatable")
 @AndroidEntryPoint
 class MusicService : MediaSessionService() {
-    private var progressBroadcastJob: Job? = null
-
     @Inject
     lateinit var songRepository: SongRepository
 
     @Inject
     lateinit var player: ExoPlayer
 
-    @Inject
-    lateinit var musicPlayerManager: MusicPlayerManager
     private val serviceJob = SupervisorJob()
-    private var backgroundLoadJob: Job? = null
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+    private var backgroundLoadJob: Job? = null
     private var mediaSession: MediaSession? = null
+
     override fun onCreate() {
         super.onCreate()
-        mediaSession = MediaSession.Builder(this, player).build()
-        player.addListener(object : Player.Listener {
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                super.onMediaItemTransition(mediaItem, reason)
-                if (mediaItem != null) {
-                    val songId = mediaItem.mediaId.toLongOrNull()
-                    if (songId != null) {
-                        musicPlayerManager.onTrackChanged(songId)
-                    } else {
-                        musicPlayerManager.onPlayerStopped()
-                    }
-                }
-            }
-
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                super.onIsPlayingChanged(isPlaying)
-                musicPlayerManager.onIsPlayingChanged(isPlaying)
-                if (isPlaying) {
-                    startProgressBroadcast()
-                } else {
-                    stopProgressBroadcast()
-                }
-            }
-        })
+        mediaSession = MediaSession.Builder(this, player)
+            .setCallback(sessionCallback)
+            .build()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
+    override fun onGetSession(controllerInfo: ControllerInfo): MediaSession? {
         return mediaSession
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
-        when (intent?.action) {
-            ACTION_PLAY_OR_PAUSE -> handlePlayOrPause(intent)
-            ACTION_ADD_TO_NEXT -> handleAddToNext(intent)
-            ACTION_CLEAR -> clear()
-            ACTION_ADD_TO_QUEUE_MULTIPLE -> handleAddToQueueMultiple(intent)
-            ACTION_SEEK_TO->handleSeekTo(intent)
-            else -> {
-                if (player.isPlaying) {
-                    player.pause()
-                }
-            }
-        }
-        return START_NOT_STICKY
-    }
-
     override fun onDestroy() {
-        super.onDestroy()
-
-        serviceJob.cancel()
+        serviceScope.cancel()
         mediaSession?.run {
             player.release()
             release()
             mediaSession = null
         }
+        super.onDestroy()
     }
 
-    private fun handlePlayOrPause(intent: Intent) {
-        if (player.isPlaying) player.pause() else player.play()
-    }
+    private val sessionCallback = object : MediaSession.Callback {
+        @OptIn(UnstableApi::class)
+        override fun onConnect(session: MediaSession, controller: ControllerInfo): ConnectionResult {
+            val sessionCommands = ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+                .add(SessionCommand(COMMAND_ADD_TO_NEXT, Bundle.EMPTY))
+                .add(SessionCommand(COMMAND_CLEAR, Bundle.EMPTY))
+                .add(SessionCommand(COMMAND_ADD_TO_QUEUE_MULTIPLE, Bundle.EMPTY))
+                .build()
 
-    private fun handleAddToNext(intent: Intent) {
-        val currentIndex = player.currentMediaItemIndex
-        val songId = intent.getLongExtra("songId", -1L)
-        if (songId != -1L) {
-            serviceScope.launch {
-                val mediaItem = buildSingleItem(songId)
-                if (mediaItem != null) {
-                    val insertIndex = if (currentIndex == C.INDEX_UNSET) 0 else currentIndex + 1
-                    player.addMediaItem(insertIndex, mediaItem)
-                }
-            }
+            return ConnectionResult.AcceptedResultBuilder(session)
+                .setAvailableSessionCommands(sessionCommands)
+                .build()
         }
-    }//将单首歌曲添加到下一首
 
-    private fun handleAddToQueueMultiple(intent: Intent) {
-        val songIds = intent.getLongArrayExtra("songIds")
-        val startIndex = intent.getIntExtra("startIndex", 0)
-        val songIdsList = songIds?.toList()
-        if (!songIdsList.isNullOrEmpty() && startIndex in songIdsList.indices) {
-            serviceScope.launch {
-                val clickedSongId = songIdsList[startIndex]
-                val clickedMediaItem = buildSingleItem(clickedSongId)
-                if (clickedMediaItem != null) {
-                    player.setMediaItems(listOf(clickedMediaItem), 0, 0L)
-                    player.prepare()
-                    player.play()
-                    Log.d("MusicService", "Started immediate playback for songId: $clickedSongId")
-                    backgroundLoadJob?.cancel()
-                    val itemsAfterClicked = songIdsList.subList(startIndex + 1, songIdsList.size)
-                    val itemsBeforeClicked = songIdsList.subList(0, startIndex)
-                    backgroundLoadJob =
-                        addRemainingItemsInOrder(itemsAfterClicked, itemsBeforeClicked)
-                } else {
-                    Log.e(
-                        "MusicService",
-                        "Failed to get URL for the clicked song, cannot start playback."
-                    )
-                }
+        override fun onCustomCommand(
+            session: MediaSession,
+            controller: ControllerInfo,
+            customCommand: SessionCommand,
+            args: Bundle
+        ): ListenableFuture<SessionResult> {
+            when (customCommand.customAction) {
+                COMMAND_ADD_TO_NEXT -> handleAddToNext(args)
+                COMMAND_CLEAR -> clear()
+                COMMAND_ADD_TO_QUEUE_MULTIPLE -> handleAddToQueueMultiple(args)
+                else -> return Futures.immediateFuture(SessionResult(SessionResult.RESULT_ERROR_BAD_VALUE))
             }
+
+            return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+        }
+    }
+
+    private fun handleAddToNext(args: Bundle) {
+        val currentIndex = player.currentMediaItemIndex
+        val songId = args.getLong(EXTRA_SONG_ID, -1L)
+        if (songId == -1L) return
+
+        serviceScope.launch {
+            val mediaItem = buildSingleItem(songId) ?: return@launch
+            val insertIndex = if (currentIndex == C.INDEX_UNSET) 0 else currentIndex + 1
+            player.addMediaItem(insertIndex, mediaItem)
+        }
+    }
+
+    private fun handleAddToQueueMultiple(args: Bundle) {
+        val songIdsList = args.getLongArray(EXTRA_SONG_IDS)?.toList()
+        val startIndex = args.getInt(EXTRA_START_INDEX, 0)
+        if (songIdsList.isNullOrEmpty() || startIndex !in songIdsList.indices) return
+
+        serviceScope.launch {
+            val clickedSongId = songIdsList[startIndex]
+            val clickedMediaItem = buildSingleItem(clickedSongId)
+            if (clickedMediaItem == null) {
+                Log.e("MusicService", "Failed to get URL for the clicked song.")
+                return@launch
+            }
+
+            player.setMediaItems(listOf(clickedMediaItem), 0, 0L)
+            player.prepare()
+            player.play()
+            backgroundLoadJob?.cancel()
+
+            val itemsAfterClicked = songIdsList.subList(startIndex + 1, songIdsList.size)
+            val itemsBeforeClicked = songIdsList.subList(0, startIndex)
+            backgroundLoadJob = addRemainingItemsInOrder(itemsAfterClicked, itemsBeforeClicked)
         }
     }
 
     private fun clear() {
         serviceScope.launch {
+            backgroundLoadJob?.cancel()
             player.clearMediaItems()
             player.stop()
         }
-    }//清除列表并关闭播放器
+    }
 
     private fun addRemainingItemsInOrder(itemsAfter: List<Long>, itemsBefore: List<Long>): Job {
         return serviceScope.launch(Dispatchers.IO) {
             for (songId in itemsAfter) {
+                ensureActive()
                 val mediaItem = buildSingleItem(songId)
                 if (mediaItem != null) {
-                    launch(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         player.addMediaItem(mediaItem)
                     }
                 }
@@ -166,51 +154,29 @@ class MusicService : MediaSessionService() {
                 ensureActive()
                 val mediaItem = buildSingleItem(songId)
                 if (mediaItem != null) {
-                    launch(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         player.addMediaItem(mediaItem)
                     }
                 }
             }
-
-            Log.d("MusicService", "Finished adding remaining items in correct order.")
         }
-    }//添加歌曲的逻辑
+    }
 
     private suspend fun buildSingleItem(songId: Long): MediaItem? {
-        try {
+        return try {
             val urlResult = songRepository.getSongUrl(listOf(songId))
             val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
             if (songUrlData != null) {
-                return MediaItem.Builder()
+                MediaItem.Builder()
                     .setMediaId(songUrlData.id.toString())
                     .setUri(songUrlData.url)
                     .build()
-                Log.d("service","创建成功")
+            } else {
+                null
             }
         } catch (e: Exception) {
             Log.e("MusicService", "Error fetching URL for songId: $songId", e)
+            null
         }
-        return null
-    }//获取单个歌曲的url
-
-    private fun startProgressBroadcast() {
-        stopProgressBroadcast()
-        progressBroadcastJob = serviceScope.launch {
-            while (true) {
-                if (player.isPlaying) {
-                    musicPlayerManager.onProgressUpdate(player.currentPosition, player.duration)
-                }
-                delay(1000)
-            }
-        }
-    }
-
-    private fun stopProgressBroadcast() {
-        progressBroadcastJob?.cancel()
-        progressBroadcastJob = null
-    }
-    private fun handleSeekTo(intent: Intent) {
-        val position=intent.getLongExtra("position",0L)
-        player.seekTo(position)
     }
 }
