@@ -1,4 +1,4 @@
-plugins {
+﻿plugins {
     id("music.android.library.compose")
     id("music.android.hilt")
 }
@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":core:ui"))
 
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.coil.compose)
 }

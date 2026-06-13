@@ -1,4 +1,4 @@
-package com.example.data.repository.auth
+﻿package com.example.data.repository.auth
 
 import android.annotation.SuppressLint
 import com.example.data.apiService.auth.AuthApiService
@@ -43,8 +43,8 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStatue(key: String): AuthStatue {
-        val response = authApiService.getStatue(key)
+    override suspend fun getStatue(key: String, noCookie: Boolean): AuthStatue {
+        val response = authApiService.getStatue(key, noCookie = if (noCookie) true else null)
         try {
             if (response.isSuccessful) {
                 return response.body()!!
@@ -61,8 +61,9 @@ class AuthRepositoryImpl @Inject constructor(
         val response = authApiService.visitorLogin()
         try {
             if (response.isSuccessful) {
-                return response.body()!!
-                userSessionManager.saveCookie(response.body()!!.cookie)
+                val data = response.body()!!
+                userSessionManager.saveCookie(data.cookie)
+                return data
             } else {
                 throw IOException("API Error: ${response.code()}")
             }

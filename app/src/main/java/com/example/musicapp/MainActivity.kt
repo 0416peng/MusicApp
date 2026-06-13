@@ -1,4 +1,4 @@
-package com.example.musicapp
+﻿package com.example.musicapp
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,18 +8,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -31,7 +36,9 @@ import androidx.navigation.navArgument
 import androidx.core.content.ContextCompat
 import com.example.albumList.AlbumListScreen
 import com.example.artist.ArtistScreen
+import com.example.data.manager.UserSessionManager
 import com.example.home.ui.HomeScreen
+import com.example.login.LoginScreen
 import com.example.musicapp.ui.MiniPlayer
 import com.example.musicapp.ui.PlayListSheet
 import com.example.player.PlayerScreen
@@ -40,11 +47,17 @@ import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
 import com.example.ui.theme.MusicAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var userSessionManager: UserSessionManager
+
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { }
@@ -56,7 +69,37 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MusicAppTheme {
-               MainScreen()
+                val isLoggedIn = remember { mutableStateOf<Boolean?>(null) }
+
+                // 初次加载时检查是否已有cookie
+                LaunchedEffect(Unit) {
+                    val cookie = userSessionManager.cookieFlow.first()
+                    isLoggedIn.value = cookie != null
+                }
+
+                when (isLoggedIn.value) {
+                    null -> {
+                        // 正在检查登录状态，显示加载中
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    false -> {
+                        // 未登录，显示登录页面
+                        LoginScreen(this,
+                            onLoginSuccess = {
+                                isLoggedIn.value = true
+                            }
+                        )
+                    }
+                    true -> {
+                        // 已登录，显示主页面
+                        MainScreen()
+                    }
+                }
             }
         }
     }
@@ -87,7 +130,6 @@ object AppDestinations {
     const val PLAYER_SCREEN="playerScreen"
     const val PLAYER_ID_ARG="id"
 }
-
 @Composable
 fun MusicNavGraph(
     modifier: Modifier = Modifier,
@@ -102,10 +144,10 @@ fun MusicNavGraph(
         composable(AppDestinations.HOME_ROUTE) {
             HomeScreen(
                 onAlbumClick = { albumId ->
-                    navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$albumId")
+                    navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/${albumId}")
                 },
                 onPlayListClick = { playListId ->
-                    navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$playListId")
+                    navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/${playListId}")
                 },
                 onSearchClick = { navController.navigate(AppDestinations.SEARCH_ROUTE) }
             )
@@ -130,7 +172,7 @@ fun MusicNavGraph(
         }
         composable(route = AppDestinations.SEARCH_ROUTE) {
             SearchScreen(
-                onSearchDetailClick = { keyword -> navController.navigate("${AppDestinations.SEARCH_DETAIL_ROUTE}/$keyword") }
+                onSearchDetailClick = { keyword -> navController.navigate("${AppDestinations.SEARCH_DETAIL_ROUTE}/${keyword}") }
             )
         }
         composable(
@@ -143,9 +185,9 @@ fun MusicNavGraph(
             SearchDetailScreen(
                 keyword = keyword!!,
                 onBack = { navController.popBackStack() },
-                onPlayListClick = { id -> navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/$id") },
-                onAlbumClick = { id -> navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/$id") },
-                onSingerClick = { id -> navController.navigate("${AppDestinations.ARTIST_ROUTE}/$id") }
+                onPlayListClick = { id -> navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/${id}") },
+                onAlbumClick = { id -> navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/${id}") },
+                onSingerClick = { id -> navController.navigate("${AppDestinations.ARTIST_ROUTE}/${id}") }
             )
         }
         composable(
@@ -183,9 +225,11 @@ fun MainScreen(
     val navBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(bottomBar = {
-        if(currentRoute!="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}"){ MiniPlayer(
+        if(currentRoute!="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}"){
+            MiniPlayer(
             onShowListClick = {showList=true },
-            onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id")})}
+            onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/${id}")})
+        }
        }) {
             innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
     }
@@ -204,7 +248,7 @@ fun MainScreen(
                             }
                         }
                     },
-                    onPlayerClick = { id -> navController.navigate("${AppDestinations.PLAYER_SCREEN}/$id") },
+                    onPlayerClick = { id -> navController.navigate("${AppDestinations.PLAYER_SCREEN}/${id}") },
                     currentlyPlayingSongId
                     )
 
@@ -212,4 +256,3 @@ fun MainScreen(
         }
     }
 }
-
