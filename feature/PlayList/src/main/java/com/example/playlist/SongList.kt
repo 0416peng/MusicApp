@@ -40,7 +40,7 @@ fun SongList(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {/*TODO:实现播放全部的逻辑*/ }
+                            .clickable {onAddListClick(0) }
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
