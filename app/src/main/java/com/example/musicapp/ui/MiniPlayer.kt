@@ -80,10 +80,10 @@ fun MiniPlayer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     AsyncImage(
                         model = songDetail!!.songs[0].al.picUrl,
                         contentDescription = songDetail!!.songs[0].name,
@@ -94,7 +94,13 @@ fun MiniPlayer(
                             .clickable {onPlayerClick(songDetail!!.songs[0].id) },
                         contentScale = ContentScale.Crop
                     )
-                    Text(text = songDetail!!.songs[0].name)
+                    Text(
+                        text = songDetail!!.songs[0].name,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+
+                    androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
+
                     IconButton(onClick = { viewModel.playOrPauseSong(songDetail!!.songs[0].id) }) {
                         Icon(
                             imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
