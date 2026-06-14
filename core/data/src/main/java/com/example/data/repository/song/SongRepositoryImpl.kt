@@ -1,4 +1,4 @@
-package com.example.data.repository.song
+﻿package com.example.data.repository.song
 
 import com.example.data.apiService.songs.SongApiService
 import com.example.data.di.apiCall
@@ -13,19 +13,22 @@ class SongRepositoryImpl @Inject constructor(
     override suspend fun getSongUrl(ids: List<Long>): Result<SongUrlData> {
         return apiCall {
             val idsString = ids.joinToString(separator = ",")
-            songApiService.getSongUrl(idsString).body()!!
+            val response = songApiService.getSongUrl(idsString)
+            response.body() ?: throw NullPointerException("Response body is null, code=${response.code()}")
         }
     }
 
     override suspend fun getSongDetail(id: Long): Result<SongDetailData> {
         return apiCall {
-            songApiService.getSongDetail(id).body()!!
+            val response = songApiService.getSongDetail(id)
+            response.body() ?: throw NullPointerException("Response body is null, code=${response.code()}")
         }
     }
 
     override suspend fun getSongLyric(id: Long): Result<LyricData> {
         return apiCall {
-            songApiService.getSongLyric(id).body()!!
+            val response = songApiService.getSongLyric(id)
+            response.body() ?: throw NullPointerException("Response body is null, code=${response.code()}")
         }
     }
 

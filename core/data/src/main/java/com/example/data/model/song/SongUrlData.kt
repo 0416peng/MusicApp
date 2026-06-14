@@ -1,4 +1,4 @@
-package com.example.data.model.song
+﻿package com.example.data.model.song
 
 data class SongUrlData(
     val code: Int,
@@ -8,19 +8,19 @@ data class SongUrlData(
 data class Data(
     val accompany: Any,
     val auEff: Any,
-    val br: Int,
+    val br: Any,
     val canExtend: Boolean,
     val channelLayout: Any,
-    val closedGain: Int,
-    val closedPeak: Int,
+    val closedGain: Any,
+    val closedPeak: Any,
     val code: Int,
     val effectTypes: Any,
     val encodeType: Any,
-    val expi: Int,
-    val fee: Int,
-    val flag: Int,
+    val expi: Any,
+    val fee: Any,
+    val flag: Any,
     val freeTimeTrialPrivilege: FreeTimeTrialPrivilege,
-    val freeTrialInfo: String,
+    val freeTrialInfo: Any,
     val freeTrialPrivilege: FreeTrialPrivilege,
     val gain: Double,
     val id: Long,
@@ -30,17 +30,17 @@ data class Data(
     val md5: Any,
     val message: Any,
     val musicId: Any,
-    val payed: Int,
+    val payed: Any,
     val peak: Any,
     val podcastCtrp: Any,
-    val rightSource: Int,
-    val size: Int,
-    val sr: Int,
-    val time: Int,
+    val rightSource: Any,
+    val size: Any,
+    val sr: Any,
+    val time: Any,
     val type: Any,
     val uf: Any,
     val url: String,
-    val urlSource: Int
+    val urlSource: Any
 )
 
 data class FreeTimeTrialPrivilege(

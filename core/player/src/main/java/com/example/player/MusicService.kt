@@ -1,4 +1,4 @@
-package com.example.player
+﻿package com.example.player
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -166,12 +166,19 @@ class MusicService : MediaSessionService() {
         return try {
             val urlResult = songRepository.getSongUrl(listOf(songId))
             val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
-            if (songUrlData != null) {
+            if (songUrlData != null && songUrlData.url.isNotEmpty()) {
                 MediaItem.Builder()
                     .setMediaId(songUrlData.id.toString())
                     .setUri(songUrlData.url)
                     .build()
             } else {
+                if (urlResult.isFailure) {
+                    Log.e("MusicService", "getSongUrl failed for songId=$songId: ${urlResult.exceptionOrNull()?.message}")
+                } else if (songUrlData == null) {
+                    Log.e("MusicService", "Song URL data is null/empty for songId=$songId")
+                } else {
+                    Log.e("MusicService", "Song URL is empty for songId=$songId, data.code=${songUrlData.code}")
+                }
                 null
             }
         } catch (e: Exception) {
