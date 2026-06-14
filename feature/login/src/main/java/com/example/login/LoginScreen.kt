@@ -1,11 +1,8 @@
 ﻿package com.example.login
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,19 +26,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
-import dagger.hilt.android.qualifiers.ApplicationContext
-import androidx.core.net.toUri
+
+private fun decodeBase64ToBitmap(base64: String): android.graphics.Bitmap? {
+    if (base64.isEmpty()) return null
+    return try {
+        // 去掉可能的 data:image/xxx;base64, 前缀
+        val raw = if (base64.contains(",")) {
+            base64.substringAfter(",")
+        } else {
+            base64
+        }
+        val bytes = Base64.decode(raw, Base64.DEFAULT)
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    } catch (e: Exception) {
+        null
+    }
+}
 
 @Composable
 fun LoginScreen(
-    context: Context,
     viewModel: LoginViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit = {}
 ) {
@@ -58,6 +69,11 @@ fun LoginScreen(
         if (loginSuccess) {
             onLoginSuccess()
         }
+    }
+
+    // 将 base64 解码为 Bitmap（兼容可能已带 data:image 前缀的情况）
+    val qrBitmap = remember(uiState.qrImageBase64) {
+        decodeBase64ToBitmap(uiState.qrImageBase64)
     }
 
     Column(
@@ -104,24 +120,31 @@ fun LoginScreen(
             LoginStatus.WAITING_SCAN, LoginStatus.SCANNED, LoginStatus.EXPIRED -> {
                 // 显示二维码图片
                 Card(
-                    modifier = Modifier.size(240.dp)
-                        .clickable{
-                            val uri=uiState.qrUrl
-                            val intent=Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-                            context.startActivity(intent)
-                        }
-                    ,
+                    modifier = Modifier.size(240.dp),
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = uiState.qrImageUrl),
-                        contentDescription = "二维码",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        contentScale = ContentScale.Fit
-                    )
+                    if (qrBitmap != null) {
+                        Image(
+                            bitmap = qrBitmap.asImageBitmap(),
+                            contentDescription = "二维码",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "加载失败",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

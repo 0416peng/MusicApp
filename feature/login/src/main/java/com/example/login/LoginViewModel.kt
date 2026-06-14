@@ -23,7 +23,7 @@ enum class LoginStatus {
 
 data class LoginUiState(
     val status: LoginStatus = LoginStatus.IDLE,
-    val qrImageUrl: String = "",
+    val qrImageBase64: String = "",  // base64 编码的二维码图片数据
     val qrUrl: String = "",
     val key: String = "",
     val message: String = ""
@@ -63,9 +63,10 @@ class LoginViewModel @Inject constructor(
                 return
             }
 
+            // qrimg 是 base64 编码的二维码图片数据
             _uiState.value = LoginUiState(
                 status = LoginStatus.WAITING_SCAN,
-                qrImageUrl = loginPic.data.qrimg,
+                qrImageBase64 = loginPic.data.qrimg,
                 qrUrl = loginPic.data.qrurl,
                 key = key,
                 message = "请使用网易云音乐App扫码登录"

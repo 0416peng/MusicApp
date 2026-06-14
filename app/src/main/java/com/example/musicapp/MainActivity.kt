@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                     }
                     false -> {
                         // 未登录，显示登录页面
-                        LoginScreen(this,
+                        LoginScreen(
                             onLoginSuccess = {
                                 isLoggedIn.value = true
                             }
