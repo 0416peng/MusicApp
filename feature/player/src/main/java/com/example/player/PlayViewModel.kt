@@ -1,8 +1,8 @@
-package com.example.player
+﻿package com.example.player
 
-import android.media.MediaDrm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.di.handleApi
 import com.example.data.model.song.LyricData
 import com.example.data.model.song.LyricLine
 import com.example.data.model.song.SongDetailData
@@ -22,57 +22,36 @@ import javax.inject.Inject
 class PlayViewModel @Inject constructor(
     private val songRepository: SongRepository,
     private val musicPlayerManager: MusicPlayerManager
-): ViewModel() {
-    private val songList=musicPlayerManager.songsList
+) : ViewModel() {
+    private val songList = musicPlayerManager.songsList
     private val _lyricData = MutableStateFlow<LyricData?>(null)
     val lyricData = _lyricData.asStateFlow()
     private val _parsedLyrics = MutableStateFlow<List<LyricLine>>(emptyList())
     val parsedLyrics = _parsedLyrics.asStateFlow()
-    private val _songDetail=MutableStateFlow<SongDetailData?>(null)
-    val songDetail=_songDetail.asStateFlow()
-    private val _errorState= MutableStateFlow<String?>(null)
-    val errorState=_errorState.asStateFlow()
-    val isPlaying =musicPlayerManager.isPlaying
-    val playbackProgress=musicPlayerManager.playbackProgress
-    val currentSongDuration=musicPlayerManager.currentSongDuration
-    val currentlyPlayingSongId=musicPlayerManager.currentlyPlayingSongId
+    private val _songDetail = MutableStateFlow<SongDetailData?>(null)
+    val songDetail = _songDetail.asStateFlow()
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState = _errorState.asStateFlow()
+    val isPlaying = musicPlayerManager.isPlaying
+    val playbackProgress = musicPlayerManager.playbackProgress
+    val currentSongDuration = musicPlayerManager.currentSongDuration
+    val currentlyPlayingSongId = musicPlayerManager.currentlyPlayingSongId
 
     val currentLyricIndex: StateFlow<Int> = playbackProgress.map { currentProgress ->
-        _parsedLyrics.value.indexOfLast { line ->
-            line.time <= currentProgress
-        }.coerceAtLeast(0)
+        _parsedLyrics.value.indexOfLast { line -> line.time <= currentProgress }.coerceAtLeast(0)
     }.stateIn(viewModelScope, SharingStarted.Lazily, 0)
 
-    fun getSongLyric(id:Long){
-        viewModelScope.launch {
-            songRepository.getSongLyric(id)
-                .onSuccess {
-                    _lyricData.value=it
-                    _parsedLyrics.value= parseLrc(it.lrc.lyric)
-                }
-                .onFailure {
-                    _errorState.value=it.message
-                }
-        }
-    }
-    fun getSongDetail(id: Long){
-        viewModelScope.launch {
-            songRepository.getSongDetail(id)
-                .onSuccess {
-                    _songDetail.value=it
-                }
-                .onFailure {
-                    _errorState.value=it.message
-                }
-        }
-    }
-    fun playOrPauseSong(songId: Long) {
-        musicPlayerManager.playOrPauseSong(songId)
-    }
-    fun addMultipleToQueue(Index: Int){
-        musicPlayerManager.addMultipleToQueue(songList.value!!.toList(),Index)
-    }
-    fun seekTo(sliderPosition: Long){
-        musicPlayerManager.seekTo(sliderPosition)
-    }
+    fun getSongLyric(id: Long) { viewModelScope.launch {
+        songRepository.getSongLyric(id)
+            .onSuccess { _lyricData.value = it; _parsedLyrics.value = parseLrc(it.lrc.lyric) }
+            .onFailure { _errorState.value = it.message }
+    } }
+
+    fun getSongDetail(id: Long) { viewModelScope.launch {
+        songRepository.getSongDetail(id).handleApi("PlayViewModel", { _errorState.value = it }) { _songDetail.value = it }
+    } }
+
+    fun playOrPauseSong(songId: Long) = musicPlayerManager.playOrPauseSong(songId)
+    fun addMultipleToQueue(index: Int) = musicPlayerManager.addMultipleToQueue(songList.value!!.toList(), index)
+    fun seekTo(sliderPosition: Long) = musicPlayerManager.seekTo(sliderPosition)
 }

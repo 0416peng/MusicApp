@@ -97,7 +97,7 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /*TODO:实现播放全部的逻辑*/ }
+                        .clickable { viewModel.onAddListClicked(0) }
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -115,7 +115,7 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel()) {
             itemsIndexed(hotSongs!!.songs) { index, item ->
                 SongRowItem(
                     song = item,
-                    onPlayClick = { /*TODO:播放歌曲*/ },
+                    onPlayClick = { viewModel.onAddListClicked(index) },
                     currentlyPlayingSongId = currentlyPlayingSongId,
                     index = index
                 )
