@@ -1,4 +1,4 @@
-package com.example.playlist
+﻿package com.example.playlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,10 +19,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.playList.PlayListDetailData
+
+private val HEADER_GRADIENT = listOf(
+    Color(0xFF141528),  // 深靛蓝
+    Color(0xFF2D1B69),  // 深紫
+)
 
 @Composable
 fun PlayList(playListDetailData: PlayListDetailData) {
@@ -34,34 +42,42 @@ fun PlayList(playListDetailData: PlayListDetailData) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF0D10EC),
-                            Color(0xFF866171)
-                        )
-                    )
-                ),
+                .background(brush = Brush.verticalGradient(colors = HEADER_GRADIENT)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = playListDetailData.playlist.coverImgUrl,
+            Card(
                 modifier = Modifier
-                    .size(130.dp)
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentDescription = "playList Picture"
-            )
+                    .padding(start = 20.dp)
+                    .size(140.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                AsyncImage(
+                    model = playListDetailData.playlist.coverImgUrl,
+                    contentDescription = "歌单封面",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
                     .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp)
             ) {
                 Text(
                     playListDetailData.playlist.name,
                     fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
+                playListDetailData.playlist.creator?.let { creator ->
+                    Text(
+                        "${creator.nickname} >",
+                        fontSize = 13.sp,
+                        color = Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
     }

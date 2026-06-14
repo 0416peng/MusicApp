@@ -35,7 +35,9 @@ import com.example.data.model.artist.HotSong
 import com.example.ui.LoadingPlaceholder
 
 @Composable
-fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel()) {
+fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel(),
+                 getAllSongs:(name:String,id:Long)-> Unit
+                 ) {
     LaunchedEffect(Unit) {
         viewModel.getArtistDetail(id)
         viewModel.getArtistHotSongs(id)
@@ -125,7 +127,7 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /*TODO:查看全部歌曲*/ }
+                        .clickable { getAllSongs(detail!!.data.artist.name,detail!!.data.artist.id.toLong()) }
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {

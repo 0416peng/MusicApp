@@ -35,9 +35,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.core.content.ContextCompat
 import com.example.albumList.AlbumListScreen
+import com.example.artist.ArtistAllSongsScreen
 import com.example.artist.ArtistScreen
 import com.example.data.manager.UserSessionManager
 import com.example.home.ui.HomeScreen
+import com.example.home.ui.RecommendPlaylistScreen
 import com.example.login.LoginScreen
 import com.example.musicapp.ui.MiniPlayer
 import com.example.musicapp.ui.PlayListSheet
@@ -45,6 +47,7 @@ import com.example.player.PlayerScreen
 import com.example.playlist.PlayListScreen
 import com.example.search.SearchDetailScreen
 import com.example.search.SearchScreen
+import android.net.Uri
 import com.example.ui.theme.MusicAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -127,8 +130,11 @@ object AppDestinations {
     const val SEARCH_DETAIL_ROUTE = "searchDetail"
     const val ARTIST_ROUTE = "artist"
     const val ARTIST_ID_ARG = "artistId"
+    const val ARTIST_NAME_ARG = "artistName"
     const val PLAYER_SCREEN="playerScreen"
     const val PLAYER_ID_ARG="id"
+    const val RECOMMEND_PLAYLIST_ROUTE = "recommendPlaylist"
+    const val ARTIST_ALL_SONGS_ROUTE="artistAllSongs"
 }
 @Composable
 fun MusicNavGraph(
@@ -143,6 +149,7 @@ fun MusicNavGraph(
     ) {
         composable(AppDestinations.HOME_ROUTE) {
             HomeScreen(
+                onRecommendClick = { navController.navigate(AppDestinations.RECOMMEND_PLAYLIST_ROUTE) },
                 onAlbumClick = { albumId ->
                     navController.navigate("${AppDestinations.ALBUM_LIST_ROUTE}/${albumId}")
                 },
@@ -150,7 +157,8 @@ fun MusicNavGraph(
                     navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/${playListId}")
                 },
                 onSearchClick = { navController.navigate(AppDestinations.SEARCH_ROUTE) }
-            )
+            ,
+            onSingerClick = { id -> navController.navigate("${AppDestinations.ARTIST_ROUTE}/${id}") })
         }
         composable(
             route = "${AppDestinations.ALBUM_LIST_ROUTE}/{${AppDestinations.ALBUM_ID_ARG}}",
@@ -197,7 +205,22 @@ fun MusicNavGraph(
             })
         ) { backStackEntry ->
             val artistId = backStackEntry.arguments?.getLong(AppDestinations.ARTIST_ID_ARG)
-            ArtistScreen(id = artistId!!)
+            ArtistScreen(id = artistId!!, getAllSongs = {name, id -> navController.navigate("${AppDestinations.ARTIST_ALL_SONGS_ROUTE}/${id}/${Uri.encode(name)}")})
+        }
+        composable(
+          route = "${AppDestinations.ARTIST_ALL_SONGS_ROUTE}/{${AppDestinations.ARTIST_ID_ARG}}/{${AppDestinations.ARTIST_NAME_ARG}}"  ,
+            arguments=listOf(navArgument(AppDestinations.ARTIST_ID_ARG){
+                type=NavType.LongType
+            }
+                ,navArgument(AppDestinations.ARTIST_NAME_ARG){
+                    type=NavType.StringType
+                }
+            )
+        ){
+            backStackEntry->
+            val artistId=backStackEntry.arguments?.getLong(AppDestinations.ARTIST_ID_ARG)
+            val name= Uri.decode(backStackEntry.arguments?.getString(AppDestinations.ARTIST_NAME_ARG) ?: "")
+            ArtistAllSongsScreen(id=artistId!!, name = name!!, onBack = {navController.popBackStack()})
         }
         composable(
             route ="${AppDestinations.PLAYER_SCREEN}/{${AppDestinations.PLAYER_ID_ARG}}",
@@ -208,6 +231,12 @@ fun MusicNavGraph(
             backStackEntry->
             val id=backStackEntry.arguments?.getLong(AppDestinations.PLAYER_ID_ARG)
             PlayerScreen(id = id!!)
+        }
+        composable(AppDestinations.RECOMMEND_PLAYLIST_ROUTE) {
+            RecommendPlaylistScreen(
+                onPlayListClick = { id -> navController.navigate("${AppDestinations.PLAY_LIST_ROUTE}/${id}") },
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
@@ -229,7 +258,9 @@ fun MainScreen(
             MiniPlayer(
             onShowListClick = {showList=true },
             onPlayerClick ={id-> navController.navigate("${AppDestinations.PLAYER_SCREEN}/${id}")})
-        }
+ 
+
+       }
        }) {
             innerPadding-> MusicNavGraph(navController = navController,modifier = Modifier.padding(innerPadding))
     }

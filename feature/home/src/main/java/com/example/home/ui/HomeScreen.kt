@@ -1,4 +1,4 @@
-package com.example.home.ui
+﻿package com.example.home.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -28,9 +28,12 @@ object ListType {
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(), onAlbumClick: (Long) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
+    onRecommendClick: () -> Unit = {},
+    onAlbumClick: (Long) -> Unit,
     onPlayListClick: (Long) -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onSingerClick: (Long) -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.getRecommendAlbum(5)
@@ -70,7 +73,7 @@ fun HomeScreen(
             Text(
                 "推荐歌单  >",
                 modifier = Modifier
-                    .clickable {/*TODO*/ }
+                    .clickable { onRecommendClick() }
                     .padding(12.dp),
             )
             if (recommendAlbumData != null) {
@@ -82,7 +85,7 @@ fun HomeScreen(
                 LoadingPlaceholder()
             }
             Text(
-                "最新专辑  >",
+                "最新专辑  ",
                 modifier = Modifier
                     .clickable {/*TODO*/ }
                     .padding(12.dp)
@@ -96,7 +99,7 @@ fun HomeScreen(
                 LoadingPlaceholder()
             }
             Text(
-                "排行榜 >",
+                "排行榜 ",
                 modifier = Modifier
                     .clickable {/*TODO*/ }
                     .padding(12.dp)
@@ -116,7 +119,7 @@ fun HomeScreen(
                     .padding(12.dp)
             )
             if (hotSingerData != null) {
-                HotSingerList(hotSingerData!!.artists)
+                HotSingerList(hotSingerData!!.artists, onSingerClick )
             } else {
                 LoadingPlaceholder()
             }
@@ -124,8 +127,3 @@ fun HomeScreen(
         }
     }
 }
-
-
-
-
-

@@ -1,5 +1,6 @@
 package com.example.home.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,10 @@ import coil.compose.AsyncImage
 import com.example.data.model.home.HotArtistData
 
 @Composable
-fun HotSingerList(items: List<HotArtistData>) {
+fun HotSingerList(items: List<HotArtistData>,
+                  onSingerClick:(id:Long)->Unit
+
+                  ) {
     LazyHorizontalGrid(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -35,6 +39,9 @@ fun HotSingerList(items: List<HotArtistData>) {
                 modifier = Modifier
                     .width(150.dp)
                     .padding(8.dp)
+                    .clickable{
+                        onSingerClick(item.id.toLong())
+                    }
             ) {
                 AsyncImage(
                     model = item.picUrl,
