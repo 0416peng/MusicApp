@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0)" variant="fatal" version="8.13.0">
+
+    <issue
+        id="Instantiatable"
+        message="`MusicService` must extend android.app.Service"
+        errorLine1="            android:name=&quot;com.example.player.MusicService&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="31"
+            column="27"/>
+    </issue>
+
+</issues>

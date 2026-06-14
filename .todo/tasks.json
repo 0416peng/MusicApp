@@ -1,0 +1,434 @@
+[
+  {
+    "id": "TASK_35",
+    "priority": "LOW",
+    "tags": [
+      "todo"
+    ],
+    "title": "[TODO]因为后端无法同时请求多首歌曲，所以需要订正歌曲的播放逻辑",
+    "description": "",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 10,
+        "day": 30
+      },
+      "time": {
+        "hour": 17,
+        "minute": 50,
+        "second": 45,
+        "nano": 484323900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_72",
+    "priority": "MEDIUM",
+    "tags": [
+      "note"
+    ],
+    "title": "",
+    "description": "[NOTE] This file is ignored for devices older than API 31 See https://developer.android.com/about/versions/12/backup-restore",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_73",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] Use \u003cinclude\u003e and \u003cexclude\u003e to control what is backed up. \u003cinclude .../\u003e \u003cexclude .../\u003e",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_74",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 实现播放全部的逻辑",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_75",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 播放歌曲",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_76",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 查看全部歌曲",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_77",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 歌曲菜单",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_78",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 待完善歌手页面之后再编写 val list \u003d_songs.value?.songs?.map { item-\u003eitem.id } musicPlayerManager.addMultipleToQueue(list,index)",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_81",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 播放上一首",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_82",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 暂停或播放",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_83",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 播放下一首",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_84",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 打开播放列表",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_86",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 歌曲菜单",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_89",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] ：页面跳转",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_90",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 实现播放全部的逻辑",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_91",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 播放音乐",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_92",
+    "priority": "MEDIUM",
+    "tags": [
+      "todo"
+    ],
+    "title": "",
+    "description": "[TODO] 歌曲菜单",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  },
+  {
+    "id": "TASK_93",
+    "priority": "MEDIUM",
+    "tags": [
+      "note"
+    ],
+    "title": "",
+    "description": "[NOTE] .",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 11,
+        "day": 7
+      },
+      "time": {
+        "hour": 14,
+        "minute": 0,
+        "second": 30,
+        "nano": 641600900
+      }
+    },
+    "isImported": false
+  }
+]
