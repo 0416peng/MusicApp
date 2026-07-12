@@ -74,7 +74,7 @@ fun SearchScreen(
 
                 if (hotSearchData != null) {
                     LazyColumn {
-                        itemsIndexed(hotSearchData!!.result.hots) { index, item ->
+                        itemsIndexed(hotSearchData!!.result.hots, key = { index, item -> item.first }) { index, item ->
                             val color = if (index <= 2) Color.Red else Color.Black
                             Row(
                                 modifier = Modifier

@@ -30,7 +30,7 @@ fun AlbumListResultScreen(
             AlbumData(item.name, item.id, item.picUrl, item.artist.name)
         }
         LazyColumn(state = listState) {
-            itemsIndexed(albumItems) { index, item ->
+            itemsIndexed(albumItems, key = { index, item -> item.id }) { index, item ->
                 AlbumListItem(item, onAlbumClick)
                 if (index >= albumItems.size - 3 && !isRefreshing) {
                     viewModel.loadMore()

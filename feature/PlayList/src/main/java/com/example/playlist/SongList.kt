@@ -52,9 +52,7 @@ fun SongList(
                         Text("播放全部")
                     }
                 }
-                itemsIndexed(
-                    items = playListData.songs,
-                ) { index, item ->
+                itemsIndexed(items = playListData.songs, key = { index, item -> item.id }) { index, item ->
                     SongItem(
                         song = item, currentlyPlayingSongId,
                         { onAddListClick(index) })

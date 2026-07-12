@@ -32,7 +32,7 @@ fun AlbumList(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items) { item ->
+        items(items, key = { it.albumId }) { item ->
             Column(
                 modifier = Modifier.width(120.dp),
                 horizontalAlignment = Alignment.CenterHorizontally

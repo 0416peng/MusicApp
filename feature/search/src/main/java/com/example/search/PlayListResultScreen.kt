@@ -29,7 +29,7 @@ fun PlayListResultScreen(
             PlayListData(item.name, item.id, item.coverImgUrl, item.trackCount)
         }
         LazyColumn(state = listState) {
-            itemsIndexed(playListItems) { index, item ->
+            itemsIndexed(playListItems, key = { index, item -> item.id }) { index, item ->
                 PlayListItem(item, onPlayListClick)
                 if (index >= playListItems.size - 3 && !isRefreshing) {
                     viewModel.loadMore()

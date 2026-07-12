@@ -28,7 +28,7 @@ fun SongResultScreen(viewModel: SearchDetailViewModel) {
             SongData(it.id, it.name, it.artists.joinToString("/") { ar -> ar.name })
         }
         LazyColumn(state = listState) {
-            itemsIndexed(songsItem) { index, item ->
+            itemsIndexed(songsItem, key = { index, item -> item.id }) { index, item ->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
                 SongItem(

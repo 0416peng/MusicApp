@@ -54,7 +54,7 @@ fun RecommendPlaylistScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(items) { item ->
+                items(items, key = { it.albumId }) { item ->
                     Column {
                         Card(
                             modifier = Modifier

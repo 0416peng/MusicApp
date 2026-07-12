@@ -34,7 +34,7 @@ fun SingerResultScreen(
     val listState = rememberLazyListState()
     if (singerData != null) {
         LazyColumn(state = listState) {
-            itemsIndexed(singerData!!.result.artists) { index, item ->
+            itemsIndexed(singerData!!.result.artists, key = { index, item -> item.id }) { index, item ->
                 SingerItem(item, onSingerClick)
                 if (index >= singerData!!.result.artists.size - 3 && !isRefreshing) {
                     viewModel.loadMore()

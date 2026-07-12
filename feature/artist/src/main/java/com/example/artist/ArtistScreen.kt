@@ -114,7 +114,7 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel(),
             }
 
 
-            itemsIndexed(hotSongs!!.songs) { index, item ->
+            itemsIndexed(hotSongs!!.songs, key = { index, item -> item.id }) { index, item ->
                 SongRowItem(
                     song = item,
                     onPlayClick = { viewModel.onAddListClicked(index) },

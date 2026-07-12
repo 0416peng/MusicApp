@@ -41,7 +41,7 @@ fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick: (index:
                 Text("播放全部")
             }
         }
-        itemsIndexed(songs) { index, item ->
+        itemsIndexed(songs, key = { index, item -> item.id }) { index, item ->
             val isPlaying = currentlyPlayingSongId == item.id
             Row(
                 modifier = Modifier

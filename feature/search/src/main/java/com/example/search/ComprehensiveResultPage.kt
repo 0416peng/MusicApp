@@ -130,7 +130,7 @@ fun ComprehensiveResultPage(
             val songItems = detailData!!.result.song.songs.take(10).map {
                 SongData(it.id, it.name, it.ar.joinToString("/") { ar -> ar.name })
             }
-            itemsIndexed(songItems) { index, item ->
+            itemsIndexed(songItems, key = { index, item -> item.id }) { index, item ->
                 val isPlaying = currentlyPlayingSongId == item.id
                 val color = if (isPlaying) Color.Red else Color.Black
                 SongItem(
@@ -160,7 +160,7 @@ fun ComprehensiveResultPage(
             val playListItems = detailData!!.result.playList.playLists.take(5).map {
                 PlayListData(it.name, it.id, it.coverImgUrl, it.trackCount)
             }
-            items(playListItems) { item ->
+            items(playListItems, key = { it.id }) { item ->
                 PlayListItem(item, onPlayListClick = { onPlayListClick(item.id) })
             }
             item {
@@ -182,7 +182,7 @@ fun ComprehensiveResultPage(
             val albumItems = detailData!!.result.album.albums.take(5).map {
                 AlbumData(it.name, it.id, it.picUrl, it.artist.name)
             }
-            items(albumItems) { item ->
+            items(albumItems, key = { it.id }) { item ->
                 AlbumListItem(item, onAlbumClick = { onAlbumClick(item.id) })
             }
 
