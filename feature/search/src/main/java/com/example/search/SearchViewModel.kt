@@ -10,6 +10,15 @@ import com.example.data.repository.search.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,15 +35,44 @@ class SearchViewModel @Inject constructor(
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState = _errorState.asStateFlow()
 
+    init {
+        searchText
+            .debounce(300)
+            .map { it.trim() }
+            .distinctUntilChanged()
+            .flatMapLatest { keyword ->
+                if (keyword.isBlank()) {
+                    flowOf<Result<SearchSuggestData>?>(null)
+                } else {
+                    flow {
+                        emit(searchRepository.getSearchSuggest(keyword))
+                    }
+                }
+            }
+            .onEach { result ->
+                if (result == null) {
+                    _searchSuggestData.value = null
+                } else {
+                    result.handleApi(
+                        "SearchViewModel",
+                        { _errorState.value = it }
+                    ) {
+                        _searchSuggestData.value = it
+                    }
+                }
+            }
+            .catch { exception ->
+                _errorState.value = "网络错误: ${exception.message}"
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun getHotSearchData() { viewModelScope.launch {
         searchRepository.getHotSearchData().handleApi("SearchViewModel", { _errorState.value = it }) { _hotSearchData.value = it }
     } }
 
     fun onSearchTextChanged(text: String) {
         _searchText.value = text
-        viewModelScope.launch {
-            searchRepository.getSearchSuggest(text).handleApi("SearchViewModel", { _errorState.value = it }) { _searchSuggestData.value = it }
-        }
     }
 
     fun clearSearchSuggest() { _searchSuggestData.value = null }
