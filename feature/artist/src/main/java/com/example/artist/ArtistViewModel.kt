@@ -1,6 +1,6 @@
 ﻿package com.example.artist
 
-import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.di.handleApi
@@ -32,7 +32,7 @@ class ArtistViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
     private val _errorState = MutableStateFlow<String?>(null)
-    val errorState = _errorState.asStateFlow()
+  
 
     fun getArtistDetail(id: Long) { viewModelScope.launch {
         artistRepository.getArtistDetail(id).handleApi("ArtistViewModel", { _errorState.value = it }) { _detail.value = it }
@@ -46,9 +46,9 @@ class ArtistViewModel @Inject constructor(
         _isRefreshing.value = true
         artistRepository.getArtistSongs(id, _currentOffset.value).handleApi("ArtistViewModel", { _errorState.value = it }) { data ->
             val existing = _songs.value
-            _songs.value = if (existing != null) {
-                existing.copy(songs = existing.songs + data.songs, more = data.more, total = data.total)
-            } else { data }
+            _songs.value =
+                existing?.copy(songs = existing.songs + data.songs, more = data.more, total = data.total)
+                    ?: data
             _currentOffset.value += data.songs.size
         }
         _isRefreshing.value = false
