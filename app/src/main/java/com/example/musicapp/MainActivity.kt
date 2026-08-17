@@ -167,7 +167,10 @@ fun MusicNavGraph(
             })
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getLong(AppDestinations.ALBUM_ID_ARG)
-            AlbumListScreen(id = albumId!!)
+            AlbumListScreen(
+                id = albumId!!,
+                onBack = { navController.popBackStack() }
+            )
         }
         composable(
             route = "${AppDestinations.PLAY_LIST_ROUTE}/{${AppDestinations.PLAY_LIST_ID_ARG}}",
@@ -176,7 +179,10 @@ fun MusicNavGraph(
             })
         ) { backStackEntry ->
             val playListId = backStackEntry.arguments?.getLong(AppDestinations.PLAY_LIST_ID_ARG)
-            PlayListScreen(id = playListId!!)
+            PlayListScreen(
+                id = playListId!!,
+                onBack = { navController.popBackStack() }
+            )
         }
         composable(route = AppDestinations.SEARCH_ROUTE) {
             SearchScreen(

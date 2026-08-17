@@ -27,6 +27,7 @@ import com.example.data.model.home.DisplayableAlbumItemData
 import com.example.home.HomeViewModel
 import com.example.ui.LoadingPlaceholder
 import com.example.ui.TopBackBar
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun RecommendPlaylistScreen(
@@ -63,7 +64,7 @@ fun RecommendPlaylistScreen(
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             AsyncImage(
-                                model = item.picUrl,
+                                model = thumbnailUrl(item.picUrl, 300),
                                 contentDescription = item.name,
                                 modifier = Modifier.fillMaxSize()
                             )

@@ -28,6 +28,7 @@ import com.example.data.model.search.data.AlbumData
 import com.example.data.model.search.data.PlayListData
 import com.example.data.model.search.data.SongData
 import com.example.ui.LoadingPlaceholder
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun ComprehensiveResultPage(
@@ -49,7 +50,7 @@ fun ComprehensiveResultPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
-                        model = detailData!!.result.artist.artists[0].picUrl,
+                        model = thumbnailUrl(detailData!!.result.artist.artists[0].picUrl, 100),
                         contentDescription = detailData!!.result.artist.artists[0].name,
                         modifier = Modifier
                             .padding(8.dp)
@@ -73,7 +74,7 @@ fun ComprehensiveResultPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
-                        model = detailData!!.result.album.albums[0].picUrl,
+                        model = thumbnailUrl(detailData!!.result.album.albums[0].picUrl, 100),
                         contentDescription = detailData!!.result.album.albums[0].name,
                         modifier = Modifier
                             .padding(8.dp)
@@ -95,7 +96,7 @@ fun ComprehensiveResultPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
-                        model = detailData!!.result.playList.playLists[0].coverImgUrl,
+                        model = thumbnailUrl(detailData!!.result.playList.playLists[0].coverImgUrl, 100),
                         contentDescription = detailData!!.result.playList.playLists[0].name,
                         modifier = Modifier
                             .padding(12.dp)

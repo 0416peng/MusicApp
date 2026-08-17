@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.playList.Song
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun SongItem(song: Song, currentlyPlayingSongId: Long?, onClick: (id: Long) -> Unit) {
@@ -27,7 +28,7 @@ fun SongItem(song: Song, currentlyPlayingSongId: Long?, onClick: (id: Long) -> U
             .fillMaxWidth()
             .clickable { onClick(song.id) }) {
         AsyncImage(
-            model = song.al.picUrl,
+            model = thumbnailUrl(song.al.picUrl, 120),
             modifier = Modifier
                 .size(60.dp)
                 .padding(12.dp),

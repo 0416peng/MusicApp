@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.home.HotArtistData
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun HotSingerList(items: List<HotArtistData>,
@@ -44,7 +45,7 @@ fun HotSingerList(items: List<HotArtistData>,
                     }
             ) {
                 AsyncImage(
-                    model = item.picUrl,
+                    model = thumbnailUrl(item.picUrl, 128),
                     modifier = Modifier
                         .size(64.dp),
                     contentDescription = item.name

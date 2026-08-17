@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.data.model.song.SongsListData
 import com.example.musicapp.PlayerViewModel
+import com.example.ui.thumbnailUrl
 import kotlinx.coroutines.launch
 
 
@@ -85,7 +86,7 @@ fun MiniPlayer(
                 ) {
 
                     AsyncImage(
-                        model = songDetail!!.songs[0].al.picUrl,
+                        model = thumbnailUrl(songDetail!!.songs[0].al.picUrl, 96),
                         contentDescription = songDetail!!.songs[0].name,
                         modifier = Modifier
                             .padding(6.dp)

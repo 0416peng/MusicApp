@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.data.model.artist.HotSong
 import com.example.ui.LoadingPlaceholder
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel(),
@@ -54,7 +55,7 @@ fun ArtistScreen(id: Long, viewModel: ArtistViewModel = hiltViewModel(),
 
             item {
                 AsyncImage(
-                    model = detail!!.data.artist.cover,
+                    model = thumbnailUrl(detail!!.data.artist.cover, 720, 500),
                     contentDescription = "歌手封面",
                     modifier = Modifier
                         .fillMaxWidth()

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -25,11 +26,12 @@ import com.example.data.model.albumList.Song
 fun AlbumList(
     songs: List<Song>,
     currentlyPlayingSongId: Long?,
+    listState: LazyListState,
     header: @Composable () -> Unit,
     onClick: (index: Int) -> Unit
 ) {
 
-    LazyColumn {
+    LazyColumn(state = listState) {
         item { header() }
         item {
             Row(

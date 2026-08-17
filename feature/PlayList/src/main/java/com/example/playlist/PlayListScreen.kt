@@ -1,21 +1,32 @@
 package com.example.playlist
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.ui.LoadingPlaceholder
+import com.example.ui.TopBackBar
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
+fun PlayListScreen(
+    id: Long,
+    onBack: () -> Unit,
+    viewModel: PlayListViewModel = hiltViewModel()
+) {
     LaunchedEffect(Unit) {
         viewModel.getPlayListData(id)
         viewModel.getPlayListDetail(id)
@@ -25,6 +36,9 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val currentlyPlayingSongId by viewModel.currentlyPlayingSongId.collectAsState()
     val listState = rememberLazyListState()
+    val showTopBar by remember {
+        derivedStateOf { listState.firstVisibleItemIndex > 0 }
+    }
     val context = LocalContext.current
     val errorState by viewModel.errorState.collectAsState()
     LaunchedEffect(errorState) {
@@ -34,21 +48,33 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
         }
     }
     if (playListData?.code == 200) {
-        SongList(
-            playListData = playListData,
-            currentlyPlayingSongId = currentlyPlayingSongId,
-            listState = listState,
-            header = {
-                if (playListDetailData?.code == 200) {
-                    PlayList(playListDetailData!!)
-                } else {
-                    LoadingPlaceholder()
-                }
-            },
-            onAddListClick = { index -> viewModel.onAddListClicked(index) },
-            loadMore = { viewModel.loadMorePlayListData(id) },
-            isRefreshing = isRefreshing
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            SongList(
+                playListData = playListData,
+                currentlyPlayingSongId = currentlyPlayingSongId,
+                listState = listState,
+                header = {
+                    if (playListDetailData?.code == 200) {
+                        PlayList(playListDetailData!!)
+                    } else {
+                        LoadingPlaceholder()
+                    }
+                },
+                onAddListClick = { index -> viewModel.onAddListClicked(index) },
+                loadMore = { viewModel.loadMorePlayListData(id) },
+                isRefreshing = isRefreshing
+            )
+            AnimatedVisibility(
+                visible = showTopBar,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                TopBackBar(
+                    title = playListDetailData?.playlist?.name ?: "歌单",
+                    onBack = onBack
+                )
+            }
+        }
     } else {
         LoadingPlaceholder()
     }

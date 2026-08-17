@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.data.model.home.Banner
+import com.example.ui.thumbnailUrl
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -66,7 +67,7 @@ fun Banner(items: List<Banner>) {
                     .clickable {/*TODO*/ }
             ) {
                 AsyncImage(
-                    model = item.pic,
+                    model = thumbnailUrl(item.pic, 720, 288),
                     contentDescription = "banner",
                     modifier = Modifier.fillMaxSize()
                 )

@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import com.example.common.formatTimestamp
 import com.example.data.model.albumList.AlbumListData
 import com.example.ui.LoadingPlaceholder
+import com.example.ui.thumbnailUrl
 
 private val HEADER_GRADIENT = listOf(
     Color(0xFF141528),
@@ -58,7 +59,7 @@ fun Album(albumListData: AlbumListData?) {
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     AsyncImage(
-                        model = albumListData.album.picUrl,
+                        model = thumbnailUrl(albumListData.album.picUrl, 600),
                         contentDescription = "专辑封面",
                         modifier = Modifier
                             .fillMaxSize()

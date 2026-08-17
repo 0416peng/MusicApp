@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.search.data.AlbumData
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit) {
@@ -24,7 +25,7 @@ fun AlbumListItem(item: AlbumData, onAlbumClick: (Long) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = item.picUrl,
+            model = thumbnailUrl(item.picUrl, 96),
             contentDescription = item.name,
             modifier = Modifier
                 .padding(12.dp)

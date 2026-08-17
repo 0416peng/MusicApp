@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.search.Artist
 import com.example.ui.LoadingPlaceholder
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun SingerResultScreen(
@@ -55,7 +56,7 @@ fun SingerItem(item: Artist, onSingerClick: (id: Long) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = item.picUrl,
+            model = thumbnailUrl(item.picUrl, 96),
             contentDescription = item.name,
             modifier = Modifier
                 .padding(8.dp)

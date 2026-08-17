@@ -49,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.common.formatTime
 import com.example.data.model.song.LyricLine
+import com.example.ui.thumbnailUrl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -105,7 +106,7 @@ fun PlayerScreen(
              if (showPicOrLyr==SHOW_PIC) {
               PicScreen(
                   modifier=Modifier.align(Alignment.Center).padding(bottom = 30.dp),
-                  url = songDetail.songs[0].al.picUrl,
+                  url = thumbnailUrl(songDetail.songs[0].al.picUrl, 600),
                   name = songDetail.songs[0].name,
                   rotationAngle = { rotation.value }
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.search.data.PlayListData
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun PlayListItem(item: PlayListData, onPlayListClick: (id: Long) -> Unit) {
@@ -24,7 +25,7 @@ fun PlayListItem(item: PlayListData, onPlayListClick: (id: Long) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = item.picUrl,
+            model = thumbnailUrl(item.picUrl, 96),
             contentDescription = item.name,
             modifier = Modifier
                 .padding(12.dp)

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.playList.PlayListDetailData
+import com.example.ui.thumbnailUrl
 
 private val HEADER_GRADIENT = listOf(
     Color(0xFF141528),  // 深靛蓝
@@ -53,7 +54,7 @@ fun PlayList(playListDetailData: PlayListDetailData) {
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 AsyncImage(
-                    model = playListDetailData.playlist.coverImgUrl,
+                    model = thumbnailUrl(playListDetailData.playlist.coverImgUrl, 600),
                     contentDescription = "歌单封面",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

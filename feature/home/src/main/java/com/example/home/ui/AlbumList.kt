@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.data.model.home.DisplayableAlbumItemData
+import com.example.ui.thumbnailUrl
 
 @Composable
 fun AlbumList(
@@ -49,7 +50,7 @@ fun AlbumList(
 
                 ) {
                     AsyncImage(
-                        model = item.picUrl,
+                        model = thumbnailUrl(item.picUrl, 240),
                         modifier = Modifier.fillMaxSize(),
                         contentDescription = item.name
                     )
