@@ -32,7 +32,7 @@ class ArtistViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
     private val _errorState = MutableStateFlow<String?>(null)
-  
+
 
     fun getArtistDetail(id: Long) { viewModelScope.launch {
         artistRepository.getArtistDetail(id).handleApi("ArtistViewModel", { _errorState.value = it }) { _detail.value = it }
@@ -43,6 +43,7 @@ class ArtistViewModel @Inject constructor(
     } }
 
     fun getArtistSongs(id: Long) { viewModelScope.launch {
+        if (_isRefreshing.value || _songs.value?.more == false) return@launch
         _isRefreshing.value = true
         artistRepository.getArtistSongs(id, _currentOffset.value).handleApi("ArtistViewModel", { _errorState.value = it }) { data ->
             val existing = _songs.value

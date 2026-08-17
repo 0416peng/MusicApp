@@ -16,10 +16,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.data.model.playList.PlayListData
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun SongList(
@@ -27,11 +30,23 @@ fun SongList(
     currentlyPlayingSongId: Long?,
     listState: LazyListState,
     onAddListClick: (index: Int) -> Unit,
-    loadMore: (id: Long) -> Unit,
+    loadMore: () -> Unit,
     isRefreshing: Boolean
 ) {
     if (playListData != null) {
         if (playListData.code == 200) {
+            val songCount = playListData.songs.size
+            LaunchedEffect(listState, songCount) {
+                if (songCount > 0) {
+                    snapshotFlow {
+                        listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+                    }
+                        .filter { lastVisibleIndex -> lastVisibleIndex >= songCount - 2 }
+                        .first()
+                    loadMore()
+                }
+            }
+
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize()
@@ -56,13 +71,6 @@ fun SongList(
                     SongItem(
                         song = item, currentlyPlayingSongId,
                         { onAddListClick(index) })
-                    val totalItemsCount = playListData.songs.size
-                    if (index >= totalItemsCount - 3 && !isRefreshing) {
-                        LaunchedEffect(Unit) {
-                            loadMore(item.id)
-                        }
-                    }
-
                 }
                 if (isRefreshing) {
                     item {

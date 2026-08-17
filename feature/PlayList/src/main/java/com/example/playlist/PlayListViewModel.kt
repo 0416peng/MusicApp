@@ -28,6 +28,7 @@ class PlayListViewModel @Inject constructor(
     private val _playListDetailData = MutableStateFlow<PlayListDetailData?>(null)
     val playListDetailData = _playListDetailData.asStateFlow()
     private val _currentOffset = MutableStateFlow(0)
+    private var hasMore = true
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
     private val _errorState = MutableStateFlow<String?>(null)
@@ -35,17 +36,20 @@ class PlayListViewModel @Inject constructor(
 
     fun getPlayListData(id: Long) { viewModelScope.launch {
         playListRepository.getPlayListData(id, 0).handleApi("PlayListViewModel", { _errorState.value = it }) {
-            _playListData.value = it; _currentOffset.value = PAGE_SIZE
+            _playListData.value = it
+            _currentOffset.value = it.songs.size
+            hasMore = it.songs.size >= PAGE_SIZE
         }
     } }
 
     fun loadMorePlayListData(id: Long) { viewModelScope.launch {
-        if (_isRefreshing.value) return@launch
+        if (_isRefreshing.value || !hasMore) return@launch
         _isRefreshing.value = true
         playListRepository.getPlayListData(id, _currentOffset.value).handleApi("PlayListViewModel", { _errorState.value = it }) { newData ->
             val currentSongs = _playListData.value?.songs ?: emptyList()
             _playListData.value = _playListData.value?.copy(songs = currentSongs + newData.songs)
-            _currentOffset.value += PAGE_SIZE
+            _currentOffset.value += newData.songs.size
+            hasMore = newData.songs.size >= PAGE_SIZE
         }
         _isRefreshing.value = false
     } }

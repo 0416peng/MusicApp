@@ -16,6 +16,11 @@ class MusicAndroidApplicationConventionPlugin : Plugin<Project> {
             defaultConfig {
                 targetSdk = 36
             }
+
+            buildTypes.getByName("release") {
+                isMinifyEnabled = true
+                isShrinkResources = true
+            }
         }
 
         addCommonAndroidDependencies()

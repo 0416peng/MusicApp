@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -23,9 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.ArrayDeque
 import javax.inject.Inject
 
 @SuppressLint("Instantiatable")
@@ -39,7 +39,9 @@ class MusicService : MediaSessionService() {
 
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-    private var backgroundLoadJob: Job? = null
+    private val pendingSongIds = ArrayDeque<Long>()
+    private var queueLoadJob: Job? = null
+    private var preloadJob: Job? = null
     private var mediaSession: MediaSession? = null
 
     override fun onCreate() {
@@ -47,6 +49,7 @@ class MusicService : MediaSessionService() {
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(sessionCallback)
             .build()
+        player.addListener(playerListener)
     }
 
     override fun onGetSession(controllerInfo: ControllerInfo): MediaSession? {
@@ -55,12 +58,19 @@ class MusicService : MediaSessionService() {
 
     override fun onDestroy() {
         serviceScope.cancel()
+        player.removeListener(playerListener)
         mediaSession?.run {
             player.release()
             release()
             mediaSession = null
         }
         super.onDestroy()
+    }
+
+    private val playerListener = object : Player.Listener {
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            preloadUpcomingItems()
+        }
     }
 
     private val sessionCallback = object : MediaSession.Callback {
@@ -111,7 +121,10 @@ class MusicService : MediaSessionService() {
         val startIndex = args.getInt(EXTRA_START_INDEX, 0)
         if (songIdsList.isNullOrEmpty() || startIndex !in songIdsList.indices) return
 
-        serviceScope.launch {
+        queueLoadJob?.cancel()
+        preloadJob?.cancel()
+        pendingSongIds.clear()
+        queueLoadJob = serviceScope.launch {
             val clickedSongId = songIdsList[startIndex]
             val clickedMediaItem = buildSingleItem(clickedSongId)
             if (clickedMediaItem == null) {
@@ -122,68 +135,77 @@ class MusicService : MediaSessionService() {
             player.setMediaItems(listOf(clickedMediaItem), 0, 0L)
             player.prepare()
             player.play()
-            backgroundLoadJob?.cancel()
 
             val itemsAfterClicked = songIdsList.subList(startIndex + 1, songIdsList.size)
             val itemsBeforeClicked = songIdsList.subList(0, startIndex)
-            backgroundLoadJob = addRemainingItemsInOrder(itemsAfterClicked, itemsBeforeClicked)
+            pendingSongIds.addAll(itemsAfterClicked)
+            pendingSongIds.addAll(itemsBeforeClicked)
+            preloadUpcomingItems()
         }
     }
 
     private fun clear() {
         serviceScope.launch {
-            backgroundLoadJob?.cancel()
+            queueLoadJob?.cancel()
+            preloadJob?.cancel()
+            pendingSongIds.clear()
             player.clearMediaItems()
             player.stop()
         }
     }
 
-    private fun addRemainingItemsInOrder(itemsAfter: List<Long>, itemsBefore: List<Long>): Job {
-        return serviceScope.launch(Dispatchers.IO) {
-            for (songId in itemsAfter) {
-                ensureActive()
-                val mediaItem = buildSingleItem(songId)
-                if (mediaItem != null) {
-                    withContext(Dispatchers.Main) {
-                        player.addMediaItem(mediaItem)
-                    }
-                }
-            }
+    private fun preloadUpcomingItems() {
+        if (preloadJob?.isActive == true || pendingSongIds.isEmpty()) return
 
-            for (songId in itemsBefore) {
-                ensureActive()
-                val mediaItem = buildSingleItem(songId)
-                if (mediaItem != null) {
-                    withContext(Dispatchers.Main) {
-                        player.addMediaItem(mediaItem)
-                    }
-                }
+        val currentIndex = player.currentMediaItemIndex.takeUnless { it == C.INDEX_UNSET } ?: 0
+        val availableAhead = (player.mediaItemCount - currentIndex - 1).coerceAtLeast(0)
+        if (availableAhead > PRELOAD_LOW_WATER_MARK) return
+
+        val idsToLoad = buildList {
+            repeat(minOf(PRELOAD_TARGET - availableAhead, pendingSongIds.size)) {
+                add(pendingSongIds.removeFirst())
+            }
+        }
+        if (idsToLoad.isEmpty()) return
+
+        preloadJob = serviceScope.launch {
+            try {
+                val mediaItems = buildItems(idsToLoad)
+                if (mediaItems.isNotEmpty()) player.addMediaItems(mediaItems)
+            } finally {
+                preloadJob = null
+                preloadUpcomingItems()
             }
         }
     }
 
     private suspend fun buildSingleItem(songId: Long): MediaItem? {
+        return buildItems(listOf(songId)).firstOrNull()
+    }
+
+    private suspend fun buildItems(songIds: List<Long>): List<MediaItem> {
         return try {
-            val urlResult = songRepository.getSongUrl(listOf(songId))
-            val songUrlData = urlResult.getOrNull()?.data?.firstOrNull()
-            if (songUrlData != null && songUrlData.url.isNotEmpty()) {
-                MediaItem.Builder()
-                    .setMediaId(songUrlData.id.toString())
-                    .setUri(songUrlData.url)
-                    .build()
-            } else {
-                if (urlResult.isFailure) {
-                    Log.e("MusicService", "getSongUrl failed for songId=$songId: ${urlResult.exceptionOrNull()?.message}")
-                } else if (songUrlData == null) {
-                    Log.e("MusicService", "Song URL data is null/empty for songId=$songId")
-                } else {
-                    Log.e("MusicService", "Song URL is empty for songId=$songId, data.code=${songUrlData.code}")
+            val urlResult = songRepository.getSongUrl(songIds)
+            val urlsById = urlResult.getOrNull()?.data?.associateBy { it.id }.orEmpty()
+            if (urlResult.isFailure) {
+                Log.e("MusicService", "getSongUrl failed: ${urlResult.exceptionOrNull()?.message}")
+            }
+            songIds.mapNotNull { songId ->
+                urlsById[songId]?.takeIf { it.url.isNotEmpty() }?.let { songUrlData ->
+                    MediaItem.Builder()
+                        .setMediaId(songUrlData.id.toString())
+                        .setUri(songUrlData.url)
+                        .build()
                 }
-                null
             }
         } catch (e: Exception) {
-            Log.e("MusicService", "Error fetching URL for songId: $songId", e)
-            null
+            Log.e("MusicService", "Error fetching URLs for ${songIds.size} songs", e)
+            emptyList()
         }
+    }
+
+    private companion object {
+        const val PRELOAD_TARGET = 5
+        const val PRELOAD_LOW_WATER_MARK = 2
     }
 }

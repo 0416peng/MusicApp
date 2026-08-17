@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +39,8 @@ import coil.compose.AsyncImage
 import com.example.data.model.artist.Song
 import com.example.ui.LoadingPlaceholder
 import com.example.ui.TopBackBar
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun ArtistAllSongsScreen(
@@ -60,7 +64,18 @@ fun ArtistAllSongsScreen(
         } else {
             val songList = songs!!.songs
             val more = songs!!.more
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            val listState = rememberLazyListState()
+            LaunchedEffect(listState, songList.size, more) {
+                if (songList.isNotEmpty() && more) {
+                    snapshotFlow {
+                        listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+                    }
+                        .filter { lastVisibleIndex -> lastVisibleIndex >= songList.size - 3 }
+                        .first()
+                    viewModel.getArtistSongs(id)
+                }
+            }
+            LazyColumn(state = listState, modifier = Modifier.padding(innerPadding)) {
                 itemsIndexed(
                     items = songList,
                     key = { index, item -> item.id }
@@ -71,10 +86,6 @@ fun ArtistAllSongsScreen(
                         currentlyPlayingSongId = currentSongId,
                         index = index
                     )
-
-                    if (index >= songList.size - 3 && more && !isRefreshing) {
-                        LaunchedEffect(Unit) { viewModel.getArtistSongs(id) }
-                    }
                 }
 
                 if (isRefreshing) {

@@ -1,10 +1,7 @@
 package com.example.player
 
-import android.util.Log
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,9 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.unit.dp
@@ -53,8 +49,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.common.formatTime
 import com.example.data.model.song.LyricLine
-import com.example.data.model.song.parseLrc
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
@@ -74,29 +70,29 @@ fun PlayerScreen(
     val songDetail by viewModel.songDetail.collectAsState()
     val lyricData by viewModel.lyricData.collectAsState()
     val parsedLyrics by viewModel.parsedLyrics.collectAsState()
-    val infiniteTransition= rememberInfiniteTransition(label = "imageRotation")
     var sliderPosition by remember { mutableStateOf<Float?>(null) }
     var showPicOrLyr by remember { mutableStateOf<String>(SHOW_PIC) }
-    LaunchedEffect(Unit,id,currentlyPlayingSongId) {
-        if(currentlyPlayingSongId==null){
-            viewModel.getSongLyric(id)
-            viewModel.getSongLyric(id)
-        }
-        viewModel.getSongLyric(currentlyPlayingSongId!!)
-        viewModel.getSongDetail(currentlyPlayingSongId!!)
-        Log.d("PlayerScreen","PlayerScreen")
+    val displayedSongId = currentlyPlayingSongId ?: id
+    LaunchedEffect(displayedSongId) {
+        viewModel.getSongLyric(displayedSongId)
+        viewModel.getSongDetail(displayedSongId)
     }
 
-    val rotationAngle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 16000,
-                easing = LinearEasing
-            )
-        )
-    )
+    val rotation = remember { Animatable(0f) }
+    LaunchedEffect(isPlaying, showPicOrLyr) {
+        if (isPlaying && showPicOrLyr == SHOW_PIC) {
+            while (isActive) {
+                val remainingDuration = (((360f - rotation.value) / 360f) * 16_000)
+                    .toInt()
+                    .coerceAtLeast(1)
+                rotation.animateTo(
+                    targetValue = 360f,
+                    animationSpec = tween(remainingDuration, easing = LinearEasing)
+                )
+                rotation.snapTo(0f)
+            }
+        }
+    }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -111,7 +107,7 @@ fun PlayerScreen(
                   modifier=Modifier.align(Alignment.Center).padding(bottom = 30.dp),
                   url = songDetail.songs[0].al.picUrl,
                   name = songDetail.songs[0].name,
-                  rotationAngle=rotationAngle
+                  rotationAngle = { rotation.value }
 
               )
         }else{
@@ -150,7 +146,7 @@ fun PlayerScreen(
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp)){
-                    Slider(value = progress.toFloat(),
+                    Slider(value = sliderPosition ?: progress.toFloat(),
                         onValueChange = {newValue->
                             sliderPosition=newValue
                         },
@@ -281,7 +277,7 @@ fun LyricScreen(lyrics:List<LyricLine>,
 fun PicScreen(modifier: Modifier,
               url: String,
               name:String,
-              rotationAngle: Float,
+              rotationAngle: () -> Float,
               ){
     Column(
         modifier =modifier ,
@@ -291,7 +287,7 @@ fun PicScreen(modifier: Modifier,
             modifier = Modifier
                 .size(250.dp)
                 .clip(CircleShape)
-                .rotate(rotationAngle)
+                .graphicsLayer { rotationZ = rotationAngle() }
         )
     }
 }

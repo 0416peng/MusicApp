@@ -1,13 +1,14 @@
 package com.example.data.di
 
+import android.content.Context
+import android.content.pm.ApplicationInfo
 import com.example.data.manager.UserSessionManager
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -24,10 +25,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
-        // 添加日志拦截器，方便在 Logcat 中查看网络请求和响应信息
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        @ApplicationContext context: Context
+    ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -37,11 +44,11 @@ object NetworkModule {
 
     @Singleton
     class AuthInterceptor @Inject constructor(
-        private val userSessionManager: UserSessionManager // 注入 SessionManager
+        private val userSessionManager: UserSessionManager
     ) : Interceptor {
 
         override fun intercept(chain: Interceptor.Chain): Response {
-            val cookie = runBlocking { userSessionManager.cookieFlow.first() }
+            val cookie = userSessionManager.currentCookie
 
             val originalRequest = chain.request()
 
