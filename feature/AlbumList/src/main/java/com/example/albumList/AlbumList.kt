@@ -22,9 +22,15 @@ import androidx.compose.ui.unit.sp
 import com.example.data.model.albumList.Song
 
 @Composable
-fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick: (index: Int) -> Unit) {
+fun AlbumList(
+    songs: List<Song>,
+    currentlyPlayingSongId: Long?,
+    header: @Composable () -> Unit,
+    onClick: (index: Int) -> Unit
+) {
 
     LazyColumn {
+        item { header() }
         item {
             Row(
                 modifier = Modifier
@@ -59,7 +65,7 @@ fun AlbumList(songs: List<Song>, currentlyPlayingSongId: Long?, onClick: (index:
                     )
                 } else {
                     Text(
-                        "${songs.indexOf(item) + 1}",
+                        "${index + 1}",
                         modifier = Modifier.padding(16.dp)
                     )
                 }

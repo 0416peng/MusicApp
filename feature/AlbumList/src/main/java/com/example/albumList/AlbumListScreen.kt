@@ -2,9 +2,6 @@ package com.example.albumList
 
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,31 +26,16 @@ fun AlbumListScreen(viewModel: AlbumListViewModel = hiltViewModel(), id: Long) {
             viewModel.errorShown()
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        if (albumListData != null) {
-            if (albumListData!!.code == 200) {
-                Album(albumListData!!)
-            }
-        } else {
-            Box(modifier = Modifier.fillMaxSize()) {
-                LoadingPlaceholder()
-            }
-        }
-        if (albumListData != null) {
-            if (albumListData!!.code == 200) {
-                AlbumList(
-                    albumListData!!.songs,
-                    currentlyPlayingSongId,
-                    onClick = { index -> viewModel.onAddListClicked(index) })
-            }
-        } else {
-            Box(modifier = Modifier.fillMaxSize()) {
-                LoadingPlaceholder()
-            }
-        }
-
+    if (albumListData?.code == 200) {
+        AlbumList(
+            songs = albumListData!!.songs,
+            currentlyPlayingSongId = currentlyPlayingSongId,
+            header = { Album(albumListData) },
+            onClick = { index -> viewModel.onAddListClicked(index) }
+        )
+    } else {
+        LoadingPlaceholder()
     }
-
 }
 
 

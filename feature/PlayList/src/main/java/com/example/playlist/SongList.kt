@@ -29,6 +29,7 @@ fun SongList(
     playListData: PlayListData?,
     currentlyPlayingSongId: Long?,
     listState: LazyListState,
+    header: (@Composable () -> Unit)? = null,
     onAddListClick: (index: Int) -> Unit,
     loadMore: () -> Unit,
     isRefreshing: Boolean
@@ -36,12 +37,15 @@ fun SongList(
     if (playListData != null) {
         if (playListData.code == 200) {
             val songCount = playListData.songs.size
+            val firstSongIndex = if (header == null) 1 else 2
             LaunchedEffect(listState, songCount) {
                 if (songCount > 0) {
                     snapshotFlow {
                         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
                     }
-                        .filter { lastVisibleIndex -> lastVisibleIndex >= songCount - 2 }
+                        .filter { lastVisibleIndex ->
+                            lastVisibleIndex >= firstSongIndex + songCount - 3
+                        }
                         .first()
                     loadMore()
                 }
@@ -51,6 +55,9 @@ fun SongList(
                 state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
+                header?.let { headerContent ->
+                    item { headerContent() }
+                }
                 item {
                     Row(
                         modifier = Modifier

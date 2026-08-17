@@ -1,8 +1,6 @@
 package com.example.playlist
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -35,20 +33,24 @@ fun PlayListScreen(viewModel: PlayListViewModel = hiltViewModel(), id: Long) {
             viewModel.errorShown()
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        if (playListDetailData != null) {
-            if (playListDetailData!!.code == 200) {
-                PlayList(playListDetailData!!)
-            }
-        } else {
-            LoadingPlaceholder()
-        }
+    if (playListData?.code == 200) {
         SongList(
-            playListData, currentlyPlayingSongId, listState,
-            { index -> viewModel.onAddListClicked(index) },
-            { viewModel.loadMorePlayListData(id) },
-            isRefreshing
+            playListData = playListData,
+            currentlyPlayingSongId = currentlyPlayingSongId,
+            listState = listState,
+            header = {
+                if (playListDetailData?.code == 200) {
+                    PlayList(playListDetailData!!)
+                } else {
+                    LoadingPlaceholder()
+                }
+            },
+            onAddListClick = { index -> viewModel.onAddListClicked(index) },
+            loadMore = { viewModel.loadMorePlayListData(id) },
+            isRefreshing = isRefreshing
         )
+    } else {
+        LoadingPlaceholder()
     }
 }
 
